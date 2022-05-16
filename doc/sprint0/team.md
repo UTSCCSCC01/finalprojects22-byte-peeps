@@ -5,6 +5,6 @@
 | Connie Lin       | linconn2 | 1005336469  | connie.lin@mail.utoronto.ca       | discord             | clj#8978         |
 | Mohammad Qadir   | qadirmo3 | 1006079191  | mohammad.qadir@mail.utoronto.ca   | discord             | Domi#1725        |
 | Karandeep Lubana | lubanaka | 1007064374  | karandeep.lubana@mail.utoronto.ca | discord             | Giani#9167       |
-
+| Jiaming Yang     | yangj295 | 1006458575  | jiaming.yang@mail.utoronto.ca     | discord             | Gloria Yang#1328 |
 
 **Discord Chat/Server Invite :** https://discord.gg/TZgt2kwujj
