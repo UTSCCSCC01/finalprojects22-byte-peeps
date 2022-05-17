@@ -1,5 +1,5 @@
 | Full Name        | UTORID   | Student ID  | Email                             | Best Way to Contact | Discord Username | Phone number |
-| -------------    | -------- | ----------  | ------------------------------    | ------------------- | ---------------- |              |
+| -------------    | -------- | ----------  | ------------------------------    | ------------------- | ---------------- | ------------ |
 | Mohamed Tayeh    | tayehmoh | 1004742246  | mohamed.tayeh@mail.utoronto.ca    | discord             | mohsaye3#4572    |              |
 | Bassel Ashi      | ashipass | 1005116731  | p.ashi@mail.utoronto.ca           | discord             | Madric#8715      |              |
 | Connie Lin       | linconn2 | 1005336469  | connie.lin@mail.utoronto.ca       | discord             | clj#8978         |              |
