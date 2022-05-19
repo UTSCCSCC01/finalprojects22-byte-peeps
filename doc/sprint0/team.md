@@ -4,7 +4,7 @@
 | Bassel Ashi        | ashipass | 1005116731  | p.ashi@mail.utoronto.ca           | discord             | Madric#8715      | 2899809529   |
 | Connie Lin         | linconn2 | 1005336469  | connie.lin@mail.utoronto.ca       | discord             | clj#8978         |  6479236288  |
 | Mohammad Qadir     | qadirmo3 | 1006079191  | mohammad.qadir@mail.utoronto.ca   | discord             | Domi#1725        | 437-260-9788 |
-| Karandeep Lubana   | lubanaka | 1007064374  | karandeep.lubana@mail.utoronto.ca | discord             | Giani#9167       |              |
+| Karandeep Lubana   | lubanaka | 1007064374  | karandeep.lubana@mail.utoronto.ca | discord             | Giani#9167       | 4379806342             |
 | Jiaming Yang       | yangj295 | 1006458575  | jiaming.yang@mail.utoronto.ca     | discord             | Gloria Yang#1328 | 6476196612   |
 | Juan Camilo Corral | corralju | 1005890010  | j.corral@mail.utoronto.ca         | discord             | Wikisaqui#0215   | 6477780735   |
 
