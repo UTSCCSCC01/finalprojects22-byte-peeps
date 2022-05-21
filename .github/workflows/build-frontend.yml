@@ -1,0 +1,78 @@
+name: Publish Frontend to GHCR
+
+on:
+  push:
+    # Only run this workflow if it is a commit to main.
+    branches:
+      - main
+    # Only run this workflow if the commit has modified files from frontend
+    paths:
+      - frontend/**
+      - .github/workflows/build-frontend.yml
+
+env:
+  IMAGE_NAME: frontend-bytepeeps
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # For .env files
+      # - name: Create frontend env vars
+      #   working-directory: frontend/app
+      #   run: |
+      #     touch .env
+      #     echo REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} >> .env
+      #     echo REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }} >> .env
+      #     echo REACT_APP_COUNTRY_FEATURES_URL=${{ secrets.REACT_APP_COUNTRY_FEATURES_URL }} >> .env
+      #     echo REACT_APP_CONTINENT_FEATURES_URL=${{ secrets.REACT_APP_CONTINENT_FEATURES_URL }} >> .env
+      #     echo REACT_APP_SENTRY_URL=${{ secrets.REACT_APP_SENTRY_URL }} >> .env
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to GitHub Container Registry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+      # https://stevenmortimer.com/running-github-actions-sequentially/
+      - name: Trigger deployment workflow
+        if: success()
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_GHA_PAT }}
+          repository: ${{ github.repository }}
+          event-type: trigger-deploy-workflow
+
+      - name: ssh commands to deploy the docker containers
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker compose pull && docker compose up -d
