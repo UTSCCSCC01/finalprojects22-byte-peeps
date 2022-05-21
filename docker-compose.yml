@@ -2,35 +2,24 @@ version: '3.7'
 
 services:
   frontend:
-    image: ghcr.io/utsccscc01/frontend-bytepeeps
+    image: frontend-bytepeeps
     container_name: frontend-bytepeeps
     restart: always
     expose:
       - 80
     environment:
-      - VIRTUAL_HOST=c10.mohamedtayeh.com
-      - LETSENCRYPT_HOST=c10.mohamedtayeh.com
-
-  db:
-    image: postgres:alpine
-    container_name: postgresql
-    restart: unless-stopped
-    expose:
-      - 5432
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-    env_file:
-      - db.env
+      - VIRTUAL_HOST=c01.mohamedtayeh.com
+      - LETSENCRYPT_HOST=c01.mohamedtayeh.com
 
   backend:
-    image: ghcr.io/utsccscc01/backend-bytepeeps
+    image: backend-bytepeeps
     container_name: backend-bytepeeps
     restart: always
     expose:
       - 3000
     environment:
-      - VIRTUAL_HOST=c10api.mohamedtayeh.com
-      - LETSENCRYPT_HOST=c10api.mohamedtayeh.com
+      - VIRTUAL_HOST=c01api.mohamedtayeh.com
+      - LETSENCRYPT_HOST=c01api.mohamedtayeh.com
 
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -54,3 +43,15 @@ services:
       - ./acme:/etc/acme.sh
     environment:
       - DEFAULT_EMAIL=mohamedntayeh@gmail.com
+
+  db:
+    image: postgres
+    container_name: postgresql
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - db.env
+# removing all images: docker stop $(docker ps -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images)
