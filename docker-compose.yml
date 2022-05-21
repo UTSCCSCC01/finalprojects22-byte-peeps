@@ -1,0 +1,56 @@
+version: '3.7'
+
+services:
+  frontend:
+    image: ghcr.io/utsccscc01/frontend-bytepeeps
+    container_name: frontend-bytepeeps
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=c10.mohamedtayeh.com
+      - LETSENCRYPT_HOST=c10.mohamedtayeh.com
+
+  db:
+    image: postgres:alpine
+    container_name: postgresql
+    restart: unless-stopped
+    expose:
+      - 5432
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - db.env
+
+  backend:
+    image: ghcr.io/utsccscc01/backend-bytepeeps
+    container_name: backend-bytepeeps
+    restart: always
+    expose:
+      - 3000
+    environment:
+      - VIRTUAL_HOST=c10api.mohamedtayeh.com
+      - LETSENCRYPT_HOST=c10api.mohamedtayeh.com
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme:/etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=mohamedntayeh@gmail.com
