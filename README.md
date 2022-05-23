@@ -66,3 +66,40 @@ To run the dev server
 ```
 npm run dev
 ```
+
+## Tech Stack
+
+### Front End
+* TypeScript + React
+* Bootstrap/Bootstrap Studio
+* HTML/CSS
+
+### Back End
+* TypeScript
+* Node.js
+* Express.js
+* PostgreSQL
+
+## Contributing
+
+*We use git flow*
+
+### Branch Naming
+* main: Contains the current working release
+* dev: Contains the current code that is a work in progress
+* feature/feature-name: Contains progress code for a new feature
+
+### Pull Requests
+1. Clone this repository and create a new branch off the dev branch with the appropriate name.
+2. Implement the feature.
+3. Test your feature and ensure it does not break any existing functionality.
+4. Create and submit a pull request with a detailed description to be reviewed by at least two other contributors.
+
+## Authors
+* [Mohamed Tayeh](https://github.com/mohamed-tayeh)
+* [Bassel Ashi](https://github.com/BasselAshi)
+* [Connie Lin](https://github.com/connieJ-lin)
+* [Mohammad Qadir](https://github.com/DomiVesalius)
+* [Karandeep Lubana](https://github.com/KarandeepLubana)
+* [Jiaming Yang](https://github.com/Jiaming-Yang-20)
+* [Juan Camilo Corral](https://github.com/Wikisaqui)
