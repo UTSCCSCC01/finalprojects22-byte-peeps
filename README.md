@@ -1,105 +1,125 @@
-# Getting Started with Create React App
+# Customer Feed Aggregation and Analysis (CFAA)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Motivation and Project Description
 
-## Available Scripts
+- The customer is central in every product or service that is offered, hence obtaining customer feedback is essential to the success of any business.
+- This feedback comes in the form of unstructured data, such as text. In fact, Open ended questions are one of the best ways to obtain feedback. In addition, this feedback can come from many sources, such as surveys, client interviews and social media.
+- Gathering this data from multiple sources and attempting to extract key information is both time consuming and tiring thus it is an expense to the business.
+- There are few platforms that provide businesses with a unified source to gather this data, as well as mine it for information. One example is Microsoft Dynamics 365 that has this capability, however it costs $1,500 per user to obtain and understand this feedback - making it an infeasible expense for small businesses and startups.
+- Our platform would provide small businesses and startups with the tool to obtain this information and make sense of the feedback
 
-In the project directory, you can run:
+## Tech Stack
 
-### `npm start`
+- Front End
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  - React + Typescript
+  - HTML/CSS
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Back End
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-# Backend Setup
+  - Node.js + TypeScript
+  - Express.js
+  - PostgreSQL
 
 ## Installation
 
-cd into the app folder and run the command:
+### Cloning
+
+Using github desktop:
+
+1. Click on the repository name on the top left
+2. Click add
+3. Click clone
+4. Click URL
+5. Clone `https://github.com/UTSCCSCC01/finalprojects22-byte-peeps`
+
+Using CLI:
+
+`git checkout https://github.com/UTSCCSCC01/finalprojects22-byte-peeps -b name_for_new_branch`
+
+### Downloading Node and NPM
+
+Instructions are available [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
+### Database setup
+
+1. Download PgAdmin [here](https://www.pgadmin.org/download/)
+
+2. Connecting to Production DB:
+
+- Right click on servers
+- Click create...
+- New server
+- Enter a name
+- Go to connection tab
+- Enter credentials given from one of our fellow developers.
+
+### Backend Setup
+
+1. cd into the app folder and run the command:
 
 ```
-npm i --dev
+npm i --include=dev
 ```
 
-To start the server
+2. Create a `.env` file in the `backend/app` directory. Paste in the contents given from one of our fellow developers.
 
-```
-npm start
-```
-
-To run the dev server
+3. To run the dev server:
 
 ```
 npm run dev
 ```
 
-## Tech Stack
+### Frontend Setup
 
-### Front End
-* TypeScript + React
-* Bootstrap/Bootstrap Studio
-* HTML/CSS
+1. cd into the app folder in the frontend and run the command:
 
-### Back End
-* TypeScript
-* Node.js
-* Express.js
-* PostgreSQL
+```
+npm i --include=dev
+```
 
-## Contributing
+2. Create a `.env` file in the `backend/app` directory. Paste in the contents given from one of our fellow developers.
 
-*We use git flow*
+3. To start the server:
 
-### Branch Naming
-* main: Contains the current working release
-* dev: Contains the current code that is a work in progress
-* feature/feature-name: Contains progress code for a new feature
+```
+npm run start
+```
 
-### Pull Requests
-1. Clone this repository and create a new branch off the dev branch with the appropriate name.
-2. Implement the feature.
-3. Test your feature and ensure it does not break any existing functionality.
-4. Create and submit a pull request with a detailed description to be reviewed by at least two other contributors.
+## Contribution
+
+- Do you use Git Flow?
+
+  - Yes, we use a main branch, a development branch and many feature branches.
+
+- What do you name your branches?
+
+  - main: `main` branch that is deployed
+  - develop: `develop` latest development branch
+  - hotfix: `hot-fix-_issue_`
+  - feature: `feature-_feature-name_`
+  - bug (that is not a hot fix): `bug-_bug-info_`
+
+- Do you use github issues or another ticketing website?
+
+  - We will be using `Jira` as a ticketing platform.
+
+- Do you use pull requests?
+
+  - Yes each feature, bug and hot fix should have an independent pull request.
+
+- Process:
+  1. Clone this repository and create a new branch off the dev branch with the appropriate name.
+  2. Implement the feature.
+  3. Test your feature and ensure it does not break any existing functionality.
+  4. Create and submit a pull request with a detailed description to be reviewed by at least two other contributors.
 
 ## Authors
-* [Mohamed Tayeh](https://github.com/mohamed-tayeh)
-* [Bassel Ashi](https://github.com/BasselAshi)
-* [Connie Lin](https://github.com/connieJ-lin)
-* [Mohammad Qadir](https://github.com/DomiVesalius)
-* [Karandeep Lubana](https://github.com/KarandeepLubana)
-* [Jiaming Yang](https://github.com/Jiaming-Yang-20)
-* [Juan Camilo Corral](https://github.com/Wikisaqui)
+
+- [Mohamed Tayeh](https://github.com/mohamed-tayeh)
+- [Bassel Ashi](https://github.com/BasselAshi)
+- [Connie Lin](https://github.com/connieJ-lin)
+- [Mohammad Qadir](https://github.com/DomiVesalius)
+- [Karandeep Lubana](https://github.com/KarandeepLubana)
+- [Jiaming Yang](https://github.com/Jiaming-Yang-20)
+- [Juan Camilo Corral](https://github.com/Wikisaqui)
