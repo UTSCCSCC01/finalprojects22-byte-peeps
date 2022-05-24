@@ -41,7 +41,7 @@ Using CLI:
 
 Instructions are available [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
-### Database setup
+### Database setup - need to set up a local DB as well
 
 1. Download PgAdmin [here](https://www.pgadmin.org/download/)
 
