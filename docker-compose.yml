@@ -55,3 +55,5 @@ services:
     env_file:
       - db.env
 # removing all images: docker stop $(docker ps -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images)
+# pull latest images: docker pull
+# restart docker compose: docker compose up -d

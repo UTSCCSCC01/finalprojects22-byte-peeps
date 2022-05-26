@@ -2,11 +2,11 @@
 
 ## Motivation and Project Description
 
-- The customer is central in every product or service that is offered, hence obtaining customer feedback is essential to the success of any business.
-- This feedback comes in the form of unstructured data, such as text. In fact, Open ended questions are one of the best ways to obtain feedback. In addition, this feedback can come from many sources, such as surveys, client interviews and social media.
+- The customer is central in every product or service that is offered, hence obtaining customer feedback is essential to the success of any business small or large.
+- This feedback often comes in the form of unstructured data, such as text. In fact, open ended questions are one of the best ways to obtain feedback. In addition, this feedback can come from many sources, such as surveys, client interviews and social media.
 - Gathering this data from multiple sources and attempting to extract key information is both time consuming and tiring thus it is an expense to the business.
-- There are few platforms that provide businesses with a unified source to gather this data, as well as mine it for information. One example is Microsoft Dynamics 365 that has this capability, however it costs $1,500 per user to obtain and understand this feedback - making it an infeasible expense for small businesses and startups.
-- Our platform would provide small businesses and startups with the tool to obtain this information and make sense of the feedback
+- There are already existing platforms that provide businesses with a unified source to gather this data, as well as mine information from it. One example is Microsoft Dynamics 365 that has this capability, however it costs $1,500 per user to obtain and understand this feedback - making it an infeasible expense for small businesses, startups and content creators.
+- Our platform would provide this audience with a tool that acts as a unified source to obtain this information and make sense of it.
 
 ## Tech Stack
 
@@ -127,9 +127,9 @@ npm run start
 
   - main: `main` branch that is deployed
   - develop: `develop` latest development branch
-  - hotfix: `hot-fix-_issue_`
-  - feature: `feature-_feature-name_`
-  - bug (that is not a hot fix): `bug-_bug-info_`
+  - hotfix: `hot-fix-<issue-name>`
+  - feature: `feature-<feature-name>`
+  - bug (that is not a hot fix): `bug-<bug-info>`
 
 - Do you use github issues or another ticketing website?
 
@@ -157,9 +157,9 @@ npm run start
 
 Due to github actions being displayed, we will be running the github actions locally using [act](https://github.com/nektos/act) to deploy.
 
-Currently the website is deployed at: https://c01.mohamedtayeh.com/
+Currently, the website is deployed at: https://c01.mohamedtayeh.com/
 
-Instructions coming soon...
+Deployment instructions coming soon...
 
 ## Authors
 
