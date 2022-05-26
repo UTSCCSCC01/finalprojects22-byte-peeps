@@ -35,7 +35,7 @@ Using github desktop:
 
 Using CLI:
 
-`git checkout https://github.com/UTSCCSCC01/finalprojects22-byte-peeps -b name_for_new_branch`
+`git checkout https://github.com/UTSCCSCC01/finalprojects22-byte-peeps -b <NEW-BRANCH-NAME>`
 
 ### Downloading Node and NPM
 
@@ -43,9 +43,18 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 
 ### Database setup - need to set up a local DB as well
 
-1. Download PgAdmin [here](https://www.pgadmin.org/download/)
+1. Download PostgreSQL - instructions are available here for [Windows](https://www.youtube.com/watch?v=RAFZleZYxsc) and [MacOS](https://www.youtube.com/watch?v=wTqosS71Dc4)
 
-2. Connecting to Production DB:
+2. Creating Local DB:
+
+- If you were on MacOS, you need to download Pgadmin [here](https://www.pgadmin.org/download/pgadmin-4-macos/)
+- Open Pgadmin
+- Click on Local server
+- Right click databases
+- Click create -> database
+- name it `c01`
+
+3. Connecting to Production DB:
 
 - Right click on servers
 - Click create...
@@ -54,15 +63,32 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 - Go to connection tab
 - Enter credentials given from one of our fellow developers.
 
+4. Updating of Local DB with Production DB data:
+
+- Right click on the `c01` DB on the production server
+- Click back up and save it
+- Right click on the development DB
+- Click restore
+- Select the backup you made
+- Click restore
+
 ### Backend Setup
 
-1. cd into the app folder and run the command:
+1. cd into the backend folder then app folder and run the command:
 
 ```
 npm i --include=dev
 ```
 
-2. Create a `.env` file in the `backend/app` directory. Paste in the contents given from one of our fellow developers.
+2. Create a `.env` file in the `backend/app` directory. Paste the following content
+
+```
+VIRTUAL_HOST=localhost
+PORT=5432
+POSTGRES_DB=c01
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=<YOUR-POSTGRES-PASSWORD>
+```
 
 3. To run the dev server:
 
@@ -72,13 +98,18 @@ npm run dev
 
 ### Frontend Setup
 
-1. cd into the app folder in the frontend and run the command:
+1. cd into the frontend folder then the app folder in the frontend and run the command:
 
 ```
 npm i --include=dev
 ```
 
-2. Create a `.env` file in the `backend/app` directory. Paste in the contents given from one of our fellow developers.
+2. Create a `.env` file in the `frontend/app` directory. Paste the following content
+
+```
+REACT_APP_BACKEND_ENDPOINT=http://localhost:3000/
+PORT=80
+```
 
 3. To start the server:
 
@@ -104,6 +135,14 @@ npm run start
 
   - We will be using `Jira` as a ticketing platform.
 
+- Creating frontend components:
+
+  - Use the template complement folder under the components directory
+
+- Creating backend files:
+
+  - There must be a new file under each of the controllers, models and routes folder following the same structure as the template file
+
 - Do you use pull requests?
 
   - Yes each feature, bug and hot fix should have an independent pull request.
@@ -113,6 +152,14 @@ npm run start
   2. Implement the feature.
   3. Test your feature and ensure it does not break any existing functionality.
   4. Create and submit a pull request with a detailed description to be reviewed by at least two other contributors.
+
+## Deployment
+
+Due to github actions being displayed, we will be running the github actions locally using [act](https://github.com/nektos/act) to deploy.
+
+Currently the website is deployed at: https://c01.mohamedtayeh.com/
+
+Instructions coming soon...
 
 ## Authors
 
