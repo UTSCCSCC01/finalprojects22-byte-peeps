@@ -1,4 +1,6 @@
-export default async function authenticateUser(req, res, next): Promise<any> {
+import { RequestHandler } from 'express';
+
+export const authenticateUser: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
 
@@ -6,3 +8,5 @@ export default async function authenticateUser(req, res, next): Promise<any> {
 
   // TODO: Add authentication mechanism here
 }
+
+export default authenticateUser;
