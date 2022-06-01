@@ -3,9 +3,9 @@ const headers: { [id: string]: string } = {
 };
 
 const call = (path: string, method: string, data?: Object): Promise<Response> => {
-  return fetch(`http://localhost:5000/api/v1/${path}`, { // TODO: configurable path for dev
+  return fetch(process.env.REACT_APP_BACKEND_ENDPOINT + path, {
     method,
-    mode: 'cors', // TODO: configurable mode
+    mode: process.env.REACT_APP_BACKEND_ENDPOINT == '' ? 'no-cors' : 'cors',
     body: data && JSON.stringify(data),
     headers
   }).then((response) => {
