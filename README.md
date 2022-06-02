@@ -50,6 +50,9 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 - If you were on MacOS, you need to download Pgadmin [here](https://www.pgadmin.org/download/pgadmin-4-macos/)
 - Open Pgadmin
 - Click on Local server
+  - If you do not see this option on the dashboard, click 'Add New Server'. 
+  - Under the ``Connection`` tab fill in 'localhost' for the host name field
+  - Input your postgres password. If you get a password authentication error and cannot remember your password then [reset it](https://stackoverflow.com/a/67902158)
 - Right click databases
 - Click create -> database
 - name it `c01`
