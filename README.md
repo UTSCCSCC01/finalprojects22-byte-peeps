@@ -52,6 +52,7 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 - Click on Local server
   - If you do not see this option on the dashboard, click 'Add New Server'. 
   - Under the ``Connection`` tab fill in 'localhost' for the host name field
+  - Ensure port 5432 is the selected port
   - Input your postgres password. If you get a password authentication error and cannot remember your password then [reset it](https://stackoverflow.com/a/67902158)
 - Right click databases
 - Click create -> database
