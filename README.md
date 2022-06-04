@@ -50,8 +50,8 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 - If you were on MacOS, you need to download Pgadmin [here](https://www.pgadmin.org/download/pgadmin-4-macos/)
 - Open Pgadmin
 - Click on Local server
-  - If you do not see this option on the dashboard, click 'Add New Server'. 
-  - Under the ``Connection`` tab fill in 'localhost' for the host name field
+  - If you do not see this option on the dashboard, click 'Add New Server'.
+  - Under the `Connection` tab fill in 'localhost' for the host name field
   - Ensure port 5432 is the selected port
   - Input your postgres password. If you get a password authentication error and cannot remember your password then [reset it](https://stackoverflow.com/a/67902158)
 - Right click databases
@@ -78,6 +78,10 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 
 ### Backend Setup
 
+Before completing your backend set up, you require a [DatumBox](https://www.datumbox.com/machine-learning-api/) API key. To obtain the key, you require to go register on the DatumBox [website](https://www.datumbox.com/machine-learning-api/): click register, then go back to this [page](https://www.datumbox.com/machine-learning-api/), scroll down to `How to use the API?` on the bottom right and click the text hyperlink `API Key`.
+
+Now you can complete the backend set up.
+
 1. cd into the backend folder then app folder and run the command:
 
 ```
@@ -92,6 +96,7 @@ PORT=5432
 POSTGRES_DB=c01
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=<YOUR-POSTGRES-PASSWORD>
+DATUMBOX_API_KEY=<YOUR-DATUMBOX-API-KEY>
 ```
 
 3. To run the dev server:
