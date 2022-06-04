@@ -1,33 +1,36 @@
-import { Table, Model, Column, BelongsTo, HasMany } from 'sequelize-typescript';
-
-export class Facebook {
-  posts = Post
-  comments = Comment
-}
+import { Table, Model, Column, BelongsTo, HasMany, DataType, ForeignKey, AllowNull } from 'sequelize-typescript';
 
 @Table({
   timestamps: false,
   tableName: 'facebook_posts',
 })
-class Post extends Model {
+export class Post extends Model {
+  @AllowNull(false)
   @Column
-  message!: string
+  message: string
 
   @HasMany(() => Comment)
-  comments!: Comment[];
+  comments: Comment[];
 }
 
 @Table({
   timestamps: false,
-  tableName: 'facebook_comments'
+  tableName: 'facebook_comments',
 })
-class Comment extends Model {
+export class Comment extends Model {
+  @AllowNull(false)
   @Column
-  message!: string
+  message: string
 
+  @AllowNull(false)
   @Column
-  user_name!: string
+  user_name: string
+
+  @ForeignKey(() => Post)
+  @AllowNull(false)
+  @Column
+  postId: number
 
   @BelongsTo(() => Post)
-  post!: Post;
+  post: Post;
 }
