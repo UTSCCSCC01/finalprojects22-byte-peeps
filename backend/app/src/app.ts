@@ -7,7 +7,7 @@ import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-
+const users = connection.models.Users
 const app = express();
 
 const PORT = 3000;
@@ -21,6 +21,24 @@ app.use(
 );
 
 app.use(bodyParser.json());
+
+// curl -X POST -d "username=admin&password=pass4admin" http://localhost:3000/signup/
+app.post('/signup/', function (req, res, next) {
+  // extract data from HTTP request
+  if (!('username' in req.body)) return res.status(400).end('username is missing');
+  if (!('password' in req.body)) return res.status(400).end('password is missing');
+  let username = req.body.username;
+  let password = req.body.password;
+  users.findOne({ where: { username: username } }).then((user) => {
+    console.log(user?.toJSON());
+    return res.end("hello")
+  }).catch((error) => {
+    console.error(error)
+  })
+
+}
+
+);
 
 app.use(
   (

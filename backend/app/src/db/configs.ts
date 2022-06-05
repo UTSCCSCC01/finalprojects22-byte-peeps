@@ -13,5 +13,4 @@ const connection = new Sequelize({
   logging: false,
   models,
 });
-
 export default connection;
