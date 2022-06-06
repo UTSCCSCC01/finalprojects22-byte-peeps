@@ -1,6 +1,6 @@
 import { AllowNull, BelongsTo, Column, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import FacebookApi from "./api";
-// import FacebookComment from "./comment";
+import FacebookComment from "./comment";
 
 @Table({
   timestamps: false,
@@ -11,8 +11,8 @@ export default class FacebookPost extends Model {
   @Column
   message: string
 
-  // @HasMany(() => FacebookComment)
-  // comments: FacebookComment[];
+  @HasMany(() => FacebookComment)
+  comments: FacebookComment[];
 
   @ForeignKey(() => FacebookApi)
   @AllowNull(false)

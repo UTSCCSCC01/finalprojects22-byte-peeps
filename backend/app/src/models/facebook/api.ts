@@ -1,5 +1,7 @@
 import { AllowNull, BelongsTo, Column, ForeignKey, HasMany, HasOne, Model, Table } from "sequelize-typescript";
 import User from "../user/user";
+import InstagramApi from "../instagram/api";
+import FacebookPost from "./post";
 
 @Table({
   timestamps: false,
@@ -21,9 +23,9 @@ export default class FacebookApi extends Model {
   @BelongsTo(() => User)
   user: User;
 
-  // @HasMany(() => FacebookPost)
-  // posts: FacebookPost
+  @HasMany(() => FacebookPost)
+  posts: FacebookPost
 
-  // @HasOne(() => InstagramApi)
-  // intagramApi: InstagramApi
+  @HasOne(() => InstagramApi)
+  intagramApi: InstagramApi
 }
