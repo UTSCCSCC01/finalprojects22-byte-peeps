@@ -1,18 +1,19 @@
-import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull, HasOne } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull } from 'sequelize-typescript';
 import { User } from './user';
-import * as Instagram from './instagram';
+import * as Facebook from './facebook';
 
 @Table({
   timestamps: false,
-  tableName: 'facebook_apis',
+  tableName: 'instagram_apis',
 })
 export class Api extends Model {
-  @Column
+  @ForeignKey(() => Facebook.Api)
   @AllowNull(false)
-  token: string
-
   @Column
-  isActive: boolean
+  facebookApiId: number
+
+  @BelongsTo(() => Facebook.Api)
+  facebookApi: Facebook.Api;
 
   @ForeignKey(() => User)
   @AllowNull(false)
@@ -20,20 +21,17 @@ export class Api extends Model {
   userId: number
 
   @BelongsTo(() => User)
-  user: User;
+  user: User
 
-  @HasMany(() => Post)
-  posts: Post
-
-  @HasOne(() => Instagram.Api)
-  intagramApi: Instagram.Api
+  @HasMany(() => Media)
+  media: Media
 }
 
 @Table({
   timestamps: false,
-  tableName: 'facebook_posts',
+  tableName: 'instagram_media',
 })
-export class Post extends Model {
+export class Media extends Model {
   @AllowNull(false)
   @Column
   message: string
@@ -52,22 +50,22 @@ export class Post extends Model {
 
 @Table({
   timestamps: false,
-  tableName: 'facebook_comments',
+  tableName: 'instagram_comments',
 })
 export class Comment extends Model {
   @AllowNull(false)
   @Column
   userName: string
-  
+
   @AllowNull(false)
   @Column
   message: string
 
-  @ForeignKey(() => Post)
+  @ForeignKey(() => Media)
   @AllowNull(false)
   @Column
-  postId: number
+  mediaId: number
 
-  @BelongsTo(() => Post)
-  post: Post;
+  @BelongsTo(() => Media)
+  media: Media;
 }
