@@ -1,31 +1,32 @@
 import { RequestHandler } from 'express';
+import { Users } from '../models/user';
+
 const bcrypt = require('bcrypt');
-import connection from '../db/configs';
-const users = connection.models.Users
+
 
 export const register: RequestHandler = async function (req, res, next) {
   // extract data from HTTP request
-  if (!('username' in req.body)) return res.status(400).end('username is missing');
-  if (!('password' in req.body)) return res.status(400).end('password is missing');
+  if (!('username' in req.body)) return res.status(400).json({ 'message': 'username is missing' });
+  if (!('password' in req.body)) return res.status(400).json({ 'message': 'password is missing' });
   let username = req.body.username;
   let password = req.body.password;
+  console.log(password)
   // check if user already exists
   try {
-    const user = await users.findOne({ where: { username: username } })
-    if (user) return res.status(409).end("username " + username + " already exists");
+    const user = await Users.findOne({ where: { username: username } })
+    if (user) return res.status(409).json({ 'message': "username " + username + " already exists" });
   } catch (err) {
-    return res.status(500).end(err);
+    return res.status(500).json({ 'message': err });
   }
   // genearte a new salt and hash
-  bcrypt.genSalt(10, function (err: any, salt: any) {
-    bcrypt.hash(password, salt, async function (err: any, hash: any) {
-      // insert new user into the database
-      try {
-        await users.create({ username, hash: hash });
-        return res.end("account created")
-      } catch (err) {
-        return res.status(500).end(err)
-      }
-    });
+  const saltRounds = 10
+  bcrypt.hash(password, saltRounds, async function (err: any, hash: any) {
+    // insert new user into the database
+    try {
+      await Users.create({ username, hash: hash });
+      return res.json({ 'message': "account created" })
+    } catch (err) {
+      return res.status(500).json({ 'message': err })
+    }
   });
 }

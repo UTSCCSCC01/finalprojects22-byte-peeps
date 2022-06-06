@@ -15,5 +15,5 @@ export class Users extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  hash!: string;
+  password!: string;
 }
