@@ -17,7 +17,7 @@ Once we have a token, we can use the Graph API to retrieve data
 Perform a get request:
 
 ```
-https://graph.facebook.com/v14.0/me?access_token=<ACCESS_TOKEN>&fields=posts{comments}
+https://graph.facebook.com/v14.0/me?access_token=<ACCESS_TOKEN>&fields=posts{comments,from}
 ```
 
 The end result will include:
