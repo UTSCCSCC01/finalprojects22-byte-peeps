@@ -1,15 +1,15 @@
 import { Table, Model, Column, AllowNull, HasOne } from 'sequelize-typescript';
-import * as Facebook from './facebook';
+import FacebookApi from '../facebook/api';
 
 @Table({
   timestamps: false,
   tableName: 'users',
 })
-export class User extends Model {
+export default class User extends Model {
   @AllowNull(false)
   @Column
   name: string
 
-  @HasOne(() => Facebook.Api)
-  facebookApi: Facebook.Api
+  @HasOne(() => FacebookApi)
+  facebookApi: FacebookApi
 }
