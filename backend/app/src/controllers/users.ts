@@ -21,7 +21,7 @@ export const register: RequestHandler = async function (req, res, next) {
     bcrypt.hash(password, salt, async function (err: any, hash: any) {
       // insert new user into the database
       try {
-        await users.create({ username, password: hash });
+        await users.create({ username, hash: hash });
         return res.end("account created")
       } catch (err) {
         return res.status(500).end(err)
