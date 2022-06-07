@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+    BrowserRouter as Router,
+    Route,
+    Link,
+    BrowserRouter,
+    Routes,
+  } from "react-router-dom";
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Surveys from './pages/Surveys';
+import ReviewApps from './pages/ReviewApps';
+import SocialMedia from './pages/SocialMedia';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+
+export interface IAppProps {}
+
+const App: React.FunctionComponent<IAppProps> = (props) => {
+    return (
+    <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Login />}/>
+            <Route path="dashboard" element={<Dashboard />}/>
+            <Route path="surveys" element={<Surveys />}/>
+            <Route path="reviews" element={<ReviewApps />}/>
+            <Route path="socials" element={<SocialMedia />}/>
+        </Routes>
+    </BrowserRouter>
+    );
+};
 
 export default App;
