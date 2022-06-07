@@ -1,5 +1,7 @@
 import { Table, Model, Column, AllowNull, HasOne } from 'sequelize-typescript';
 import FacebookApi from '../facebook/api';
+import InstagramApi from '../instagram/api';
+import YouTubeChannel from '../youtube/channel';
 
 @Table({
   timestamps: false,
@@ -12,4 +14,10 @@ export default class User extends Model {
 
   @HasOne(() => FacebookApi)
   facebookApi: FacebookApi
+
+  @HasOne(() => FacebookApi)
+  instagramApi: InstagramApi
+
+  @HasOne(() => YouTubeChannel)
+  youtubeChannel: YouTubeChannel
 }
