@@ -10,7 +10,11 @@ import YouTubeChannel from '../youtube/channel';
 export default class User extends Model {
   @AllowNull(false)
   @Column
-  name: string
+  username: string
+
+  @AllowNull(false)
+  @Column
+  password: string
 
   @HasOne(() => FacebookApi)
   facebookApi: FacebookApi
