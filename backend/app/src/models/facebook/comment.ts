@@ -8,6 +8,10 @@ import FacebookPost from './post';
 export default class FacebookComment extends Model {
   @AllowNull(false)
   @Column
+  dataId: string
+
+  @AllowNull(false)
+  @Column
   userName: string
   
   @AllowNull(false)

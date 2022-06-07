@@ -11,8 +11,9 @@ export default class FacebookPost extends Model {
   @Column
   message: string
 
-  @HasMany(() => FacebookComment)
-  comments: FacebookComment[];
+  @AllowNull(false)
+  @Column
+  dataId: string
 
   @ForeignKey(() => FacebookApi)
   @AllowNull(false)
@@ -21,4 +22,7 @@ export default class FacebookPost extends Model {
 
   @BelongsTo(() => FacebookApi)
   api: FacebookApi;
+
+  @HasMany(() => FacebookComment)
+  comments: FacebookComment[];
 }

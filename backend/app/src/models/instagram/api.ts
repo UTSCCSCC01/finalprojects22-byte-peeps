@@ -26,4 +26,8 @@ export default class InstagramApi extends Model {
 
   @HasMany(() => InstagramMedia)
   media: InstagramMedia
+
+  @AllowNull(false)
+  @Column
+  nodeId: string
 }

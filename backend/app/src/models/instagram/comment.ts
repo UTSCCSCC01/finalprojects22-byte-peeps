@@ -8,6 +8,10 @@ import InstagramMedia from "./media";
 export default class InstagramComment extends Model {
   @AllowNull(false)
   @Column
+  dataId: string
+  
+  @AllowNull(false)
+  @Column
   userName: string
 
   @AllowNull(false)

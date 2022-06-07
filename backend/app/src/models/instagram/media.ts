@@ -9,6 +9,10 @@ import InstagramComment from './comment';
 export default class InstagramMedia extends Model {
   @AllowNull(false)
   @Column
+  dataId: string
+  
+  @AllowNull(false)
+  @Column
   message: string
 
   @HasMany(() => InstagramComment)
