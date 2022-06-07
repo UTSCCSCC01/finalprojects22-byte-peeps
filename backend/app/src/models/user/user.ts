@@ -15,7 +15,7 @@ export default class User extends Model {
   @HasOne(() => FacebookApi)
   facebookApi: FacebookApi
 
-  @HasOne(() => FacebookApi)
+  @HasOne(() => InstagramApi)
   instagramApi: InstagramApi
 
   @HasOne(() => YouTubeChannel)
