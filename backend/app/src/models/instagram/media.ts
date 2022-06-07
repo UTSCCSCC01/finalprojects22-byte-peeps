@@ -1,4 +1,4 @@
-import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull, Default } from 'sequelize-typescript';
 import InstagramApi from './api';
 import InstagramComment from './comment';
 
@@ -14,6 +14,14 @@ export default class InstagramMedia extends Model {
   @AllowNull(false)
   @Column
   message: string
+
+  @Default(0)
+  @Column
+  likes: number
+
+  @Default(0)
+  @Column
+  numComments: number
 
   @HasMany(() => InstagramComment)
   comments: InstagramComment[];

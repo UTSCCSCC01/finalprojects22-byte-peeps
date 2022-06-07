@@ -1,4 +1,4 @@
-import { AllowNull, BelongsTo, Column, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import YouTubeChannel from "./channel";
 import YoutubeComment from "./comment";
 
@@ -11,11 +11,11 @@ export default class YouTubeVideo extends Model {
   @Column
   resourceId: string
 
-  @AllowNull(false)
+  @Default(0)
   @Column
   views: number
   
-  @AllowNull(false)
+  @Default(0)
   @Column
   likes: number
 

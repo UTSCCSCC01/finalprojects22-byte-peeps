@@ -1,4 +1,4 @@
-import { AllowNull, BelongsTo, Column, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
 import InstagramMedia from "./media";
 
 @Table({
@@ -17,6 +17,10 @@ export default class InstagramComment extends Model {
   @AllowNull(false)
   @Column
   message: string
+
+  @Default(0)
+  @Column
+  likes: number
 
   @ForeignKey(() => InstagramMedia)
   @AllowNull(false)

@@ -1,4 +1,4 @@
-import { Table, Model, Column, BelongsTo, ForeignKey, AllowNull } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, ForeignKey, AllowNull, Default } from 'sequelize-typescript';
 import FacebookPost from './post';
 
 @Table({
@@ -17,6 +17,10 @@ export default class FacebookComment extends Model {
   @AllowNull(false)
   @Column
   message: string
+
+  @Default(0)
+  @Column
+  likes: number
 
   @ForeignKey(() => FacebookPost)
   @AllowNull(false)

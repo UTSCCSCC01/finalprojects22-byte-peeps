@@ -1,4 +1,4 @@
-import { AllowNull, BelongsTo, Column, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
 import YouTubeVideo from "./video";
 
 @Table({
@@ -18,7 +18,7 @@ export default class YoutubeComment extends Model {
   @Column
   message: string
 
-  @AllowNull(false)
+  @Default(0)
   @Column
   likes: number
 
