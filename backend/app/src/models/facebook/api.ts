@@ -24,7 +24,7 @@ export default class FacebookApi extends Model {
   user: User;
 
   @HasMany(() => FacebookPost)
-  posts: FacebookPost
+  posts: FacebookPost[]
 
   @HasOne(() => InstagramApi)
   intagramApi: InstagramApi

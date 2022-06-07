@@ -25,7 +25,7 @@ export default class InstagramApi extends Model {
   user: User
 
   @HasMany(() => InstagramMedia)
-  media: InstagramMedia
+  media: InstagramMedia[]
 
   @AllowNull(false)
   @Column
