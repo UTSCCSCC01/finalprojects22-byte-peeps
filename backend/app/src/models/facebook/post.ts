@@ -11,6 +11,10 @@ export default class FacebookPost extends Model {
   @Column
   message: string
 
+  @AllowNull(false)
+  @Column
+  date: Date
+
   @Default(0)
   @Column
   likes: number

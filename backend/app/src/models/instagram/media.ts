@@ -15,6 +15,10 @@ export default class InstagramMedia extends Model {
   @Column
   message: string
 
+  @AllowNull
+  @Column
+  date: Date
+
   @Default(0)
   @Column
   likes: number

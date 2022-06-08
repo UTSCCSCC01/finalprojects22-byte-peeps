@@ -11,6 +11,10 @@ export default class YouTubeVideo extends Model {
   @Column
   resourceId: string
 
+  @AllowNull
+  @Column
+  date: Date
+
   @Default(0)
   @Column
   views: number
