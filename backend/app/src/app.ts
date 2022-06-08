@@ -3,6 +3,9 @@ dotenv.config();
 
 import express from 'express';
 import todoRoutes from './routes/todos';
+import ytChannelRoutes from './routes/youtube/channel';
+import ytVideoRoutes from './routes/youtube/video';
+import ytCommentRoutes from './routes/youtube/comment';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
 import bodyParser from 'body-parser';
@@ -11,6 +14,10 @@ import session from 'express-session';
 const app = express();
 
 const PORT = 3000;
+
+app.use('/youtube/channels', ytChannelRoutes);
+app.use('/youtube/comments', ytCommentRoutes);
+app.use('/youtube/videos', ytVideoRoutes);
 
 app.use(
   session({
