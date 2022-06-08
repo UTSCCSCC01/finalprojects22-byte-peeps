@@ -13,7 +13,7 @@ export default class InstagramMedia extends Model {
   
   @AllowNull(false)
   @Column
-  message: string
+  caption: string
 
   @AllowNull
   @Column
