@@ -8,7 +8,9 @@
     "skipLibCheck": true,
     "outDir": "build",
     "moduleResolution": "node",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false, // Required to skip initializing each model attribute for db -> https://github.com/RobinBuschmann/sequelize-typescript/issues/1035
+    "emitDecoratorMetadata": true,         // Required to skip specifying data type of each model attribute more than once -> https://github.com/RobinBuschmann/sequelize-typescript/issues/1035
   },
   "exclude": ["node_modules"]
 }
