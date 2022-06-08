@@ -7,8 +7,9 @@ The instagram page must be connected to the Facebook account, so that there's a 
 
 ## Prerequisites
 - The user must have an Instagram professional account that is connected to a Facebook page
-- The user must have admin permissions over the Facebook page
-- App review is required
+- We must either:
+    - Be granted with permissions by a user that has a role in the Facebook page, or
+    - Be granted with permissions through the App Review process
 
 ## Permissions
 - `instagram_basic`
