@@ -39,6 +39,10 @@ export default class FacebookPost extends Model {
   @Column
   angrys: number
 
+  getNumberOfReactions() {
+    return this.likes + this.loves + this.cares + this.hahas + this.wows + this.sads + this.angrys;
+  }
+
   @AllowNull(false)
   @Column
   dataId: string
