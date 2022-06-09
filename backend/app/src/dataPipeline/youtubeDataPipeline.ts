@@ -1,4 +1,5 @@
 import {google} from "googleapis";
+import { CronJob } from "cron";
 
 /**
  * Updates the database as follows:
@@ -29,3 +30,13 @@ function updateVideos() {
 function updateComments() {
 
 }
+
+const job = new CronJob(
+    '0 0 * * *',  // Daily
+    startPipeline,
+    null,
+    false,
+    'America/Toronto',
+);
+
+job.start();
