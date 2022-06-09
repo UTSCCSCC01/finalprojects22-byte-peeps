@@ -26,20 +26,27 @@ Social Media:
 
 - Facebook:
 
+  - Posts (and stats on them)
   - Comments on their page
   - Mentions of their page
 
 - Instagram:
 
-  - Comments on their posts
-  - Mentions of their page
+  - Posts (and stats on them)
+  - Comments on their posts (and stats on them)
+  - Mentions of their page (and stats on them)
   - Hashtags that they may be interested
 
 - Twitter:
 
-  - Replies of their tweets
-  - Tweets that mention them
-  - Hashtags in tweets
+  - Tweets (and stats on them)
+  - Replies of their tweets (and stats on them)
+  - Tweets that mention them (and stats on them)
+  - Hashtags in tweets (and stats on them)
+
+- YouTube:
+  - Posts (and stats on them)
+  - Comments (and stats on them)
 
 Overall score
 
