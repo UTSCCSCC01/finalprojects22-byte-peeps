@@ -2,21 +2,19 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import todoRoutes from './routes/todos';
+import userRoutes from './routes/user'
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import { register as registrationHander } from './controllers/users';
+
 import { Users } from './models/user'
 const app = express();
 const bcrypt = require('bcrypt');
 
 
 const PORT = 3000;
-type userType = {
-  username: string,
-  password: string
-} | null;
+
 
 app.use(
   session({
@@ -33,31 +31,14 @@ declare module 'express-session' {
 }
 app.use(bodyParser.json());
 
-
-app.post('/register/', ((req, res, next) => registrationHander(req, res, next)))
-app.post('/login/', async function (req, res, next) {
-  // extract data from HTTP request
-  if (!('username' in req.body)) return res.status(400).json({ 'message': 'username is missing' });
-  if (!('password' in req.body)) return res.status(400).json({ 'message': 'password is missing' });
-  let username = req.body.username;
-  let password = req.body.password;
-  let user: userType;
-  // retrieve user from the database
-  try {
-    user = await Users.findOne({ where: { username: username } })
-    if (!user) return res.status(401).json({ 'message': "access denied" });
-  } catch (err) {
-    return res.status(500).json({ 'message': err });
-  }
-  bcrypt.compare(password, user.password, function (err: any, valid: any) {
-    if (err) return res.status(500).json({ 'message': err });
-    if (!valid) return res.status(401).json({ 'message': "access denied" });
-    // start a session
-    req.session.username = username;
-    return res.json({ 'message': "user " + username + " has been signed in" });
-  });
+let isAuthenticated = function (req: any, res: any, next: any) {
+  if (!req.session.username) return res.status(401).end("access denied");
+  return next();
+};
+app.get('/private/', isAuthenticated, function (req, res, next) {
+  return res.end("This is private");
 });
-
+app.use("/user", userRoutes);
 app.use(
   (
     err: Error,
