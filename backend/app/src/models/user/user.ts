@@ -1,6 +1,7 @@
 import { Table, Model, Column, AllowNull, HasOne } from 'sequelize-typescript';
 import FacebookApi from '../facebook/api';
 import InstagramApi from '../instagram/api';
+import TwitterUser from '../twitter/user';
 import YouTubeChannel from '../youtube/channel';
 
 @Table({
@@ -24,4 +25,7 @@ export default class User extends Model {
 
   @HasOne(() => YouTubeChannel)
   youtubeChannel: YouTubeChannel
+
+  @HasOne(() => TwitterUser)
+  twitterUser: TwitterUser
 }
