@@ -1,6 +1,6 @@
 import TwitterConversation from "./conversation";
+import TwitterTweet from "./tweet";
 import TwitterUser from "./user";
-import TwitterTweet from "./user";
 
 const twitterModels = [TwitterUser, TwitterTweet, TwitterConversation];
 
