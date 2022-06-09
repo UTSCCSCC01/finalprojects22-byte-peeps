@@ -1,6 +1,6 @@
 import { AllowNull, BelongsTo, Column, Default, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import YouTubeChannel from "./channel";
-import YoutubeComment from "./comment";
+import YouTubeComment from "./comment";
 
 @Table({
   timestamps: false,
@@ -31,6 +31,6 @@ export default class YouTubeVideo extends Model {
   @BelongsTo(() => YouTubeChannel)
   channel: YouTubeChannel;
 
-  @HasMany(() => YoutubeComment)
-  comments: YoutubeComment[];
+  @HasMany(() => YouTubeComment)
+  comments: YouTubeComment[];
 }

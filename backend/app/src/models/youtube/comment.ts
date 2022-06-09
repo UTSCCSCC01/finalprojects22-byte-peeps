@@ -5,7 +5,7 @@ import YouTubeVideo from "./video";
   timestamps: false,
   tableName: 'youtube_comments',
 })
-export default class YoutubeComment extends Model {
+export default class YouTubeComment extends Model {
   @AllowNull(false)
   @Column
   resourceId: string
