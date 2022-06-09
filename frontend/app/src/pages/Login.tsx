@@ -1,6 +1,7 @@
-import { Button, Box, Typography, Stack, TextField, AppBar, Toolbar} from '@mui/material';
+import { Button, Box, Typography, Stack, TextField, AppBar, Toolbar, Backdrop} from '@mui/material';
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import background from './background.png'
 
 export interface ILoginProps {};
 
@@ -8,17 +9,28 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
     const login = useNavigate();
     return (
         <>
+            {/* <div 
+            style={{
+                backgroundImage: background,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                width: "200px",
+                height: "200px"}}>
+            </div> */}
             <Box
                 component="form"
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                minHeight="100vh"
+                // minHeight="50vh"
                 sx={{
                 boxShadow: 1,
                 borderRadius: 2,
-                p: 2,
-                minWidth: 50,
+                p: 5,
+                width: '25%',
+                m: 'auto',
+                mt: '10%'
                 }}>
                 <Stack spacing={2}>
                     <Typography component="h1" align='center'>Sign in </Typography>

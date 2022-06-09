@@ -11,21 +11,24 @@ import Dashboard from './pages/Dashboard';
 import Surveys from './pages/Surveys';
 import ReviewApps from './pages/ReviewApps';
 import SocialMedia from './pages/SocialMedia';
-
+import Header from './Components/Header';
 
 export interface IAppProps {}
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
     return (
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Login />}/>
-            <Route path="dashboard" element={<Dashboard />}/>
-            <Route path="surveys" element={<Surveys />}/>
-            <Route path="reviews" element={<ReviewApps />}/>
-            <Route path="socials" element={<SocialMedia />}/>
-        </Routes>
-    </BrowserRouter>
+    <>
+        <Header />
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />}/>
+                <Route path="dashboard" element={<Dashboard />}/>
+                <Route path="surveys" element={<Surveys />}/>
+                <Route path="reviews" element={<ReviewApps />}/>
+                <Route path="socials" element={<SocialMedia />}/>
+            </Routes>
+        </BrowserRouter>
+    </>
     );
 };
 
