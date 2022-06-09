@@ -5,8 +5,10 @@ import express from 'express';
 import todoRoutes from './routes/todos';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
+import userRoutes from './routes/user'
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import authenticateUser from '../src/middlewares/validateAuth'
 
 const app = express();
 
@@ -19,9 +21,16 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+declare module 'express-session' {
+  export interface SessionData {
+    username: { [key: string]: any };
+  }
+}
 app.use(bodyParser.json());
-
+app.get('/private/', authenticateUser, function (req, res, next) {
+  return res.end("This is private");
+});
+app.use("/user", userRoutes);
 app.use(
   (
     err: Error,
