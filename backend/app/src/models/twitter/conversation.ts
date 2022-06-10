@@ -26,6 +26,15 @@ export default class TwitterConversation extends Model {
   @Column
   likes: number
 
+  @Column
+  sentimentAnalysis: string
+
+  @Column
+  topicClassification: string
+
+  @Column
+  subjectivityAnalysis: string
+
   @ForeignKey(() => TwitterTweet)
   @AllowNull(false)
   @Column

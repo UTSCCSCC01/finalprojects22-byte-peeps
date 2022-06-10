@@ -26,6 +26,15 @@ export default class FacebookComment extends Model {
   @Column
   likes: number
 
+  @Column
+  sentimentAnalysis: string
+
+  @Column
+  topicClassification: string
+
+  @Column
+  subjectivityAnalysis: string
+
   @ForeignKey(() => FacebookPost)
   @AllowNull(false)
   @Column

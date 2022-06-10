@@ -26,6 +26,15 @@ export default class YoutubeComment extends Model {
   @Column
   likes: number
 
+  @Column
+  sentimentAnalysis: string
+
+  @Column
+  topicClassification: string
+
+  @Column
+  subjectivityAnalysis: string
+
   @ForeignKey(() => YouTubeVideo)
   @AllowNull(false)
   @Column

@@ -26,6 +26,15 @@ export default class InstagramComment extends Model {
   @Column
   likes: number
 
+  @Column
+  sentimentAnalysis: string
+
+  @Column
+  topicClassification: string
+
+  @Column
+  subjectivityAnalysis: string
+
   @ForeignKey(() => InstagramMedia)
   @AllowNull(false)
   @Column
