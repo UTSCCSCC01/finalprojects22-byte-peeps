@@ -1,26 +1,26 @@
 import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
-import InstagramMedia from "./media";
+import TwitterTweet from "./tweet";
 
 @Table({
   timestamps: false,
-  tableName: 'instagram_comments',
+  tableName: 'twitter_conversations',
 })
-export default class InstagramComment extends Model {
+export default class TwitterConversation extends Model {
   @AllowNull(false)
   @Column
-  dataId: string
-  
-  @AllowNull(false)
-  @Column
-  userName: string
-
-  @AllowNull(false)
-  @Column
-  message: string
+  text: string
 
   @AllowNull
   @Column
   date: Date
+
+  @Default(0)
+  @Column
+  retweets: number
+
+  @Default(0)
+  @Column
+  replies: number
 
   @Default(0)
   @Column
@@ -35,11 +35,11 @@ export default class InstagramComment extends Model {
   @Column
   subjectivityAnalysis: string
 
-  @ForeignKey(() => InstagramMedia)
+  @ForeignKey(() => TwitterTweet)
   @AllowNull(false)
   @Column
-  mediaId: number
+  tweetId: number
 
-  @BelongsTo(() => InstagramMedia)
-  media: InstagramMedia;
+  @BelongsTo(() => TwitterTweet)
+  tweet: TwitterTweet[];
 }
