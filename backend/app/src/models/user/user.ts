@@ -1,6 +1,7 @@
 import { Table, Model, Column, AllowNull, HasOne } from 'sequelize-typescript';
 import FacebookApi from '../facebook/api';
 import InstagramApi from '../instagram/api';
+import RedditSubreddit from '../reddit/subreddit';
 import TwitterUser from '../twitter/user';
 import YouTubeChannel from '../youtube/channel';
 
@@ -28,4 +29,7 @@ export default class User extends Model {
 
   @HasOne(() => TwitterUser)
   twitterUser: TwitterUser
+
+  @HasOne(() => RedditSubreddit)
+  subreddit: RedditSubreddit
 }
