@@ -2,6 +2,7 @@ import { AllowNull, BelongsTo, Column, ForeignKey, HasMany, Model, Table } from 
 import FacebookApi from "../facebook/api";
 import User from "../user/user";
 import InstagramMedia from "./media";
+import InstagramTag from "./tag";
 
 @Table({
   timestamps: false,
@@ -26,6 +27,9 @@ export default class InstagramApi extends Model {
 
   @HasMany(() => InstagramMedia)
   media: InstagramMedia[]
+
+  @HasMany(() => InstagramTag)
+  tags: InstagramTag[]
 
   @AllowNull(false)
   @Column
