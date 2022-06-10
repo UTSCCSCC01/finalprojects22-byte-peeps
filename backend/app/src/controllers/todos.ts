@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
-
-import { Todos } from '../models/todos';
+import Todos from '../models/todos';
 
 // export const createToDo: RequestHandler = async (req, res, next) => {
 //   var todos = await Todos.create({ ...req.body });
