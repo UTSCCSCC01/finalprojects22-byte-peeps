@@ -8,10 +8,10 @@ const ReviewApps: React.FunctionComponent<IRAProps> = (props) => {
   return (
     <div>
       <h1>Review Apps</h1>
-      <button onClick={() => navigate('/dashboard')}>Dashboard</button>
+      {/* <button onClick={() => navigate('/dashboard')}>Dashboard</button>
       <button onClick={() => navigate('/surveys')}>Surveys</button>
       <button onClick={() => navigate('/reviews')}>Review Apps</button>
-      <button onClick={() => navigate('/socials')}>Social Media</button>
+      <button onClick={() => navigate('/socials')}>Social Media</button> */}
     </div>
   )
 }

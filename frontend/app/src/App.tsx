@@ -18,8 +18,8 @@ export interface IAppProps {}
 const App: React.FunctionComponent<IAppProps> = (props) => {
     return (
     <>
-        <Header />
         <BrowserRouter>
+            <Header />
             <Routes>
                 <Route path="/" element={<Login />}/>
                 <Route path="dashboard" element={<Dashboard />}/>

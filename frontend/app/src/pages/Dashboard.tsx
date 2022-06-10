@@ -18,10 +18,10 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   return (
     <>
       <h1>Dashboard</h1>
-      <button onClick={() => navigate('/dashboard')}>Dashboard</button>
+      {/* <button onClick={() => navigate('/dashboard')}>Dashboard</button>
       <button onClick={() => navigate('/surveys')}>Surveys</button>
       <button onClick={() => navigate('/reviews')}>Review Apps</button>
-      <button onClick={() => navigate('/socials')}>Social Media</button>
+      <button onClick={() => navigate('/socials')}>Social Media</button> */}
       <Box sx={{ flexGrow: 1 , p:2}}>
         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           {Array.from(Array(6)).map((_, index) => (
