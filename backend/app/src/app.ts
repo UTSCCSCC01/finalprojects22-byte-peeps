@@ -11,9 +11,10 @@ import session from 'express-session';
 import authenticateUser from '../src/middlewares/validateAuth'
 
 const app = express();
+const cors = require('cors');
 
 const PORT = 3000;
-
+app.use(cors())
 app.use(
   session({
     secret: 'please change this secret',
