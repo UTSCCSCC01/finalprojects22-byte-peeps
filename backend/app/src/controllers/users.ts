@@ -61,6 +61,7 @@ export const logout: RequestHandler = function (req, res, next) {
     // ! session is destoryed
     req.session.destroy(function (err) {
         // cannot access session here
+        console.error(err)
     });
     return res.end("user has been signed out");
 }
