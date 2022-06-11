@@ -16,6 +16,7 @@ import { setTokenSourceMapRange } from 'typescript';
 import HTTP from '../utils/http';
 import { Directions } from '@mui/icons-material';
 const LOGIN_URL = 'user/login';
+const REGISTER_URL = 'user/register';
 
 export interface ILoginProps {}
 
@@ -23,36 +24,30 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
   const login = useNavigate();
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
-  const [errMsg, setErrMsg] = useState('');
-  const handleLogin = async () => {
+  const [msg, setMsg] = useState('');
+  const [success, toggleSuccess] = useState(true);
+
+  const handleRegister = async () => {
     try {
       const response = await HTTP.post(
-        LOGIN_URL,
+        REGISTER_URL,
         JSON.stringify({ username: user, password: pwd }),
         {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-      login('/dashboard');
+      toggleSuccess(true);
+      setMsg('registration successful!');
+      console.log(success);
     } catch (err: any) {
-      if (err.response?.status === 401) {
-        setErrMsg('Username or password incorrect!');
+      if (err.response?.status === 409) {
+        toggleSuccess(false);
+        setMsg('username already exists');
       }
     }
   };
-
   return (
     <>
-      {/* <div 
-            style={{
-                backgroundImage: background,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                width: "200px",
-                height: "200px"}}>
-            </div> */}
-
       <Box
         component="form"
         display="flex"
@@ -69,10 +64,15 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
           mt: '10%',
         }}
       >
-        <p style={{ color: 'red' }}>{errMsg}</p>
+        {success ? (
+          <p style={{ color: 'green' }}>{msg}</p>
+        ) : (
+          <p style={{ color: 'red' }}>{msg}</p>
+        )}
+
         <Stack spacing={2}>
           <Typography component="h1" align="center">
-            Sign in{' '}
+            Sign up{' '}
           </Typography>
           <TextField
             id="outlined-user-input"
@@ -95,10 +95,10 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
           <Button
             fullWidth
             variant="contained"
-            onClick={handleLogin}
+            onClick={handleRegister}
             // onClick={() => login('/dashboard')}
           >
-            Login
+            Register
           </Button>
         </Stack>
       </Box>
@@ -110,8 +110,8 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
           flexDirection: 'column',
         }}
       >
-        <p>Do not have an account?</p>
-        <a href="/register">Register here</a>
+        <p>Ready to login?</p>
+        <a href="/">Back to login</a>
       </div>
     </>
   );
