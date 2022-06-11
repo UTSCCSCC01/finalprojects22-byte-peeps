@@ -26,16 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # For .env files
-      # - name: Create frontend env vars
-      #   working-directory: frontend/app
-      #   run: |
-      #     touch .env
-      #     echo REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} >> .env
-      #     echo REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.REACT_APP_GOOGLE_MAPS_API_KEY }} >> .env
-      #     echo REACT_APP_COUNTRY_FEATURES_URL=${{ secrets.REACT_APP_COUNTRY_FEATURES_URL }} >> .env
-      #     echo REACT_APP_CONTINENT_FEATURES_URL=${{ secrets.REACT_APP_CONTINENT_FEATURES_URL }} >> .env
-      #     echo REACT_APP_SENTRY_URL=${{ secrets.REACT_APP_SENTRY_URL }} >> .env
+      - name: Create frontend env vars
+        working-directory: frontend/app
+        run: |
+          touch .env
+          echo REACT_APP_BACKEND_ENDPOINT=${{ secrets.REACT_APP_BACKEND_ENDPOINT }} >> .env
 
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
