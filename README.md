@@ -168,7 +168,31 @@ Due to github actions being displayed, we will be running the github actions loc
 
 Currently, the website is deployed at: https://c01.mohamedtayeh.com/
 
-Deployment instructions coming soon...
+- Installation:
+
+  - **Pre-requisite:** must have docker installed and instructions are [here](https://docs.docker.com/engine/install/)
+  - Act command line tool installation instructions [here](https://github.com/nektos/act)
+
+- Files:
+
+  - The following files are needed and should be placed at the root directy of the code:
+
+    1. `ssh-key.txt`
+    2. `my.secrets`
+
+- Run the following commands at the root directory:
+
+  1. Backend Deployment:
+
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
+  ```
+
+  2. Frontend Deployment:
+
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-frontend.yml
+  ```
 
 ## Authors
 
