@@ -1,4 +1,4 @@
-import { Table, Model, Column, BelongsTo, ForeignKey, AllowNull, Default } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull, Default, DataType } from 'sequelize-typescript';
 import InstagramApi from './api';
 
 @Table({
@@ -15,7 +15,7 @@ export default class InstagramTag extends Model {
   username: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   caption: string;
 
   @AllowNull
