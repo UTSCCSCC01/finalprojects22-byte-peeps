@@ -1,59 +1,26 @@
 # Facebook API
 
 ## Overview
+Facebook provides an API called Facebook Graph API which facilitates the retrieval of data related to a Facebook page.
 
-I have found two ways to do this, both ways require a Facebook App created on our end.
-
-1. The first requires the user to generate a "short-lived user access token" and provide it to us. We will use it to create a "long-lived user access token", which we will use to create a "long-lived page access token". Once that is done, we only need to store the last token and it will never expire
-
-2. The second is the normal way to do it. We create a login feature with our Facebook App. Through this, we will ask for permissions to manage the user's pages. This will give us a user access token that is accessible no longer than 90 days
-
-## Graph API
-
-Once we have a token, we can use the Graph API to retrieve data
-
-### Retrieving posts with comments
-
-Perform a get request:
-
-```
-https://graph.facebook.com/v14.0/me?access_token=<ACCESS_TOKEN>&fields=posts{comments,from}
-```
-
-The end result will include:
-
-```
-{
-  "posts": {
-    "data": [
-      {
-        "comments": {
-          "data": [
-            {
-              "created_time": "2022-06-02T19:26:22+0000",
-              "from": {
-                "name": "Xperience",
-                "id": "112533588141071"
-              },
-              "message": "Test comment",
-              "id": "112544528139977_712696229940206"
-            }
-          ]
-        },
-        "id": "112533588141071_112544528139977"
-      }
-    ]
-  },
-  "id": "112533588141071"
-}
-```
+To be able to use Facebook Graph API, we must first register as a Facebook Developer and create a Facebook App. This will allow us to authenticate and solicit permissions of our users' Facebook pages. 
 
 ## Prerequisites
+- We must register an account as Facebook Developer
+- We must create a Facebook App
+- We must either:
+  - Ask the user to provide us with a "short-lived user access token", so that we can create a "long-lived user access token" and consequently be able to generate a "long-lived page access token" that will work as our permanent access token, or
+  - Create a login feature with our Facebook App. Through this, we will ask for permissions to manage the user's pages. This will give us a user access token that is accessible no longer than 90 days
 
-- Facebook App
+## Permissions
+- Page Public Content Access
+
+### Endpoints
+1. Access the `/me` api to retrieve the Facebook account ID
+2. Access the `/med/posts` to retrieve all posts
+3. Access the `/<post_id>/comments` to retrieve all comments of a post
 
 ## References
-
 - [Creating a Facebook app](https://developers.facebook.com/apps)
 - [Retrieving tokens manually](https://developers.facebook.com/docs/marketing-apis/overview/authentication/)
 - [Retrieving long-lives-access tokens](https://developers.facebook.com/docs/facebook-login/guides/access-tokens/get-long-lived)
