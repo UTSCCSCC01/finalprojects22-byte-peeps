@@ -17,6 +17,10 @@ import instagramTagRoutes from './routes/instagram/tag';
 import facebookPostRoutes from './routes/facebook/post';
 import facebookCommentRoutes from './routes/facebook/comment';
 
+/* Cron Job imports */
+import { instagramScheduledJob } from './dataPipelines/instagram';
+import { facebookScheduledJob } from './dataPipelines/facebook';
+
 const app = express();
 const cors = require('cors');
 const PORT = 3000;
@@ -74,3 +78,7 @@ connection
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+/* Cron Jobs */
+instagramScheduledJob.start();
+facebookScheduledJob.start();
