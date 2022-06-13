@@ -2,13 +2,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import todoRoutes from './routes/todos';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
-import userRoutes from './routes/user'
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import authenticateUser from '../src/middlewares/validateAuth'
+
+/* Routing imports */
+import todoRoutes from './routes/todos';
+import userRoutes from './routes/user'
+import instagramMediaRoutes from './routes/instagram/media';
+import instagramCommentRoutes from './routes/instagram/comment';
+import instagramTagRoutes from './routes/instagram/tag';
+import facebookPostRoutes from './routes/facebook/post';
+import facebookCommentRoutes from './routes/facebook/comment';
 
 const app = express();
 const cors = require('cors');
@@ -43,6 +50,13 @@ app.use(
 );
 
 app.use('/todos', todoRoutes);
+
+/* Social Media Routing */
+app.use('/instagram/media', instagramMediaRoutes);
+app.use('/instagram/comments', instagramCommentRoutes);
+app.use('/instagram/tags', instagramTagRoutes);
+app.use('/facebook/posts', facebookPostRoutes);
+app.use('/facebook/comments', facebookCommentRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
