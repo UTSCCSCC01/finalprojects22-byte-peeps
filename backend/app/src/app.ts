@@ -2,13 +2,21 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import todoRoutes from './routes/todos';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
-import userRoutes from './routes/user'
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import authenticateUser from '../src/middlewares/validateAuth'
+
+/* Routing imports */
+import todoRoutes from './routes/todos';
+import userRoutes from './routes/user'
+import instagramRoutes from './routes/instagram/routes';
+import facebookRoutes from './routes/facebook/routes';
+
+/* Cron Job imports */
+import { instagramScheduledJob } from './dataPipelines/instagram';
+import { facebookScheduledJob } from './dataPipelines/facebook';
 
 const app = express();
 const cors = require('cors');
@@ -44,6 +52,10 @@ app.use(
 
 app.use('/todos', todoRoutes);
 
+/* Social Media Routing */
+app.use('/instagram', instagramRoutes);
+app.use('/facebook', facebookRoutes);
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
@@ -60,3 +72,7 @@ connection
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+/* Cron Jobs */
+instagramScheduledJob.start();
+facebookScheduledJob.start();
