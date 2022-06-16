@@ -35,12 +35,12 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   const subjective = await FacebookComment.count({
     where: { subjectivityAnalysis: 'subjective' },
   });
-  const notSubjective = await FacebookComment.count({
-    where: { subjectivityAnalysis: 'not-subjective' },
+  const objective = await FacebookComment.count({
+    where: { subjectivityAnalysis: 'objective' },
   });
   res.send({
     'subjective': subjective,
-    'not-subjective': notSubjective
+    'objective': objective
   });
 };
 
