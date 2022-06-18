@@ -5,7 +5,7 @@ import express from 'express';
 import todoRoutes from './routes/todos';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
-import userRoutes from './routes/user'
+import userRoutes from './routes/user';
 import setupRoutes from './routes/setup';
 import bodyParser from 'body-parser';
 import session from 'express-session';
@@ -14,7 +14,7 @@ import authenticateUser from '../src/middlewares/validateAuth'
 const app = express();
 const cors = require('cors');
 const PORT = 3000;
-app.use(cors())
+app.use(cors({ origin: "http://localhost:3001", credentials: true }));
 app.use(
   session({
     secret: 'please change this secret',
