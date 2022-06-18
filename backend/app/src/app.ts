@@ -6,6 +6,7 @@ import todoRoutes from './routes/todos';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
 import userRoutes from './routes/user'
+import setupRoutes from './routes/setup';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import authenticateUser from '../src/middlewares/validateAuth'
@@ -31,6 +32,7 @@ app.get('/private/', authenticateUser, function (req, res, next) {
   return res.end("This is private");
 });
 app.use("/user", userRoutes);
+app.use("/setup", setupRoutes);
 app.use(
   (
     err: Error,
