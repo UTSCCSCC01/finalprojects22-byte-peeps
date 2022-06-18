@@ -5,7 +5,7 @@ import { fetchSettings, saveCurrentPage } from './facebookLoginWrapperAPI';
 export interface FacebookLoginWrapperState {
   status: 'loading' | 'loggedIn' | 'loggedOut',
   saveButtonStatus: 'loading' | 'idle',
-  displaySettingsSaved: boolean,
+  saved: boolean,
   pages: { name: string, value: string }[]
   currentPage: string | null,
 }
@@ -13,7 +13,7 @@ export interface FacebookLoginWrapperState {
 const initialState: FacebookLoginWrapperState = {
   status: "loading",
   saveButtonStatus: 'idle',
-  displaySettingsSaved: false,
+  saved: false,
   pages: [],
   currentPage: null
 };
@@ -42,8 +42,8 @@ export const facebookLoginWrapperSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
-    setDisplaySettingsSaved: (state, action) => {
-      state.displaySettingsSaved = action.payload;
+    setSaved: (state, action) => {
+      state.saved = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -69,17 +69,17 @@ export const facebookLoginWrapperSlice = createSlice({
         if (action.payload) {
           state.status = "loggedIn";
           state.saveButtonStatus = "idle";
-          state.displaySettingsSaved = true;
+          state.saved = true;
         }
       });
   },
 });
 
-export const { setLoggedIn, setCurrentPage, setDisplaySettingsSaved } = facebookLoginWrapperSlice.actions;
+export const { setLoggedIn, setCurrentPage, setSaved } = facebookLoginWrapperSlice.actions;
 
 export const selectStatus = (state: RootState) => state.facebookLoginWrapper.status;
 export const selectSaveButtonStatus = (state: RootState) => state.facebookLoginWrapper.saveButtonStatus;
-export const selectDisplaySettingsSaved = (state: RootState) => state.facebookLoginWrapper.displaySettingsSaved;
+export const selectSaved = (state: RootState) => state.facebookLoginWrapper.saved;
 export const selectPages = (state: RootState) => state.facebookLoginWrapper.pages;
 export const selectCurrentPage = (state: RootState) => state.facebookLoginWrapper.currentPage;
 

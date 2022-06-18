@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
+import { Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useEffect } from 'react';
 import FacebookLogin from 'react-facebook-login';
@@ -7,14 +7,15 @@ import {
   getSettingsAsync,
   saveCurrentPageAsync,
   selectCurrentPage,
-  selectDisplaySettingsSaved,
   selectPages,
   selectSaveButtonStatus,
+  selectSaved,
   selectStatus,
   setCurrentPage,
-  setDisplaySettingsSaved,
+  setSaved,
 } from '../../Redux/Slices/facebookLoginWrapper/facebookLoginWrapperSlice';
 import { green } from '@mui/material/colors';
+import { Notification } from '../Notification/Notification';
 
 const responseFacebook = (response: any) => {
   // TODO: Send access token for backend to do its work
@@ -22,10 +23,9 @@ const responseFacebook = (response: any) => {
 
 export function FacebookLoginWrapper() {
   const facebook_app_id = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
-
+  let saved = useAppSelector(selectSaved);
   let status = useAppSelector(selectStatus);
   let saveButtonStatus = useAppSelector(selectSaveButtonStatus);
-  let displaySettingsSaved = useAppSelector(selectDisplaySettingsSaved);
   let pages = useAppSelector(selectPages);
   let currentPage = useAppSelector(selectCurrentPage);
   const dispatch = useAppDispatch();
@@ -62,6 +62,7 @@ export function FacebookLoginWrapper() {
           appId={facebook_app_id}
           fields="accounts"
           scope="pages_show_list,pages_read_engagement,pages_read_user_content"
+          returnScopes={true}
           callback={responseFacebook}
           size="small"
           icon="fa-facebook"
@@ -109,17 +110,12 @@ export function FacebookLoginWrapper() {
           )}
           </Button>
       </Grid>
-
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={displaySettingsSaved}
-        autoHideDuration={2000}
-        onClose={() => dispatch(setDisplaySettingsSaved(false))}
-        key={"snackbarFacebookLoginWrapper"}>
-          <Alert severity="success" sx={{ width: '100%' }}>
-            Page setting has been saved successfully!
-          </Alert>
-        </Snackbar>
+      <Notification
+        message="Page settings has been saved successfully!"
+        type='success'
+        show={saved}
+        dispatchHide={() => dispatch(setSaved(false))}
+      />
     </Grid>
   );
 }
