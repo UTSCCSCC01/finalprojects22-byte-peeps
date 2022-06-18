@@ -7,23 +7,24 @@ import {
   getSettingsAsync,
   saveCurrentPageAsync,
   selectCurrentPage,
+  selectNotificationMessage,
+  selectNotificationShown,
+  selectNotificationType,
   selectPages,
   selectSaveButtonStatus,
-  selectSaved,
   selectStatus,
   setCurrentPage,
-  setSaved,
+  setNotificationMessage,
+  setNotificationShown,
+  setNotificationType
 } from '../../Redux/Slices/facebookLoginWrapper/facebookLoginWrapperSlice';
 import { green } from '@mui/material/colors';
 import { Notification } from '../Notification/Notification';
 
-const responseFacebook = (response: any) => {
-  // TODO: Send access token for backend to do its work
-};
-
 export function FacebookLoginWrapper() {
-  const facebook_app_id = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
-  let saved = useAppSelector(selectSaved);
+  const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
+  const facebookScopes = "email,pages_show_list,pages_read_engagement,pages_read_user_content,public_profile"
+
   let status = useAppSelector(selectStatus);
   let saveButtonStatus = useAppSelector(selectSaveButtonStatus);
   let pages = useAppSelector(selectPages);
@@ -33,6 +34,14 @@ export function FacebookLoginWrapper() {
   useEffect(() => {
     dispatch(getSettingsAsync());
   }, [dispatch]);
+
+  const responseFacebook = (response: any) => {
+    if (response.grantedScopes !== facebookScopes) {
+      dispatch(setNotificationShown(true));
+      dispatch(setNotificationType('error'));
+      dispatch(setNotificationMessage("Invalid permissions provided!"));
+    }
+  };
 
   let buttonStyle: React.CSSProperties = { width: '100%', height: '100%' };
   let buttonText = undefined;
@@ -47,11 +56,9 @@ export function FacebookLoginWrapper() {
     buttonStyle = {
       ...buttonStyle,
       backgroundColor: 'green',
-      borderColor: 'green',
-      cursor: 'not-allowed',
+      borderColor: 'green'
     };
     buttonText = 'Logged in with Facebook';
-    buttonDisabled = true;
     selectDisabled = false;
   }
 
@@ -59,9 +66,9 @@ export function FacebookLoginWrapper() {
     <Grid container spacing={2}>
       <Grid item xs={4}>
         <FacebookLogin
-          appId={facebook_app_id}
+          appId={facebookAppId}
           fields="accounts"
-          scope="pages_show_list,pages_read_engagement,pages_read_user_content"
+          scope={facebookScopes}
           returnScopes={true}
           callback={responseFacebook}
           size="small"
@@ -111,10 +118,10 @@ export function FacebookLoginWrapper() {
           </Button>
       </Grid>
       <Notification
-        message="Page settings has been saved successfully!"
-        type='success'
-        show={saved}
-        dispatchHide={() => dispatch(setSaved(false))}
+        message={useAppSelector(selectNotificationMessage)}
+        type={useAppSelector(selectNotificationType)}
+        show={useAppSelector(selectNotificationShown)}
+        dispatchHide={() => dispatch(setNotificationShown(false))}
       />
     </Grid>
   );

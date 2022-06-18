@@ -5,17 +5,21 @@ import { fetchSettings, saveCurrentPage } from './facebookLoginWrapperAPI';
 export interface FacebookLoginWrapperState {
   status: 'loading' | 'loggedIn' | 'loggedOut',
   saveButtonStatus: 'loading' | 'idle',
-  saved: boolean,
   pages: { name: string, value: string }[]
   currentPage: string | null,
+  notificationShown: boolean,
+  notificationMessage: string,
+  notificationType: 'success' | 'error' | 'warning' | 'info'
 }
 
 const initialState: FacebookLoginWrapperState = {
   status: "loading",
   saveButtonStatus: 'idle',
-  saved: false,
   pages: [],
-  currentPage: null
+  currentPage: null,
+  notificationShown: false,
+  notificationMessage: '',
+  notificationType: 'success'
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -42,8 +46,14 @@ export const facebookLoginWrapperSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
-    setSaved: (state, action) => {
-      state.saved = action.payload;
+    setNotificationShown: (state, action) => {
+      state.notificationShown = action.payload;
+    },
+    setNotificationMessage: (state, action) => {
+      state.notificationMessage = action.payload;
+    },
+    setNotificationType: (state, action) => {
+      state.notificationType = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -69,17 +79,21 @@ export const facebookLoginWrapperSlice = createSlice({
         if (action.payload) {
           state.status = "loggedIn";
           state.saveButtonStatus = "idle";
-          state.saved = true;
+          state.notificationShown = true;
+          state.notificationMessage = "Page settings has been saved successfully!";
+          state.notificationType = "success";
         }
       });
   },
 });
 
-export const { setLoggedIn, setCurrentPage, setSaved } = facebookLoginWrapperSlice.actions;
+export const { setLoggedIn, setCurrentPage, setNotificationMessage, setNotificationShown, setNotificationType } = facebookLoginWrapperSlice.actions;
 
 export const selectStatus = (state: RootState) => state.facebookLoginWrapper.status;
 export const selectSaveButtonStatus = (state: RootState) => state.facebookLoginWrapper.saveButtonStatus;
-export const selectSaved = (state: RootState) => state.facebookLoginWrapper.saved;
+export const selectNotificationShown = (state: RootState) => state.facebookLoginWrapper.notificationShown;
+export const selectNotificationMessage = (state: RootState) => state.facebookLoginWrapper.notificationMessage;
+export const selectNotificationType = (state: RootState) => state.facebookLoginWrapper.notificationType;
 export const selectPages = (state: RootState) => state.facebookLoginWrapper.pages;
 export const selectCurrentPage = (state: RootState) => state.facebookLoginWrapper.currentPage;
 

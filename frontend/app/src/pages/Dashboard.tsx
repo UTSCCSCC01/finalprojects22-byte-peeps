@@ -2,6 +2,7 @@ import React from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
+import { FacebookLoginWrapper } from '../Components/FacebookLoginWrapper/FacebookLoginWrapper';
 
 export interface IDashProps {}
 
@@ -44,6 +45,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           ))}
         </Grid>
       </Box>
+      <FacebookLoginWrapper />
     </>
   );
 };
