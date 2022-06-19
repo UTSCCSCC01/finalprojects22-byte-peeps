@@ -91,6 +91,9 @@ npm i --include=dev
 2. Create a `.env` file in the `backend/app` directory. Paste the following content
 
 ```
+BACKEND_PORT=3000
+FRONTEND_PORT=3001
+
 VIRTUAL_HOST=localhost
 PORT=5432
 POSTGRES_DB=c01

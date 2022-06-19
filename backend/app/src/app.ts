@@ -13,8 +13,8 @@ import authenticateUser from '../src/middlewares/validateAuth'
 
 const app = express();
 const cors = require('cors');
-const PORT = 3000;
-app.use(cors({ origin: "http://localhost:3001", credentials: true }));
+const PORT = process.env.BACKEND_PORT;
+app.use(cors({ origin: `http://localhost:${process.env.FRONTEND_PORT}`, credentials: true }));
 app.use(
   session({
     secret: 'please change this secret',
