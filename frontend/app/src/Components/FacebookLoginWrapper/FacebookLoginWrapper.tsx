@@ -18,7 +18,6 @@ import {
   setNotificationShown,
   setNotificationType
 } from '../../Redux/Slices/facebookLoginWrapper/facebookLoginWrapperSlice';
-import { green } from '@mui/material/colors';
 import { Notification } from '../Notification/Notification';
 
 export function FacebookLoginWrapper() {
