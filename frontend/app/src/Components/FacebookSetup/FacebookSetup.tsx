@@ -17,10 +17,10 @@ import {
   setNotificationMessage,
   setNotificationShown,
   setNotificationType
-} from '../../Redux/Slices/facebookLoginWrapper/facebookLoginWrapperSlice';
+} from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
 import { Notification } from '../Notification/Notification';
 
-export function FacebookLoginWrapper() {
+export function FacebookSetup() {
   const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
   const facebookScopes = "email,pages_show_list,pages_read_engagement,pages_read_user_content,public_profile"
 

@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
-import { fetchCurrentPage, fetchPages, saveCurrentPage } from './facebookLoginWrapperAPI';
+import { fetchCurrentPage, fetchPages, saveCurrentPage } from './facebookSetupAPI';
 
-export interface FacebookLoginWrapperState {
+export interface FacebookSetupState {
   stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive',
   pages: { id: string, name: string, access_token: string }[]
   currentPage: string | null,
@@ -12,7 +12,7 @@ export interface FacebookLoginWrapperState {
   notificationType: 'success' | 'error' | 'warning' | 'info'
 }
 
-const initialState: FacebookLoginWrapperState = {
+const initialState: FacebookSetupState = {
   stage: "loading",
   pages: [],
   currentPage: null,
@@ -22,28 +22,28 @@ const initialState: FacebookLoginWrapperState = {
 };
 
 export const getCurrentPageAsync = createAsyncThunk(
-  'facebookLoginWrapper/fetchPages',
+  'facebookSetup/fetchPages',
   async () => {
     return await fetchCurrentPage();
   }
 );
 
 export const saveCurrentPageAsync = createAsyncThunk(
-  'facebookLoginWrapper/saveCurrentPage',
+  'facebookSetup/saveCurrentPage',
   async (page: { name: string, token: string }) => {
     return await saveCurrentPage(page.name, page.token);
   }
 );
 
 export const retrievePagesAsync = createAsyncThunk(
-  'facebookLoginWrapper/getPages',
+  'facebookSetup/getPages',
   async (token: string) => {
     return await fetchPages(token);
   }
 );
 
-export const facebookLoginWrapperSlice = createSlice({
-  name: 'facebookLoginWrapper',
+export const facebookSetupSlice = createSlice({
+  name: 'facebookSetup',
   initialState,
   reducers: {
     setCurrentPage: (state, action) => {
@@ -96,13 +96,13 @@ export const facebookLoginWrapperSlice = createSlice({
   },
 });
 
-export const { setCurrentPage, setNotificationMessage, setNotificationShown, setNotificationType } = facebookLoginWrapperSlice.actions;
+export const { setCurrentPage, setNotificationMessage, setNotificationShown, setNotificationType } = facebookSetupSlice.actions;
 
-export const selectStage = (state: RootState) => state.facebookLoginWrapper.stage;
-export const selectNotificationShown = (state: RootState) => state.facebookLoginWrapper.notificationShown;
-export const selectNotificationMessage = (state: RootState) => state.facebookLoginWrapper.notificationMessage;
-export const selectNotificationType = (state: RootState) => state.facebookLoginWrapper.notificationType;
-export const selectPages = (state: RootState) => state.facebookLoginWrapper.pages;
-export const selectCurrentPage = (state: RootState) => state.facebookLoginWrapper.currentPage;
+export const selectStage = (state: RootState) => state.facebookSetup.stage;
+export const selectNotificationShown = (state: RootState) => state.facebookSetup.notificationShown;
+export const selectNotificationMessage = (state: RootState) => state.facebookSetup.notificationMessage;
+export const selectNotificationType = (state: RootState) => state.facebookSetup.notificationType;
+export const selectPages = (state: RootState) => state.facebookSetup.pages;
+export const selectCurrentPage = (state: RootState) => state.facebookSetup.currentPage;
 
-export default facebookLoginWrapperSlice.reducer;
+export default facebookSetupSlice.reducer;

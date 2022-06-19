@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from './Slices/counter/counterSlice';
-import facebookLoginWrapperReducer from './Slices/facebookLoginWrapper/facebookLoginWrapperSlice';
+import facebookSetupReducer from './Slices/facebookSetup/facebookSetupSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    facebookLoginWrapper: facebookLoginWrapperReducer
+    facebookSetup: facebookSetupReducer
   },
 });
 
