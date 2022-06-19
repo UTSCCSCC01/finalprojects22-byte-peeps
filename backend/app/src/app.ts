@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import todoRoutes from './routes/todos';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
 import userRoutes from './routes/user';
@@ -43,8 +42,6 @@ app.use(
     res.status(500).json({ message: unknownError });
   }
 );
-
-app.use('/todos', todoRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
