@@ -1,17 +1,16 @@
-export function fetchSettings() {
-  // TODO: Retrieve pages or null if no authentication
-  return new Promise<{ currentPage: string, pages: { name: string, value: string }[] } | null>((resolve) =>
-    // setTimeout(() => resolve(null), 2000)
-    setTimeout(() => resolve({
-      currentPage: "456",
-      pages: [{name: "Xperience", value: "123"}, {name: "Test", value: "456"}]
-    }), 2000)
-  );
+import HTTP from "../../../utils/http";
+
+export async function fetchCurrentPage(): Promise<{id: string, name: string} | boolean> {
+  const response = await HTTP.get('/setup/facebook/page');
+  return response.data;
 }
 
-export function saveCurrentPage(page: string) {
-  // TODO: Save current page
-  return new Promise<boolean>((resolve) => 
-    setTimeout(() => resolve(true), 2000)
-  );
+export async function saveCurrentPage(name: string, pageToken: string): Promise<string> {
+  const response = await HTTP.post('/setup/facebook/connect', { name: name, token: pageToken });
+  return response.data;
+}
+
+export async function fetchPages(token: string): Promise<{ id: string, name: string, access_token: string }[]> {
+  const response = await HTTP.get('/setup/facebook/pages', { params: { token: token }});
+  return response.data;
 }
