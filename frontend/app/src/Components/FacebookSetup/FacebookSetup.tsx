@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { Alert, Backdrop, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { useEffect } from 'react';
 import FacebookLogin from 'react-facebook-login';
@@ -51,13 +51,18 @@ export function FacebookSetup() {
    }
    if (stage === 'active') {
     buttonText += ' with ' + currentPage;
-   } else if (stage === 'inactive') {
-    buttonText = 'Token expired'
-    buttonStyle = { ...buttonStyle, backgroundColor: 'red', borderColor: 'red' };
    }
 
   return (
     <Grid container spacing={2}>
+      {stage === "inactive" &&
+        <Grid item xs={12}>
+          <Alert variant="filled" severity="warning">
+            Your Facebook token has expired, please log in again.
+          </Alert>
+        </Grid>
+      }
+
       <Grid item xs={12}>
         <FacebookLogin
           appId={facebookAppId}
@@ -96,7 +101,7 @@ export function FacebookSetup() {
 
       { stage === 'selectPage' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(saveCurrentPageAsync({ name: pages.filter(p => p.access_token === currentPage)[0].name, token: currentPage ?? "" }))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(saveCurrentPageAsync(currentPage ?? ""))}>
             <SaveIcon/>Save
           </Button>
         </Grid>

@@ -22,7 +22,7 @@ const initialState: FacebookSetupState = {
 };
 
 export const getCurrentPageAsync = createAsyncThunk(
-  'facebookSetup/fetchPages',
+  'facebookSetup/fetchCurrentPage',
   async () => {
     return await fetchCurrentPage();
   }
@@ -30,13 +30,13 @@ export const getCurrentPageAsync = createAsyncThunk(
 
 export const saveCurrentPageAsync = createAsyncThunk(
   'facebookSetup/saveCurrentPage',
-  async (page: { name: string, token: string }) => {
-    return await saveCurrentPage(page.name, page.token);
+  async (pageToken: string) => {
+    return await saveCurrentPage(pageToken);
   }
 );
 
 export const retrievePagesAsync = createAsyncThunk(
-  'facebookSetup/getPages',
+  'facebookSetup/fetchPages',
   async (token: string) => {
     return await fetchPages(token);
   }
@@ -65,10 +65,10 @@ export const facebookSetupSlice = createSlice({
         state.stage = "loading";
       })
       .addCase(getCurrentPageAsync.fulfilled, (state, action) => {
-        if (action.payload == null) {
+        if (action.payload === "not-set-up") {
           state.stage = "logIn";
           state.currentPage = null;
-        } else if (!action.payload) {
+        } else if (action.payload === "inactive") {
           state.stage = "inactive";
           state.currentPage = null;
         } else {

@@ -15,9 +15,6 @@ export default class FacebookApi extends Model {
   @Column
   isActive: boolean
 
-  @Column
-  pageId: number
-
   @ForeignKey(() => User)
   @AllowNull(false)
   @Column
