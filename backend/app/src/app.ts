@@ -4,15 +4,23 @@ dotenv.config();
 import express from 'express';
 import connection from './db/configs';
 import { unknownError } from './globalHelpers/globalConstants';
-import userRoutes from './routes/user';
-import setupRoutes from './routes/setup';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import authenticateUser from '../src/middlewares/validateAuth'
+
+/* Routing imports */
+import setupRoutes from './routes/setup';
+import userRoutes from './routes/user'
+import instagramRoutes from './routes/instagram/routes';
+import facebookRoutes from './routes/facebook/routes';
+
+/* Cron Job imports */
+import { instagramScheduledJob } from './dataPipelines/instagram';
+import { facebookScheduledJob } from './dataPipelines/facebook';
 
 const app = express();
 const cors = require('cors');
 const PORT = process.env.BACKEND_PORT;
+
 app.use(cors({ origin: `http://localhost:${process.env.FRONTEND_PORT}`, credentials: true }));
 app.use(
   session({
@@ -21,17 +29,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-declare module 'express-session' {
-  export interface SessionData {
-    username: { [key: string]: any };
-  }
-}
 app.use(bodyParser.json());
-app.get('/private/', authenticateUser, function (req, res, next) {
-  return res.end("This is private");
-});
-app.use("/user", userRoutes);
-app.use("/setup", setupRoutes);
 app.use(
   (
     err: Error,
@@ -42,6 +40,21 @@ app.use(
     res.status(500).json({ message: unknownError });
   }
 );
+declare module 'express-session' {
+  export interface SessionData {
+    username: { [key: string]: any };
+  }
+}
+
+/* User Routes */
+app.use("/user", userRoutes);
+
+/* Social Media Routing */
+app.use('/instagram', instagramRoutes);
+app.use('/facebook', facebookRoutes);
+
+/* Setup Routing */
+app.use("/setup", setupRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -59,3 +72,7 @@ connection
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+/* Cron Jobs */
+instagramScheduledJob.start();
+facebookScheduledJob.start();
