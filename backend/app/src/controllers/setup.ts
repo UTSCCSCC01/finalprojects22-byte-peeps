@@ -1,7 +1,8 @@
-import { RequestHandler } from "express";
+import e, { RequestHandler } from "express";
 import { getPage, getPageLongToken, getPages } from "../apis/facebook";
 import FacebookApi from "../models/facebook/api";
-import userModels from "../models/user/models";
+import FacebookComment from "../models/facebook/comment";
+import FacebookPost from "../models/facebook/post";
 import User from "../models/user/user";
 
 export const getFacebookPages: RequestHandler = async (req, res, next) => {
@@ -25,14 +26,44 @@ export const facebookConnect: RequestHandler = async (req, res, next) => {
       return res.status(400).send();
 
     const longToken = await getPageLongToken(pageToken);
-    if (user?.facebookApi != undefined) {
+    const page = await getPage(longToken);
+
+    // Existing token is the same page
+    if (user?.facebookApi != undefined && user.facebookApi.pageId === page.id) {
       user.facebookApi.token = longToken;
       user.facebookApi.isActive = true;
       await user.facebookApi.save();
+
+    // Existing token is another page
+    } else if (user?.facebookApi != undefined) {
+      user.facebookApi.isActive = false;
+      await user.facebookApi.save();
+      
+      // Destroy associated data
+      const postIds = (await FacebookPost.findAll({where: { apiId: user.facebookApi.id}})).map(p => p.id);
+      await FacebookComment.destroy({where: { postId: postIds }});
+      await FacebookPost.destroy({where: { id: postIds }});
+      await user.facebookApi.destroy();
+
+      // Page set-up before
+      const existingApi = await FacebookApi.findOne({where: {pageId: page.id}, paranoid: false});
+      if (existingApi) {
+        existingApi.token = longToken;
+        existingApi.isActive = true;
+        await existingApi.save();
+        await existingApi.restore();
+
+        const existingApiPostIds = (await FacebookPost.findAll({where: { apiId: existingApi.id}, paranoid: false})).map(p => p.id);
+        await FacebookPost.restore({where: { id: existingApiPostIds }});
+        await FacebookComment.restore({where: { postId: existingApiPostIds } });
+      } else {
+        await FacebookApi.create({ pageId: page.id, token: longToken, isActive: true, userId: user?.id });
+      }
+    // No existing page
     } else {
-      await FacebookApi.create({ token: longToken, isActive: true, userId: user?.id });
+      await FacebookApi.create({ pageId: page.id, token: longToken, isActive: true, userId: user?.id });
     }
-    const page = await getPage(longToken);
+    
     return res.status(200).send(page.name);
   } catch (err) {
     return res.status(500).send(err);
