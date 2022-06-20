@@ -91,12 +91,19 @@ npm i --include=dev
 2. Create a `.env` file in the `backend/app` directory. Paste the following content
 
 ```
+BACKEND_PORT=3000
+FRONTEND_PORT=3001
+
 VIRTUAL_HOST=localhost
 PORT=5432
 POSTGRES_DB=c01
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=<YOUR-POSTGRES-PASSWORD>
 DATUMBOX_API_KEY=<YOUR-DATUMBOX-API-KEY>
+
+# Facebook API
+FACEBOOK_APP_ID=724313855458609
+FACEBOOK_APP_SECRET=<FACEBOOK-APP-SECRET>
 ```
 
 3. To run the dev server:
@@ -117,7 +124,10 @@ npm i --include=dev
 
 ```
 REACT_APP_BACKEND_ENDPOINT=http://localhost:3000/
-PORT=80
+PORT=3001
+
+# Facebook API
+REACT_APP_FACEBOOK_APP_ID=724313855458609
 ```
 
 3. To start the server:

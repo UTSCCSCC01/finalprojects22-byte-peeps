@@ -1,11 +1,11 @@
-import { AllowNull, BelongsTo, Column, ForeignKey, HasMany, HasOne, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DeletedAt, ForeignKey, HasMany, HasOne, Model, Table } from "sequelize-typescript";
 import User from "../user/user";
 import InstagramApi from "../instagram/api";
 import FacebookPost from "./post";
 
 @Table({
-  timestamps: false,
   tableName: 'facebook_apis',
+  deletedAt: true
 })
 export default class FacebookApi extends Model {
   @AllowNull(false)
@@ -14,6 +14,12 @@ export default class FacebookApi extends Model {
 
   @Column
   isActive: boolean
+
+  @Column
+  pageId: string
+
+  @DeletedAt
+  deletedAt: Date
 
   @ForeignKey(() => User)
   @AllowNull(false)
