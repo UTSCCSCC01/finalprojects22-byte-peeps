@@ -180,13 +180,13 @@ Currently, the website is deployed at: https://c01.mohamedtayeh.com/
   1. Backend Deployment:
 
   ```
-  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
+  act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/build-backend.yml
   ```
 
   2. Frontend Deployment:
 
   ```
-  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-frontend.yml
+  act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/build-frontend.yml
   ```
 
 ## Authors
