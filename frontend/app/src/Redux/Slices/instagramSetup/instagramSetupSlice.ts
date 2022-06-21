@@ -4,8 +4,8 @@ import { fetchSettings, savePage } from './instagramSetupAPI';
 
 export interface InstagramSetupState {
  status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive',
- page: string | null,
- connectedPage: string | null,
+ page: { id: string, name: string } | null,
+ connectedPageId: string | null,
  // Notification
  notificationShown: boolean,
  notificationMessage: string,
@@ -15,7 +15,7 @@ export interface InstagramSetupState {
 const initialState: InstagramSetupState = {
   status: 'loading',
   page: null,
-  connectedPage: null,
+  connectedPageId: null,
   notificationShown: false,
   notificationMessage: '',
   notificationType: 'success'
@@ -57,7 +57,7 @@ export const instagramSetupSlice = createSlice({
       .addCase(getSettingsAsync.fulfilled, (state, action) => {
         state.status = action.payload.status;
         state.page = action.payload.page;
-        state.connectedPage = action.payload.connectedPage;
+        state.connectedPageId = action.payload.connectedPageId;
       })
       .addCase(connectPageAsync.pending, (state) => {
         state.status = "loading";
@@ -75,7 +75,7 @@ export const { setNotificationMessage, setNotificationShown, setNotificationType
 
 export const selectStatus = (state: RootState) => state.instagramSetup.status;
 export const selectPage = (state: RootState) => state.instagramSetup.page;
-export const selectConnectedPage = (state: RootState) => state.instagramSetup.connectedPage;
+export const selectConnectedPageId = (state: RootState) => state.instagramSetup.connectedPageId;
 export const selectNotificationShown = (state: RootState) => state.instagramSetup.notificationShown;
 export const selectNotificationMessage = (state: RootState) => state.instagramSetup.notificationMessage;
 export const selectNotificationType = (state: RootState) => state.instagramSetup.notificationType;

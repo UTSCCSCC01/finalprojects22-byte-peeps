@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { Alert, Backdrop, CircularProgress, Grid, Button } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 import { useAppDispatch, useAppSelector } from "../../Redux/hooks";
-import { getSettingsAsync, selectPage, selectNotificationMessage, selectNotificationShown, selectNotificationType, selectStatus, setNotificationShown, connectPageAsync, selectConnectedPage } from '../../Redux/Slices/instagramSetup/instagramSetupSlice';
+import { getSettingsAsync, selectPage, selectNotificationMessage, selectNotificationShown, selectNotificationType, selectStatus, setNotificationShown, connectPageAsync, selectConnectedPageId } from '../../Redux/Slices/instagramSetup/instagramSetupSlice';
 import { Notification } from '../Notification/Notification';
 
 export function InstagramSetup() {
   const status = useAppSelector(selectStatus);
   const page = useAppSelector(selectPage);
-  const connectedPage = useAppSelector(selectConnectedPage);
+  const connectedPageId = useAppSelector(selectConnectedPageId);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -41,26 +41,26 @@ export function InstagramSetup() {
         </Grid>
       }
 
-      {status === 'active' && page === connectedPage &&
+      {status === 'active' && page?.id === connectedPageId &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="info">
-            Your Instagram account <i>{page}</i> is already connected. If you would like to set up another page, you have to <a target="_blank" href="https://help.instagram.com/176235449218188">connect</a> it to your set-up Facebook page
+            Your Instagram account <i>{page.name}</i> is already connected. If you would like to set up another page, you have to <a target="_blank" href="https://help.instagram.com/176235449218188">connect</a> it to your set-up Facebook page
           </Alert>
         </Grid>
       }
 
-      {status === 'active' && page !== connectedPage &&
+      {status === 'active' && page!.id !== connectedPageId &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="info">
-            We have detected a different account to be set up than the one that is already connected (<i>{connectedPage}</i>). You may connect it below.
+            We have detected a different account to be set up than the one that is already connected. You may connect it below.
           </Alert>
         </Grid>
       }
 
-      { (status === "ig-not-set-up" || (status === 'active' && page !== connectedPage)) &&
+      { (status === "ig-not-set-up" || (status === 'active' && page!.id !== connectedPageId)) &&
         <Grid item xs={12}>
           <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectPageAsync())}>
-            <SaveIcon/>CONNECT TO {page?.toUpperCase()}
+            <SaveIcon/>CONNECT TO {page?.name.toUpperCase()}
           </Button>
         </Grid>
       }
