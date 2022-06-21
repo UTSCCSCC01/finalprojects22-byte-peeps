@@ -84,13 +84,9 @@ export function FacebookSetup() {
             <Select
               labelId="facebook-page-select-label"
               id="facebook-page-select"
-              value={currentPage ?? ""}
               label="Facebook Page"
               onChange={e => dispatch(setCurrentPage(e.target.value))}
             >
-              <MenuItem disabled value="">
-                <em>Select a Page</em>
-              </MenuItem>
               {pages.map(p =>
                 <MenuItem key={p.name} value={p.access_token}>{p.name}</MenuItem>
               )}
