@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { facebookConnect, getFacebookCurrentPage, getFacebookPages } from '../../controllers/setup';
+import { connectPage, getCurrentPage, getPages } from '../../controllers/setup/facebook';
 
 const facebookRouter = Router();
 
-facebookRouter.get('/pages', getFacebookPages);
-facebookRouter.get('/page', getFacebookCurrentPage);
-facebookRouter.post('/connect', facebookConnect);
+facebookRouter.get('/pages', getPages);
+facebookRouter.get('/page', getCurrentPage);
+facebookRouter.post('/connect', connectPage);
 
 export default facebookRouter;
