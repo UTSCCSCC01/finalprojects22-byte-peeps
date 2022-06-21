@@ -57,7 +57,7 @@ export function FacebookSetup() {
     <Grid container spacing={2}>
       {stage === "inactive" &&
         <Grid item xs={12}>
-          <Alert variant="filled" severity="warning">
+          <Alert variant="standard" severity="warning">
             Your Facebook token has expired, please log in again.
           </Alert>
         </Grid>
