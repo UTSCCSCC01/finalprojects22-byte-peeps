@@ -64,6 +64,7 @@ export const instagramSetupSlice = createSlice({
       })
       .addCase(connectPageAsync.fulfilled, (state, action) => {
         state.status = "active"
+        state.connectedPageId = state.page!.id;
         state.notificationShown = true;
         state.notificationMessage = "Instagram page has been connected successfully!";
         state.notificationType = "success";
