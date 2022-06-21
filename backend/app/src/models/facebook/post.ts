@@ -4,7 +4,6 @@ import FacebookComment from "./comment";
 
 @Table({
   tableName: 'facebook_posts',
-  deletedAt: true
 })
 export default class FacebookPost extends Model {
   @AllowNull(false)

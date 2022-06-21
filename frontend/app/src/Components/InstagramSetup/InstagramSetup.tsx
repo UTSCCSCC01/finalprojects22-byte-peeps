@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Alert, Backdrop, CircularProgress, Grid, Button } from "@mui/material";
-import SaveIcon from '@mui/icons-material/Save';
+import PowerIcon from '@mui/icons-material/Power';
 import { useAppDispatch, useAppSelector } from "../../Redux/hooks";
 import { getSettingsAsync, selectPage, selectNotificationMessage, selectNotificationShown, selectNotificationType, selectStatus, setNotificationShown, connectPageAsync, selectConnectedPageId } from '../../Redux/Slices/instagramSetup/instagramSetupSlice';
 import { Notification } from '../Notification/Notification';
@@ -20,7 +20,7 @@ export function InstagramSetup() {
       {status === "fb-not-set-up" &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="warning">
-            Facebook has not been set up yet, please set up your Facebook page and ensure that it is <a target="_blank" href="https://help.instagram.com/176235449218188">connected</a> to the Instagram account you are trying to set up.
+            Facebook has not been set up yet, please set up your Facebook page and ensure that it is <a target="_blank" href="https://help.instagram.com/176235449218188" rel="noreferrer">connected</a> to the Instagram account you are trying to set up.
           </Alert>
         </Grid> 
       }
@@ -28,7 +28,7 @@ export function InstagramSetup() {
       {status === "ig-not-set-up" && page &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="info">
-             The displayed Instagram account below is based on what is connected to your Facebook page. If the account you are trying to set up isn't the same, please look into <a target="_blank" href="https://help.instagram.com/176235449218188">connecting</a> it to your Facebook page.
+             The displayed Instagram account below is based on what is connected to your Facebook page. If the account you are trying to set up isn't the same, please look into <a target="_blank" href="https://help.instagram.com/176235449218188" rel="noreferrer">connecting</a> it to your Facebook page.
           </Alert>
         </Grid>
       }
@@ -52,7 +52,7 @@ export function InstagramSetup() {
       {status === 'active' && page?.id === connectedPageId &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="info">
-            Your Instagram account <i>{page.name}</i> is already connected. If you would like to set up another page, you have to <a target="_blank" href="https://help.instagram.com/176235449218188">connect</a> it to your set-up Facebook page
+            Your Instagram account <i>{page.name}</i> is connected. If you would like to set up another page, you have to <a target="_blank" href="https://help.instagram.com/176235449218188" rel="noreferrer">connect</a> it to your set-up Facebook page
           </Alert>
         </Grid>
       }
@@ -68,7 +68,7 @@ export function InstagramSetup() {
       { ((status === "ig-not-set-up" && page) || (status === 'active' && page!.id !== connectedPageId)) &&
         <Grid item xs={12}>
           <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectPageAsync())}>
-            <SaveIcon/>CONNECT TO {page?.name.toUpperCase()}
+            <PowerIcon/>CONNECT TO {page?.name.toUpperCase()}
           </Button>
         </Grid>
       }

@@ -10,7 +10,11 @@ export const getPage = async (facebookPageToken: string, id: string | null): Pro
   if (!id)
     return null;
 
-  const result = await axios.get('https://graph.facebook.com/v14.0/' + id, {
+  try {
+    const result = await axios.get('https://graph.facebook.com/v14.0/' + id, {
      params: { access_token: facebookPageToken, fields: "name" }});
-  return { id: result.data.id, name: result.data.name };
+    return { id: result.data.id, name: result.data.name };
+  } catch {
+    return null;
+  }
 }

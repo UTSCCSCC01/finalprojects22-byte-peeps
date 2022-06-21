@@ -6,7 +6,5 @@ export async function fetchSettings(): Promise<{page: {id: string, name: string}
 }
 
 export async function savePage(): Promise<void> {
-  return new Promise<void>((resolve) =>
-    setTimeout(() => resolve(), 2000)
-  );
+  await HTTP.post('/setup/instagram/connect');
 }
