@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
-import { fetchSettings, saveCurrentPage } from './instagramSetupAPI';
+import { fetchSettings, savePage } from './instagramSetupAPI';
 
 export interface InstagramSetupState {
  status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive',
- pages: {id: string, name: string}[],
- currentPageId: string | null
+ page: string | null,
+ connectedPage: string | null,
  // Notification
  notificationShown: boolean,
  notificationMessage: string,
@@ -14,8 +14,8 @@ export interface InstagramSetupState {
 
 const initialState: InstagramSetupState = {
   status: 'loading',
-  pages: [],
-  currentPageId: null,
+  page: null,
+  connectedPage: null,
   notificationShown: false,
   notificationMessage: '',
   notificationType: 'success'
@@ -28,10 +28,10 @@ export const getSettingsAsync = createAsyncThunk(
   }
 );
 
-export const saveCurrentPageAsync = createAsyncThunk(
-  'instagramSetup/saveCurrentPage',
-  async (pageId: string) => {
-    return await saveCurrentPage(pageId);
+export const connectPageAsync = createAsyncThunk(
+  'instagramSetup/savePage',
+  async () => {
+    return await savePage();
   }
 );
 
@@ -39,9 +39,6 @@ export const instagramSetupSlice = createSlice({
   name: 'instagramSetup',
   initialState,
   reducers: {
-    setCurrentPageId: (state, action) => {
-      state.currentPageId = action.payload;
-    },
     setNotificationShown: (state, action) => {
       state.notificationShown = action.payload;
     },
@@ -59,13 +56,13 @@ export const instagramSetupSlice = createSlice({
       })
       .addCase(getSettingsAsync.fulfilled, (state, action) => {
         state.status = action.payload.status;
-        state.pages = action.payload.pages;
-        state.currentPageId = action.payload.currentId;
+        state.page = action.payload.page;
+        state.connectedPage = action.payload.connectedPage;
       })
-      .addCase(saveCurrentPageAsync.pending, (state) => {
+      .addCase(connectPageAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(saveCurrentPageAsync.fulfilled, (state, action) => {
+      .addCase(connectPageAsync.fulfilled, (state, action) => {
         state.status = "active"
         state.notificationShown = true;
         state.notificationMessage = "Instagram page has been connected successfully!";
@@ -74,11 +71,11 @@ export const instagramSetupSlice = createSlice({
   },
 });
 
-export const { setCurrentPageId, setNotificationMessage, setNotificationShown, setNotificationType } = instagramSetupSlice.actions;
+export const { setNotificationMessage, setNotificationShown, setNotificationType } = instagramSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.instagramSetup.status;
-export const selectPages = (state: RootState) => state.instagramSetup.pages;
-export const selectCurrentPageId = (state: RootState) => state.instagramSetup.currentPageId;
+export const selectPage = (state: RootState) => state.instagramSetup.page;
+export const selectConnectedPage = (state: RootState) => state.instagramSetup.connectedPage;
 export const selectNotificationShown = (state: RootState) => state.instagramSetup.notificationShown;
 export const selectNotificationMessage = (state: RootState) => state.instagramSetup.notificationMessage;
 export const selectNotificationType = (state: RootState) => state.instagramSetup.notificationType;
