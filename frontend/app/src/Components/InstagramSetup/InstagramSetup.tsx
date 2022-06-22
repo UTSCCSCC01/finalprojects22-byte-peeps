@@ -33,7 +33,7 @@ export function InstagramSetup() {
         </Grid>
       }
 
-      {status === "ig-not-set-up" && !page &&
+      {(status === "ig-not-set-up" || status === "active") && !page &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="error">
              You either have not provided access to any Instagram account when setting up your Facebook page or do not have an Instagram account associated with the Facebook page to begin with. Please fix this issue and set up Facebook again with the proper permissions.
@@ -49,7 +49,7 @@ export function InstagramSetup() {
         </Grid>
       }
 
-      {status === 'active' && page?.id === connectedPageId &&
+      {status === 'active' && page && page?.id === connectedPageId &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="info">
             Your Instagram account <i>{page.name}</i> is connected. If you would like to set up another page, you have to <a target="_blank" href="https://help.instagram.com/176235449218188" rel="noreferrer">connect</a> it to your set-up Facebook page
@@ -57,7 +57,7 @@ export function InstagramSetup() {
         </Grid>
       }
 
-      {status === 'active' && page!.id !== connectedPageId &&
+      {status === 'active' && page && page!.id !== connectedPageId &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="info">
             We have detected a different account to be set up than the one that is already connected. You may connect it below.
@@ -65,7 +65,7 @@ export function InstagramSetup() {
         </Grid>
       }
 
-      { ((status === "ig-not-set-up" && page) || (status === 'active' && page!.id !== connectedPageId)) &&
+      { ((status === "ig-not-set-up" && page) || (status === 'active' && page && page!.id !== connectedPageId)) &&
         <Grid item xs={12}>
           <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectPageAsync())}>
             <PowerIcon/>CONNECT TO {page?.name.toUpperCase()}
