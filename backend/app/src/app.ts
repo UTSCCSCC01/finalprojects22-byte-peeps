@@ -8,14 +8,15 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 
 /* Routing imports */
-import setupRoutes from './routes/setup';
 import userRoutes from './routes/user'
 import instagramRoutes from './routes/instagram/routes';
 import facebookRoutes from './routes/facebook/routes';
+import setupRoutes from './routes/setup/routes';
 
 /* Cron Job imports */
 import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
+import authenticateUser from './middlewares/validateAuth';
 
 const app = express();
 const cors = require('cors');
@@ -54,7 +55,7 @@ app.use('/instagram', instagramRoutes);
 app.use('/facebook', facebookRoutes);
 
 /* Setup Routing */
-app.use("/setup", setupRoutes);
+app.use("/setup", authenticateUser, setupRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

@@ -22,7 +22,7 @@ import { Notification } from '../Notification/Notification';
 
 export function FacebookSetup() {
   const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
-  const facebookScopes = "email,pages_show_list,pages_read_engagement,pages_read_user_content,public_profile"
+  const facebookScopes = "email,pages_show_list,instagram_basic,pages_read_engagement,pages_read_user_content,public_profile";
 
   let stage = useAppSelector(selectStage);
   let pages = useAppSelector(selectPages);
@@ -57,7 +57,7 @@ export function FacebookSetup() {
     <Grid container spacing={2}>
       {stage === "inactive" &&
         <Grid item xs={12}>
-          <Alert variant="filled" severity="warning">
+          <Alert variant="standard" severity="warning">
             Your Facebook token has expired, please log in again.
           </Alert>
         </Grid>
@@ -84,13 +84,9 @@ export function FacebookSetup() {
             <Select
               labelId="facebook-page-select-label"
               id="facebook-page-select"
-              value={currentPage ?? ""}
               label="Facebook Page"
               onChange={e => dispatch(setCurrentPage(e.target.value))}
             >
-              <MenuItem disabled value="">
-                <em>Select a Page</em>
-              </MenuItem>
               {pages.map(p =>
                 <MenuItem key={p.name} value={p.access_token}>{p.name}</MenuItem>
               )}

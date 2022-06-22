@@ -1,32 +1,32 @@
 import e, { RequestHandler } from "express";
-import { getPage, getPageLongToken, getPages } from "../apis/facebook";
-import FacebookApi from "../models/facebook/api";
-import FacebookComment from "../models/facebook/comment";
-import FacebookPost from "../models/facebook/post";
-import User from "../models/user/user";
+import * as api from "../../apis/facebook";
+import FacebookApi from "../../models/facebook/api";
+import FacebookComment from "../../models/facebook/comment";
+import FacebookPost from "../../models/facebook/post";
+import User from "../../models/user/user";
 
-export const getFacebookPages: RequestHandler = async (req, res, next) => {
+export const getPages: RequestHandler = async (req, res, next) => {
   const token = req.query.token?.toString();
   if (token == undefined)
     return res.status(400).send();
 
   try {
-    const pages = await getPages(token);
+    const pages = await api.getPages(token);
     return res.json(pages);
   } catch (err) {
     return res.status(500).send(err);
   }
 };
 
-export const facebookConnect: RequestHandler = async (req, res, next) => {
+export const connectPage: RequestHandler = async (req, res, next) => {
   try {
     const user = await User.findOne({where: { username: req.session.username }, include: FacebookApi});
     const pageToken = req.body.token;
     if (pageToken == undefined)
       return res.status(400).send();
 
-    const longToken = await getPageLongToken(pageToken);
-    const page = await getPage(longToken);
+    const longToken = await api.getPageLongToken(pageToken);
+    const page = await api.getPage(longToken);
 
     // Existing token is the same page
     if (user?.facebookApi != undefined && user.facebookApi.pageId === page.id) {
@@ -70,7 +70,7 @@ export const facebookConnect: RequestHandler = async (req, res, next) => {
   } 
 }
 
-export const getFacebookCurrentPage: RequestHandler = async (req, res, next) => {
+export const getCurrentPage: RequestHandler = async (req, res, next) => {
   let user: User = new User();
   try {
     user = await User.findOne({where: { username: req.session.username }, include: FacebookApi}) ?? user;
@@ -79,7 +79,7 @@ export const getFacebookCurrentPage: RequestHandler = async (req, res, next) => 
     if (!user.facebookApi.isActive)
       return res.send("inactive");
 
-    const page = await getPage(user.facebookApi.token);
+    const page = await api.getPage(user.facebookApi.token);
     return res.send(page);
   } catch (err: any) {
     if (err.response.status === 400) {

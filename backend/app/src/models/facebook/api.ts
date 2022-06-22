@@ -5,7 +5,6 @@ import FacebookPost from "./post";
 
 @Table({
   tableName: 'facebook_apis',
-  deletedAt: true
 })
 export default class FacebookApi extends Model {
   @AllowNull(false)
