@@ -9,6 +9,10 @@ import RedditSubreddit from "./subreddit";
 export default class RedditListing extends Model {
   @AllowNull(false)
   @Column
+  dataid: string
+
+  @AllowNull(false)
+  @Column
   title: string
 
   @AllowNull(false)
@@ -27,13 +31,17 @@ export default class RedditListing extends Model {
   @Column
   numComments: number
 
+  @AllowNull(false)
+  @Column
+  permalink: string
+
   @ForeignKey(() => RedditSubreddit)
   @AllowNull(false)
   @Column
   subredditId: number
 
   @BelongsTo(() => RedditSubreddit)
-  twitterUser: RedditSubreddit;
+  Subreddit: RedditSubreddit;
 
   @HasMany(() => RedditComment)
   comments: RedditComment[];

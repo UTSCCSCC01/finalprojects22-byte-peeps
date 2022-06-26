@@ -8,6 +8,10 @@ import RedditListing from "./listing";
 export default class RedditComment extends Model {
   @AllowNull(false)
   @Column
+  dataid: string
+
+  @AllowNull(false)
+  @Column
   text: string
 
   @AllowNull
