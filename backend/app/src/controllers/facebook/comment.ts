@@ -72,7 +72,8 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 
       try {
         startDate = new Date(year, month - 1, day);
-        endDate = new Date(year_end, month_end - 1, day_end);
+        endDate = new Date(year_end, month_end - 1, day_end + 1);
+        console.log(startDate, endDate);
         const positive = await FacebookComment.count({
           where: { 
             sentimentAnalysis: 'positive', 
