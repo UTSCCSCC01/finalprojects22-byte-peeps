@@ -5,7 +5,7 @@ const opts = { stopwords: stopwords };
 
 /**
  * Removes all all puncuations from a string of text
- * @param {String} text - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+ * @param {String} text
  * @return {Text} String removed of all punctuations
  * @note regex obtained from https://stackoverflow.com/questions/4328500/how-can-i-strip-all-punctuation-from-a-string-in-javascript-using-regex/4328546#4328546
  */
