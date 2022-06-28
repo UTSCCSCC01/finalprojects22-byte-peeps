@@ -13,7 +13,7 @@ const SentimentPieChart = () => {
   return (
       <ResponsiveContainer width="95%" height={260}>
         <PieChart>
-          <Pie 
+          <Pie
             dataKey="value"
             data={data}
             label={({

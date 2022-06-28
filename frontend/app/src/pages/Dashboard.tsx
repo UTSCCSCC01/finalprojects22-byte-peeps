@@ -10,7 +10,7 @@ import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-
+import DateSelector from '../Components/DateSelector/DateSelector';
 
 export interface IDashProps {}
 
@@ -43,6 +43,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
+          <DateSelector />
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
                 <OndemandVideoTwoToneIcon style={{ verticalAlign: "middle"}} />
