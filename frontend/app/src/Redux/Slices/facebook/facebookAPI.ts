@@ -1,12 +1,13 @@
 import HTTP from "../../../utils/http";
 
-export async function fetchSentimentAnalysis(startDate: string, endDate: string) {
-  const response = await HTTP.get(`/facebook/comments/sentiment_analysis?start=${startDate}&end=${endDate}`);
-  return response.data;
-}
 
 export async function saveCurrentPage(pageToken: string): Promise<string> {
   const response = await HTTP.post('/setup/facebook/connect', { token: pageToken });
+  return response.data;
+}
+
+export async function fetchSentimentAnalysis(startDate: string, endDate: string) {
+  const response = await HTTP.get(`/facebook/comments/sentiment_analysis?start=${startDate}&end=${endDate}`);
   return response.data;
 }
 

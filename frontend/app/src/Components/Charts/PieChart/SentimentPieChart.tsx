@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react'
-import { ResponsiveContainer, PieChart, Pie, Legend, Cell } from "recharts";
-import { getCommentsSentimentAnalysis, selectSentimentAnalysis, selectError } from "../../../Redux/Slices/facebook/facebookSlice";
+import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { getCommentsSentimentAnalysis, selectSentimentAnalysis, selectError, selectIsSentimentAnalysisLoading } from "../../../Redux/Slices/facebook/facebookSlice";
 import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
+import { CircularProgress } from '@mui/material';
+import { Typography } from '@mui/material';
 
-// const data = [
-//   { name: "Positive", value: 400 },
-//   { name: "Negative", value: 300 },
-// ];
 
 const COLORS = ["#71a6de", "#09213b", "#0088FE"];
 
@@ -19,27 +17,29 @@ const SentimentPieChart = () => {
     { name: 'Neutral', value: 0 }
   ]
   const error = useAppSelector(selectError);
+  const isSentimentAnalysisLoading = useAppSelector(selectIsSentimentAnalysisLoading);
   const dataRetured = useAppSelector(selectSentimentAnalysis);
-  console.log("Assigning datareturned", dataRetured)
-  console.log("Assigning", dataRetured.positive)
   data[1].value = dataRetured.negative;
   data[0].value = dataRetured.positive;
   data[2].value = dataRetured.neutral;
 
   useEffect(() => {
     dispatch(getCommentsSentimentAnalysis());
-    console.log("dispatch get")
   }, [dispatch])
 
 
   return (
-    error ? 
-    <h2>{error}</h2> :
-     data[0].value === 0 && data[1].value === 0 && data[2].value === 0 ?
-      <h1>No Data</h1> :
+    isSentimentAnalysisLoading ? 
+    <div style={{display: "flex", justifyContent: "center"}}>
+      <CircularProgress
+          style={{
+            margin: 'auto'
+          }}
+      />
+    </div>
+     : data[0].value > 0 || data[1].value > 0 || data[2].value > 0 ?
       <ResponsiveContainer width="95%" height={260}>
         <PieChart>
-          {console.log(data)}
           <Pie
             dataKey="value"
             data={data}
@@ -58,6 +58,7 @@ const SentimentPieChart = () => {
               const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
               return (
+                  value != 0 ? (
                   <text
                     style={{fontSize: '0.6rem'}}
                     x={x}
@@ -66,17 +67,28 @@ const SentimentPieChart = () => {
                     textAnchor={x > cx ? "start" : "end"}
                     dominantBaseline="central"
                   >
-                    {data[index].name} ({value})
-                  </text>
+                    {
+                      `${data[index].name} (${value})`
+                    }
+                  </text>) : null
               );
             }}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              entry.value != 0 ? (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> ) : <Cell display='none' key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
         </PieChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer> :
+       (data[0].value === 0 || data[1].value === 0 || data[2].value === 0) ?
+      (
+        <Typography variant="subtitle2" align="center" paragraph>
+          No Data for Sentiment Analysis
+        </Typography>
+      ) : <Typography variant="subtitle2" align="center" paragraph>
+          {error}
+        </Typography>
   )
 }
 
