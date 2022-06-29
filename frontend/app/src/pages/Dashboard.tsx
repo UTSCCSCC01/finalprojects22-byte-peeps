@@ -1,7 +1,8 @@
 import React from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
+import MetricsTableExample from '../Components/MetricsTable/MetricsTableExample';
 
 export interface IDashProps {}
 
@@ -42,6 +43,22 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               <Item>charts/stats, to be added</Item>
             </Grid>
           ))}
+          <Grid item xs={12}>
+            <Item>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                Comments
+              </Typography>
+              <MetricsTableExample />
+            </Item>
+          </Grid>
         </Grid>
       </Box>
     </>
