@@ -34,6 +34,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
         }}
       >
         <h1>Dashboard</h1>
+        <DateSelector />
         <button onClick={() => navigate('/')}>log out</button>
       </div>
 
@@ -43,7 +44,6 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
-          <DateSelector />
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
                 <OndemandVideoTwoToneIcon style={{ verticalAlign: "middle"}} />

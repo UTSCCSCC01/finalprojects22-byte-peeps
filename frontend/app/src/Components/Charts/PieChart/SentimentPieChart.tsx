@@ -1,18 +1,45 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ResponsiveContainer, PieChart, Pie, Legend, Cell } from "recharts";
+import { getCommentsSentimentAnalysis, selectSentimentAnalysis, selectError } from "../../../Redux/Slices/facebook/facebookSlice";
+import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
 
-const data = [
-  { name: "Positive", value: 400 },
-  { name: "Negative", value: 300 },
-];
+// const data = [
+//   { name: "Positive", value: 400 },
+//   { name: "Negative", value: 300 },
+// ];
 
-const COLORS = ["#71a6de", "#09213b"];
+const COLORS = ["#71a6de", "#09213b", "#0088FE"];
 
 
 const SentimentPieChart = () => {
+  const dispatch = useAppDispatch();
+  const data = [
+    { name: 'Positve', value: 0 },
+    { name: 'Negative', value: 0 },
+    { name: 'Neutral', value: 0 }
+  ]
+  const error = useAppSelector(selectError);
+  const dataRetured = useAppSelector(selectSentimentAnalysis);
+  console.log("Assigning datareturned", dataRetured)
+  console.log("Assigning", dataRetured.positive)
+  data[1].value = dataRetured.negative;
+  data[0].value = dataRetured.positive;
+  data[2].value = dataRetured.neutral;
+
+  useEffect(() => {
+    dispatch(getCommentsSentimentAnalysis());
+    console.log("dispatch get")
+  }, [dispatch])
+
+
   return (
+    error ? 
+    <h2>{error}</h2> :
+     data[0].value === 0 && data[1].value === 0 && data[2].value === 0 ?
+      <h1>No Data</h1> :
       <ResponsiveContainer width="95%" height={260}>
         <PieChart>
+          {console.log(data)}
           <Pie
             dataKey="value"
             data={data}
@@ -33,7 +60,7 @@ const SentimentPieChart = () => {
               return (
                   <text
                     style={{fontSize: '0.6rem'}}
-                    x={data[index].name === "Positive" ? x + 35 : x - 37}
+                    x={x}
                     y={y}
                     fill={COLORS[index]}
                     textAnchor={x > cx ? "start" : "end"}

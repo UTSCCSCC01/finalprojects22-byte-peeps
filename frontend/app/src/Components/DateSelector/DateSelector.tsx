@@ -4,18 +4,22 @@ import { DateRange } from 'react-date-range'
 import format from 'date-fns/format'
 import { addDays } from 'date-fns'
 
-import styles from './DateSelector.module.css'
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks'
+import { selectStartDate, selectEndDate, setStartDate, setEndDate, getCommentsSentimentAnalysis } from '../../Redux/Slices/facebook/facebookSlice'
 
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
+import styles from './DateSelector.module.css'
+import { Interface } from 'readline'
 
 const DateSelector = () => {
+  const dispatch = useAppDispatch();
 
   // date state
   const [range, setRange]: any = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), 7),
+      endDate: addDays(new Date(), 0),
       key: 'selection'
     }
   ])
@@ -31,6 +35,17 @@ const DateSelector = () => {
     document.addEventListener("keydown", hideOnEscape, true)
     document.addEventListener("click", hideOnClickOutside, true)
   }, [])
+
+  useEffect(() => {
+    console.log("In useeffect:", range);
+    // if (range.startDate && range.endDate) {
+        console.log("dispatch changes", range[0].startDate?.toISOString());
+        dispatch(setStartDate(range[0].startDate?.toISOString()));
+        dispatch(setEndDate(range[0].endDate?.toISOString()));
+        dispatch(getCommentsSentimentAnalysis());
+        console.log("dispatched");
+    // }
+  }, [range, dispatch, range.startDate, range.endDate])
 
   // hide dropdown on ESC press
   const hideOnEscape = (e: any) => {
@@ -71,7 +86,6 @@ const DateSelector = () => {
           />
         }
       </div>
-
     </div>
   )
 }
