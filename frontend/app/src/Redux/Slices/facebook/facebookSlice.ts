@@ -3,9 +3,9 @@ import { RootState } from '../../store';
 import { fetchSentimentAnalysis } from './facebookAPI';
 
 interface SentimentAnalysis {
-    positive: number,
-    neutral: number,
-    negative: number
+  positive: number;
+  neutral: number;
+  negative: number;
 }
 
 // Define a type for the slice state
@@ -14,7 +14,7 @@ export interface FacebookState {
   isSentimentAnalysisLoading: boolean;
   error: string | null;
   startDate: String;
-  endDate: String
+  endDate: String;
 }
 
 // Define the initial state using that type
@@ -27,14 +27,16 @@ const initialState: FacebookState = {
   isSentimentAnalysisLoading: false,
   error: null,
   startDate: new Date().toISOString(),
-  endDate: new Date().toISOString()
+  endDate: new Date().toISOString(),
 };
 
 export const getCommentsSentimentAnalysis = createAsyncThunk(
   'facebook/sentiment_analysis',
-  async (_, { dispatch, getState, rejectWithValue } : any) => {
-    const startDate = selectStartDate(getState()).split("T")[0].replaceAll("-", "");
-    const endDate = selectEndDate(getState()).split("T")[0].replaceAll("-", "");
+  async (_, { dispatch, getState, rejectWithValue }: any) => {
+    const startDate = selectStartDate(getState())
+      .split('T')[0]
+      .replaceAll('-', '');
+    const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
     const response = await fetchSentimentAnalysis(startDate, endDate);
     return response;
   }
@@ -49,7 +51,7 @@ export const facebookSlice = createSlice({
     },
     setEndDate: (state, action) => {
       state.endDate = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -62,20 +64,26 @@ export const facebookSlice = createSlice({
         state.sentimentAnalysis = payload;
         state.error = null;
       })
-      .addCase(getCommentsSentimentAnalysis.rejected, (state, { payload }: any) => {
-        state.isSentimentAnalysisLoading = false;
-        state.error = payload?.message || "There was a problem retrieving the sentiment analysis data.";
-      });
+      .addCase(
+        getCommentsSentimentAnalysis.rejected,
+        (state, { payload }: any) => {
+          state.isSentimentAnalysisLoading = false;
+          state.error =
+            payload?.message ||
+            'There was a problem retrieving the sentiment analysis data.';
+        }
+      );
   },
 });
 
-
 export const { setStartDate, setEndDate } = facebookSlice.actions;
 
-export const selectSentimentAnalysis = (state: RootState) => state.facebook.sentimentAnalysis;
+export const selectSentimentAnalysis = (state: RootState) =>
+  state.facebook.sentimentAnalysis;
 export const selectStartDate = (state: RootState) => state.facebook.startDate;
 export const selectEndDate = (state: RootState) => state.facebook.endDate;
 export const selectError = (state: RootState) => state.facebook.error;
-export const selectIsSentimentAnalysisLoading = (state: RootState) => state.facebook.isSentimentAnalysisLoading;
+export const selectIsSentimentAnalysisLoading = (state: RootState) =>
+  state.facebook.isSentimentAnalysisLoading;
 
 export default facebookSlice.reducer;

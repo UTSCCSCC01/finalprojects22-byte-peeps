@@ -46,59 +46,99 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
         >
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-                <OndemandVideoTwoToneIcon style={{ verticalAlign: "middle"}} />
-                <Typography variant='h5' sx={{textAlign: "center", verticalAlign: "center", fontWeight: 700, fontSize: '1.3rem'}}>
-                  Videos: 11341783
-                </Typography>
+              <OndemandVideoTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  verticalAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                }}
+              >
+                Videos: 11341783
+              </Typography>
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-                <RemoveRedEyeTwoToneIcon style={{ verticalAlign: "middle"}} />
-                <Typography variant='h5' sx={{textAlign: "center", verticalAlign: "middle", fontWeight: 700, fontSize: '1.3rem'}}>
-                  Views: 11341783
-                </Typography>
+              <RemoveRedEyeTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                }}
+              >
+                Views: 11341783
+              </Typography>
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-                <ThumbUpTwoToneIcon style={{ verticalAlign: "middle"}} />
-                <Typography variant='h5' sx={{textAlign: "center", verticalAlign: "center", fontWeight: 700, fontSize: '1.3rem'}}>
-                  Likes: 11348
-                </Typography>
+              <ThumbUpTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  verticalAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                }}
+              >
+                Likes: 11348
+              </Typography>
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-                <ChatTwoToneIcon style={{ verticalAlign: "middle"}} />
-                <Typography variant='h5' sx={{textAlign: "center", verticalAlign: "center", fontWeight: 700, fontSize: '1.3rem'}}>
-                  Comments: 333
-                </Typography>
+              <ChatTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  verticalAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                }}
+              >
+                Comments: 333
+              </Typography>
             </CardInfo>
           </Grid>
-            <Grid item xs={2} sm={4} md={4}>
-              <CardCharts>
-                  <Typography variant='h5' sx={{textAlign: "center", fontWeight: 700, fontSize: '1.3rem', paddingBottom: '0.5rem'}}>
-                    Sentiment Analysis
-                  </Typography>
-                  <PieChart />
-              </CardCharts>
-            </Grid>
-            <Grid item xs={2} sm={4} md={4}>
-              <Item>charts/stats, to be added</Item>
-            </Grid>
-            <Grid item xs={2} sm={4} md={4}>
-              <Item>charts/stats, to be added</Item>
-            </Grid>
-            <Grid item xs={2} sm={4} md={4}>
-              <Item>charts/stats, to be added</Item>
-            </Grid>
-            <Grid item xs={2} sm={4} md={4}>
-              <Item>charts/stats, to be added</Item>
-            </Grid>
-            <Grid item xs={2} sm={4} md={4}>
-              <Item>charts/stats, to be added</Item>
-            </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <CardCharts>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                Sentiment Analysis
+              </Typography>
+              <PieChart />
+            </CardCharts>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
         </Grid>
       </Box>
     </>
