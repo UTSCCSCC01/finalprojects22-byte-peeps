@@ -8,22 +8,23 @@ import {
   retrievePagesAsync,
   saveCurrentPageAsync,
   selectCurrentPage,
-  selectNotificationMessage,
-  selectNotificationShown,
-  selectNotificationType,
   selectPages,
   selectStage,
   setCurrentPage,
-  setNotificationMessage,
-  setNotificationShown,
-  setNotificationType
 } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
+import useNotification, { NotificationState } from '../../utils/hooks/Notification';
 import { Notification } from '../Notification/Notification';
+
+let notification: NotificationState;
+export function getFacebookSetupNotification(): NotificationState {
+  return notification;
+}
 
 export function FacebookSetup() {
   const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
   const facebookScopes = "email,pages_show_list,instagram_basic,pages_read_engagement,pages_read_user_content,public_profile";
 
+  notification = useNotification({});
   let stage = useAppSelector(selectStage);
   let pages = useAppSelector(selectPages);
   let currentPage = useAppSelector(selectCurrentPage);
@@ -35,9 +36,9 @@ export function FacebookSetup() {
 
   const responseFacebook = (response: any) => {
     if (response.grantedScopes !== facebookScopes) {
-      dispatch(setNotificationShown(true));
-      dispatch(setNotificationType('error'));
-      dispatch(setNotificationMessage("Invalid permissions provided!"));
+      notification.setMessage('Invalid permissions provided!');
+      notification.setType('error');
+      notification.setShown(true);
       return;
     }
     dispatch(retrievePagesAsync(response.accessToken));
@@ -103,18 +104,14 @@ export function FacebookSetup() {
         </Grid>
       }
 
-      <Notification
-        message={useAppSelector(selectNotificationMessage)}
-        type={useAppSelector(selectNotificationType)}
-        show={useAppSelector(selectNotificationShown)}
-        dispatchHide={() => dispatch(setNotificationShown(false))}
-      />
       <Backdrop
         sx={{ color: '#fff', zIndex: 1000 }}
         open={stage === "loading"}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      <Notification state={notification} />
     </Grid>
   );
 }

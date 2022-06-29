@@ -1,21 +1,19 @@
 import { Alert, Snackbar } from '@mui/material';
+import { NotificationState } from '../../utils/hooks/Notification';
 
-interface NotificationProperties {
-  type: 'success' | 'error' | 'info' | 'warning',
-  message: string,
-  show: boolean,
-  dispatchHide: () => void
+export interface NotificationProps {
+  state: NotificationState
 }
 
-export function Notification(props: NotificationProperties) {
+export function Notification(props: NotificationProps) {
   return (
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      open={props.show}
+      open={props.state.shown}
       autoHideDuration={2000}
-      onClose={props.dispatchHide}>
-        <Alert severity={props.type} sx={{ width: '100%' }}>
-          {props.message}
+      onClose={() => props.state.setShown(false)}>
+        <Alert severity={props.state.type} sx={{ width: '100%' }}>
+          {props.state.message}
         </Alert>
       </Snackbar>
   );
