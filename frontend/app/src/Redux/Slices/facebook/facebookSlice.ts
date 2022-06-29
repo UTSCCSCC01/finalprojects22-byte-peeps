@@ -78,12 +78,10 @@ export const facebookSlice = createSlice({
 
 export const { setStartDate, setEndDate } = facebookSlice.actions;
 
-export const selectSentimentAnalysis = (state: RootState) =>
-  state.facebook.sentimentAnalysis;
+export const selectSentimentAnalysis = (state: RootState) => state.facebook.sentimentAnalysis;
 export const selectStartDate = (state: RootState) => state.facebook.startDate;
 export const selectEndDate = (state: RootState) => state.facebook.endDate;
 export const selectError = (state: RootState) => state.facebook.error;
-export const selectIsSentimentAnalysisLoading = (state: RootState) =>
-  state.facebook.isSentimentAnalysisLoading;
+export const selectIsSentimentAnalysisLoading = (state: RootState) => state.facebook.isSentimentAnalysisLoading;
 
 export default facebookSlice.reducer;
