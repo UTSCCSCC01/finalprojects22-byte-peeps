@@ -2,7 +2,7 @@ import React from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import MetricsTableExample from '../Components/MetricsTable/MetricsTableExample';
+import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
 
 export interface IDashProps {}
 
@@ -56,7 +56,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               >
                 Comments
               </Typography>
-              <MetricsTableExample />
+              <InstagramCommentsTable />
             </Item>
           </Grid>
         </Grid>

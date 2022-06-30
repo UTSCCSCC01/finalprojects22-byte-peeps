@@ -1,15 +1,27 @@
 import { RequestHandler } from 'express';
+import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
+import InstagramMedia from '../../models/instagram/media';
+import User from '../../models/user/user';
 
 /**
  * Provides the 50 most recent Instagram comments
  */
 export const getComments: RequestHandler = async (req, res, next) => {
-  const comments = await InstagramComment.findAll({
-    order: [['date', 'DESC']],
-    limit: 50,
-  });
-  res.send(comments);
+  try {
+    const user = await User.findOne({where: { username: req.session.username }, include: InstagramApi});
+    const pageNumber = parseInt(req.query.page?.toString() ?? '0');
+    const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
+
+    const media = await InstagramMedia.findAll({ where: { apiId: user!.instagramApi.id }});
+    const mediaIds: number[] = media.map(m => m.id);
+    const comments = await InstagramComment.findAll({ where: {mediaId: mediaIds}, order: [['date', 'DESC']], attributes: ['id', 'userName', 'message', 'likes', 'sentimentAnalysis', 'topicClassification', 'subjectivityAnalysis'] });
+    const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
+    res.send({ count: comments.length, data: filteredComments });
+  } catch(e) {
+    console.log(e)
+    res.status(500).send();
+  }
 };
 
 /**
