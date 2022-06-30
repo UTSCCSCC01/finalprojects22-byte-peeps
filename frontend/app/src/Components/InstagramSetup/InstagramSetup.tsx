@@ -11,6 +11,7 @@ import useNotification, {
   NotificationState,
 } from '../../utils/hooks/Notification';
 import { Notification } from '../Notification/Notification';
+import { selectStage } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
 
 let notification: NotificationState;
 export function getInstagramSetupNotification(): NotificationState {
@@ -19,6 +20,7 @@ export function getInstagramSetupNotification(): NotificationState {
 
 export function InstagramSetup() {
   notification = useNotification({});
+  const facebookStage = useAppSelector(selectStage);
   const status = useAppSelector(selectStatus);
   const page = useAppSelector(selectPage);
   const connectedPageId = useAppSelector(selectConnectedPageId);
@@ -72,7 +74,7 @@ export function InstagramSetup() {
         </Grid>
       )}
 
-      {status === 'inactive' && (
+      {facebookStage === 'inactive' && (
         <Grid item xs={12}>
           <Alert variant="standard" severity="warning">
             It seems that your Facebook token has expired. Since the Instagram

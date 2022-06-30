@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
+import { RootState, store } from '../../store';
 import { fetchCurrentPage, fetchPages, saveCurrentPage } from './facebookSetupAPI';
 import { getFacebookSetupNotification } from '../../../Components/FacebookSetup/FacebookSetup';
+import { getSettingsAsync } from '../instagramSetup/instagramSetupSlice';
 
 export interface FacebookSetupState {
   stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive',
@@ -24,8 +25,10 @@ export const getCurrentPageAsync = createAsyncThunk(
 
 export const saveCurrentPageAsync = createAsyncThunk(
   'facebookSetup/saveCurrentPage',
-  async (pageToken: string) => {
-    return await saveCurrentPage(pageToken);
+  async (pageToken: string, thunkApi) => {
+    const status = await saveCurrentPage(pageToken);
+    thunkApi.dispatch(getSettingsAsync())
+    return status;
   }
 );
 
@@ -67,6 +70,7 @@ export const facebookSetupSlice = createSlice({
       .addCase(saveCurrentPageAsync.fulfilled, (state, action) => {
         state.stage = "active";
         state.currentPage = action.payload;
+
         const notification = getFacebookSetupNotification();
         notification.setMessage("Page settings has been saved successfully!");
         notification.setType("success");
