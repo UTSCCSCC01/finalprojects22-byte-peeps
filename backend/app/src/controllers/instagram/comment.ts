@@ -13,6 +13,9 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
+    if (!user?.instagramApi)
+      return res.send({ count: 0, data: [] });
+
     const media = await InstagramMedia.findAll({ where: { apiId: user!.instagramApi.id }});
     const mediaIds: number[] = media.map(m => m.id);
     const comments = await InstagramComment.findAll({ where: {mediaId: mediaIds}, order: [['date', 'DESC']], attributes: ['id', 'userName', 'message', 'likes', 'sentimentAnalysis', 'topicClassification', 'subjectivityAnalysis'] });
