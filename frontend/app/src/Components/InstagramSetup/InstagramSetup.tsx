@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
 import { Alert, Backdrop, CircularProgress, Grid, Button } from '@mui/material';
 import PowerIcon from '@mui/icons-material/Power';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
-  getSettingsAsync,
   selectPage,
   selectStatus,
   connectPageAsync,
@@ -25,10 +23,6 @@ export function InstagramSetup() {
   const page = useAppSelector(selectPage);
   const connectedPageId = useAppSelector(selectConnectedPageId);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getSettingsAsync());
-  }, [dispatch]);
 
   return (
     <Grid container spacing={2}>
