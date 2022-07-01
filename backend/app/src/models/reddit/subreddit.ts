@@ -20,5 +20,5 @@ export default class RedditSubreddit extends Model {
   user: User;
 
   @HasMany(() => RedditListing)
-  tweets: RedditListing[]
+  listings: RedditListing[]
 }
