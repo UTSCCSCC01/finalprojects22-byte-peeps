@@ -104,10 +104,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           negative: negative,
         });
       } catch (error) {
-        res.status(404).send({ message: 'Date Input not Provided' });
+        res.status(400).send({ message: 'Date Input not Provided' });
       }
     }
   } else {
-    res.status(404).send({ message: 'Invalid Date Input' });
+    res.status(400).send({ message: 'Invalid Date Input' });
   }
 };
