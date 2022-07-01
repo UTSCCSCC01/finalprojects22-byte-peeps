@@ -5,7 +5,7 @@ import InstagramMedia from '../../models/instagram/media';
 import User from '../../models/user/user';
 
 /**
- * Provides the 50 most recent Instagram comments
+ * Provides the page number and size, provides comments of any IG media related to the user API
  */
 export const getComments: RequestHandler = async (req, res, next) => {
   try {
