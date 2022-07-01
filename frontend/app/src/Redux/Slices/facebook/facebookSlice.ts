@@ -19,11 +19,7 @@ export interface FacebookState {
 
 // Define the initial state using that type
 const initialState: FacebookState = {
-  sentimentAnalysis: {
-    positive: -1,
-    neutral: -1,
-    negative: -1,
-  },
+  sentimentAnalysis: null,
   isSentimentAnalysisLoading: false,
   error: null,
   startDate: new Date().toISOString(),

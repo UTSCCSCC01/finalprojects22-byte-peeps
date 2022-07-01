@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
-import PieChart from '../Components/Charts/PieChart/PieChart';
+import PieChart, {
+  PieChartAnalysisProps,
+} from '../Components/Charts/PieChart/PieChartAnalysis';
 import { Typography } from '@mui/material';
 import CardCharts from '../Components/Cards/CardCharts';
 import CardInfo from '../Components/Cards/CardInfo';
@@ -18,7 +20,6 @@ import {
   selectIsSentimentAnalysisLoading,
 } from '../Redux/Slices/facebook/facebookSlice';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
-import { PieChartAnalysis } from '../Components/Charts/PieChart/PieChart';
 import { SentimentAnalysisColors } from '../utils/enums';
 
 export interface IDashProps {}
@@ -64,7 +65,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
     SentimentAnalysisColors.Negative,
   ];
 
-  const facebookSentimentAnalysis: PieChartAnalysis = {
+  const facebookSentimentAnalysis: PieChartAnalysisProps = {
     data,
     isLoading: isSentimentAnalysisLoading,
     error,
