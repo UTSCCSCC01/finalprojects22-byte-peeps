@@ -2,12 +2,14 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from './Slices/counter/counterSlice';
 import facebookSetupReducer from './Slices/facebookSetup/facebookSetupSlice';
 import instagramSetupReducer from './Slices/instagramSetup/instagramSetupSlice';
+import twitterSetupReducer from './Slices/twitterSetup/twitterSetupSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     facebookSetup: facebookSetupReducer,
-    instagramSetup: instagramSetupReducer
+    instagramSetup: instagramSetupReducer,
+    twitterSetup: twitterSetupReducer,
   },
 });
 
