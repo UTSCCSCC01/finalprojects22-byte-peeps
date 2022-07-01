@@ -15,13 +15,13 @@ export const getSettings: RequestHandler = async (req, res, next) => {
     if (user?.twitterUser == undefined) {
       return res.send({
         status: 'twitter-not-set-up',
-        user: null,
+        username: null,
       });
     }
 
     return res.send({
       status: 'active',
-      user: user,
+      username: user.twitterUser.username,
     });
   } catch (err) {
     return res.status(500).send(err);
@@ -30,7 +30,7 @@ export const getSettings: RequestHandler = async (req, res, next) => {
 
 export const connectUser: RequestHandler = async (req, res, next) => {
   try {
-    let returnUser = null;
+    let returnUsername = null;
     const newUsername = req.body.username;
 
     const user = await User.findOne({
@@ -44,7 +44,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
       if (user.twitterUser.username == newUsername) {
         return res.status(200).send({
           status: 'active',
-          user: { id: user.twitterUser.userId, username: newUsername },
+          username: newUsername,
           message: 'This account is already connected!',
         });
       }
@@ -80,18 +80,18 @@ export const connectUser: RequestHandler = async (req, res, next) => {
           where: { tweetId: existingTweetIds },
         });
 
-        returnUser = { id: existingTwitterUser.userId, username: newUsername };
+        returnUsername = newUsername;
       }
     }
 
     // User doesn't exist
-    if (returnUser === null) {
+    if (returnUsername === null) {
       // Get new twitter user id
       const twitterUserId = await api.getUserId(newUsername);
       if (!twitterUserId) {
         return res.send({
           status: 'twitter-not-set-up',
-          user: null,
+          username: null,
           message: "The username you provided doesn't exist!",
         });
       }
@@ -103,12 +103,12 @@ export const connectUser: RequestHandler = async (req, res, next) => {
         userId: user!.id,
       });
 
-      returnUser = { id: twitterUserId, username: newUsername };
+      returnUsername = newUsername;
     }
 
     return res.status(200).send({
       status: 'active',
-      user: returnUser,
+      username: returnUsername,
       message: 'Twitter account has been connected successfully!',
     });
   } catch (err) {

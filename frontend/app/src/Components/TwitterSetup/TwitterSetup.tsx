@@ -6,23 +6,23 @@ import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
-  selectUser,
+  selectUsername,
   selectNotificationMessage,
   selectNotificationShown,
   selectNotificationType,
   setNotificationShown,
   selectStatus,
-  connectUserAsync,
-  selectUsername,
+  connectUsernameAsync,
+  selectNewUsername,
   setStatus,
-  setUsername
+  setNewUsername
 } from '../../Redux/Slices/twitterSetup/twitterSetupSlice';
 import { Notification } from '../Notification/Notification';
 
 export function TwitterSetup() {
   const status = useAppSelector(selectStatus);
-  const user = useAppSelector(selectUser);
   const username = useAppSelector(selectUsername);
+  const newUsername = useAppSelector(selectNewUsername);
   const dispatch = useAppDispatch();
   
   useEffect(() => {
@@ -31,10 +31,10 @@ export function TwitterSetup() {
 
   return (
     <Grid container spacing={2}>
-      { status === 'active' && user &&
+      { status === 'active' && username &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="success">
-            Your Twitter account <i>@{user.username}</i> is connected.
+            Your Twitter account <i>@{username}</i> is connected.
           </Alert>
         </Grid>
       }
@@ -51,10 +51,10 @@ export function TwitterSetup() {
         <Grid item xs={12}>
           <FormControl fullWidth>
             <TextField 
-              id="twitter-username"
+              id="twitter-newUsername"
               label="Username"
               variant="outlined"
-              onChange={e => dispatch(setUsername(e.target.value))}
+              onChange={e => dispatch(setNewUsername(e.target.value))}
             />
           </FormControl>
         </Grid>
@@ -62,7 +62,7 @@ export function TwitterSetup() {
 
       { status === 'twitter-not-set-up' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUserAsync(username ?? ''))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}>
             <SaveIcon/>Save
           </Button>
         </Grid>
@@ -70,7 +70,7 @@ export function TwitterSetup() {
 
       { status === 'change' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUserAsync(username ?? ''))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}>
             <SaveIcon/>Save
           </Button>
           <Box marginLeft={2} display='inline'>
