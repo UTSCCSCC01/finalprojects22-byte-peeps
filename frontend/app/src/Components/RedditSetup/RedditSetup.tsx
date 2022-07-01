@@ -6,23 +6,23 @@ import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
-  selectUsername,
+  selectSubreddit,
   selectNotificationMessage,
   selectNotificationShown,
   selectNotificationType,
   setNotificationShown,
   selectStatus,
-  connectUsernameAsync,
-  selectNewUsername,
+  connectSubredditAsync,
+  selectNewSubreddit,
   setStatus,
-  setNewUsername
-} from '../../Redux/Slices/twitterSetup/twitterSetupSlice';
+  setNewSubreddit
+} from '../../Redux/Slices/redditSetup/redditSetupSlice';
 import { Notification } from '../Notification/Notification';
 
-export function TwitterSetup() {
+export function RedditSetup() {
   const status = useAppSelector(selectStatus);
-  const username = useAppSelector(selectUsername);
-  const newUsername = useAppSelector(selectNewUsername);
+  const subreddit = useAppSelector(selectSubreddit);
+  const newSubreddit = useAppSelector(selectNewSubreddit);
   const dispatch = useAppDispatch();
   
   useEffect(() => {
@@ -31,10 +31,10 @@ export function TwitterSetup() {
 
   return (
     <Grid container spacing={2}>
-      { status === 'active' && username &&
+      { status === 'active' && subreddit &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="success">
-            Your Twitter account <i>@{username}</i> is connected.
+            Your Reddit account <i>@{subreddit}</i> is connected.
           </Alert>
         </Grid>
       }
@@ -47,21 +47,21 @@ export function TwitterSetup() {
         </Grid>
       }
 
-      { (status === 'twitter-not-set-up' || status === 'change') &&
+      { (status === 'reddit-not-set-up' || status === 'change') &&
         <Grid item xs={12}>
           <FormControl fullWidth>
             <TextField 
-              label="Username"
+              label="Subreddit Name"
               variant="outlined"
-              onChange={e => dispatch(setNewUsername(e.target.value))}
+              onChange={e => dispatch(setNewSubreddit(e.target.value))}
             />
           </FormControl>
         </Grid>
       }
 
-      { status === 'twitter-not-set-up' &&
+      { status === 'reddit-not-set-up' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectSubredditAsync(newSubreddit ?? ''))}>
             <SaveIcon/>Save
           </Button>
         </Grid>
@@ -69,7 +69,7 @@ export function TwitterSetup() {
 
       { status === 'change' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectSubredditAsync(newSubreddit ?? ''))}>
             <SaveIcon/>Save
           </Button>
           <Box marginLeft={2} display='inline'>

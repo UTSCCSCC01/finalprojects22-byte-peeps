@@ -12,6 +12,7 @@ import StarIcon from '@mui/icons-material/Star';
 import { FacebookSetup } from '../Components/FacebookSetup/FacebookSetup';
 import { InstagramSetup } from '../Components/InstagramSetup/InstagramSetup';
 import { TwitterSetup } from '../Components/TwitterSetup/TwitterSetup';
+import { RedditSetup } from '../Components/RedditSetup/RedditSetup';
 
 export interface ISettProps {}
 
@@ -90,7 +91,7 @@ const Settings: React.FunctionComponent<ISettProps> = (props) => {
           Item Four
         </TabPanel>
         <TabPanel value={value} index={4}>
-          Item Five
+          <RedditSetup />
         </TabPanel>
         <TabPanel value={value} index={5}>
           Item Six

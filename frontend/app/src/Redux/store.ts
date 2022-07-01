@@ -3,6 +3,7 @@ import counterReducer from './Slices/counter/counterSlice';
 import facebookSetupReducer from './Slices/facebookSetup/facebookSetupSlice';
 import instagramSetupReducer from './Slices/instagramSetup/instagramSetupSlice';
 import twitterSetupReducer from './Slices/twitterSetup/twitterSetupSlice';
+import redditSetupReducer from './Slices/redditSetup/redditSetupSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     facebookSetup: facebookSetupReducer,
     instagramSetup: instagramSetupReducer,
     twitterSetup: twitterSetupReducer,
+    redditSetup: redditSetupReducer,
   },
 });
 
