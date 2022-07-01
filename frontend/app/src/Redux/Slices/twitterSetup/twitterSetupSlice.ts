@@ -3,13 +3,13 @@ import { RootState } from '../../store';
 import { fetchSettings, saveUsername } from './twitterSetupAPI';
 
 export interface TwitterSetupState {
- status: 'loading' | 'twitter-not-set-up' | 'active' | 'change',
- username: string | null,
- newUsername: string,
- // Notification
- notificationShown: boolean,
- notificationMessage: string,
- notificationType: 'success' | 'error' | 'warning' | 'info'
+  status: 'loading' | 'twitter-not-set-up' | 'active' | 'change';
+  username: string | null;
+  newUsername: string;
+  // Notification
+  notificationShown: boolean;
+  notificationMessage: string;
+  notificationType: 'success' | 'error' | 'warning' | 'info';
 }
 
 const initialState: TwitterSetupState = {
@@ -18,7 +18,7 @@ const initialState: TwitterSetupState = {
   newUsername: '',
   notificationShown: false,
   notificationMessage: '',
-  notificationType: 'success'
+  notificationType: 'success',
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -72,18 +72,29 @@ export const twitterSetupSlice = createSlice({
         state.username = action.payload.username;
         state.notificationShown = true;
         state.notificationMessage = action.payload.message;
-        state.notificationType = action.payload.status == 'active' ? 'success' : 'error';
+        state.notificationType =
+          action.payload.status == 'active' ? 'success' : 'error';
       });
   },
 });
 
-export const { setStatus, setNewUsername, setNotificationMessage, setNotificationShown, setNotificationType } = twitterSetupSlice.actions;
+export const {
+  setStatus,
+  setNewUsername,
+  setNotificationMessage,
+  setNotificationShown,
+  setNotificationType,
+} = twitterSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.twitterSetup.status;
 export const selectUsername = (state: RootState) => state.twitterSetup.username;
-export const selectNotificationShown = (state: RootState) => state.twitterSetup.notificationShown;
-export const selectNotificationMessage = (state: RootState) => state.twitterSetup.notificationMessage;
-export const selectNotificationType = (state: RootState) => state.twitterSetup.notificationType;
-export const selectNewUsername = (state: RootState) => state.twitterSetup.newUsername;
+export const selectNotificationShown = (state: RootState) =>
+  state.twitterSetup.notificationShown;
+export const selectNotificationMessage = (state: RootState) =>
+  state.twitterSetup.notificationMessage;
+export const selectNotificationType = (state: RootState) =>
+  state.twitterSetup.notificationType;
+export const selectNewUsername = (state: RootState) =>
+  state.twitterSetup.newUsername;
 
 export default twitterSetupSlice.reducer;

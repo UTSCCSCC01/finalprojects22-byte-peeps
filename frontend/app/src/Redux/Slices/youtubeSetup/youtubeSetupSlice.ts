@@ -3,13 +3,13 @@ import { RootState } from '../../store';
 import { fetchSettings, saveChannel } from './youtubeSetupAPI';
 
 export interface youtubeSetupState {
- status: 'loading' | 'youtube-not-set-up' | 'active' | 'change',
- channel: string | null,
- newChannel: string,
- // Notification
- notificationShown: boolean,
- notificationMessage: string,
- notificationType: 'success' | 'error' | 'warning' | 'info'
+  status: 'loading' | 'youtube-not-set-up' | 'active' | 'change';
+  channel: string | null;
+  newChannel: string;
+  // Notification
+  notificationShown: boolean;
+  notificationMessage: string;
+  notificationType: 'success' | 'error' | 'warning' | 'info';
 }
 
 const initialState: youtubeSetupState = {
@@ -18,7 +18,7 @@ const initialState: youtubeSetupState = {
   newChannel: '',
   notificationShown: false,
   notificationMessage: '',
-  notificationType: 'success'
+  notificationType: 'success',
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -72,18 +72,29 @@ export const youtubeSetupSlice = createSlice({
         state.channel = action.payload.channel;
         state.notificationShown = true;
         state.notificationMessage = action.payload.message;
-        state.notificationType = action.payload.status == 'active' ? 'success' : 'error';
+        state.notificationType =
+          action.payload.status == 'active' ? 'success' : 'error';
       });
   },
 });
 
-export const { setStatus, setNewChannel, setNotificationMessage, setNotificationShown, setNotificationType } = youtubeSetupSlice.actions;
+export const {
+  setStatus,
+  setNewChannel,
+  setNotificationMessage,
+  setNotificationShown,
+  setNotificationType,
+} = youtubeSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.youtubeSetup.status;
 export const selectChannel = (state: RootState) => state.youtubeSetup.channel;
-export const selectNotificationShown = (state: RootState) => state.youtubeSetup.notificationShown;
-export const selectNotificationMessage = (state: RootState) => state.youtubeSetup.notificationMessage;
-export const selectNotificationType = (state: RootState) => state.youtubeSetup.notificationType;
-export const selectNewChannel = (state: RootState) => state.youtubeSetup.newChannel;
+export const selectNotificationShown = (state: RootState) =>
+  state.youtubeSetup.notificationShown;
+export const selectNotificationMessage = (state: RootState) =>
+  state.youtubeSetup.notificationMessage;
+export const selectNotificationType = (state: RootState) =>
+  state.youtubeSetup.notificationType;
+export const selectNewChannel = (state: RootState) =>
+  state.youtubeSetup.newChannel;
 
 export default youtubeSetupSlice.reducer;

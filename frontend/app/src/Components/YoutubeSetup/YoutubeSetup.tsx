@@ -1,5 +1,14 @@
 import { useEffect } from 'react';
-import { Alert, Backdrop, CircularProgress, Grid, Button, FormControl, TextField, Box } from '@mui/material';
+import {
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Button,
+  FormControl,
+  TextField,
+  Box,
+} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
@@ -15,7 +24,7 @@ import {
   connectChannelAsync,
   selectNewChannel,
   setStatus,
-  setNewChannel
+  setNewChannel,
 } from '../../Redux/Slices/youtubeSetup/youtubeSetupSlice';
 import { Notification } from '../Notification/Notification';
 
@@ -24,70 +33,96 @@ export function YoutubeSetup() {
   const channel = useAppSelector(selectChannel);
   const newChannel = useAppSelector(selectNewChannel);
   const dispatch = useAppDispatch();
-  
+
   useEffect(() => {
     dispatch(getSettingsAsync());
   }, [dispatch]);
 
   return (
     <Grid container spacing={2}>
-      { status === 'active' && channel &&
+      {status === 'active' && channel && (
         <Grid item xs={12}>
           <Alert variant="standard" severity="success">
             Your youtube channel <i>{channel}</i> is connected.
           </Alert>
         </Grid>
-      }
+      )}
 
-      { status === 'active' &&
+      {status === 'active' && (
         <Grid item xs={12}>
-          <Button variant="contained" color="info" size='large' onClick={() => dispatch(setStatus('change'))}>
-            <EditIcon/>Change
+          <Button
+            variant="contained"
+            color="info"
+            size="large"
+            onClick={() => dispatch(setStatus('change'))}
+          >
+            <EditIcon />
+            Change
           </Button>
         </Grid>
-      }
+      )}
 
-      { (status === 'youtube-not-set-up' || status === 'change') &&
+      {(status === 'youtube-not-set-up' || status === 'change') && (
         <Grid item xs={12}>
           <Alert severity="info">
             <span>Don't know you Channel ID? </span>
-            <a href="https://www.youtube.com/account_advanced" target="_blank">Show Me</a>
+            <a href="https://www.youtube.com/account_advanced" target="_blank">
+              Show Me
+            </a>
           </Alert>
         </Grid>
-      }
+      )}
 
-      { (status === 'youtube-not-set-up' || status === 'change') &&
+      {(status === 'youtube-not-set-up' || status === 'change') && (
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField 
+            <TextField
               label="Channel ID"
               variant="outlined"
-              onChange={e => dispatch(setNewChannel(e.target.value))}
+              onChange={(e) => dispatch(setNewChannel(e.target.value))}
             />
           </FormControl>
         </Grid>
-      }
+      )}
 
-      { status === 'youtube-not-set-up' &&
+      {status === 'youtube-not-set-up' && (
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectChannelAsync(newChannel ?? ''))}>
-            <SaveIcon/>Save
+          <Button
+            variant="contained"
+            color="success"
+            size="large"
+            onClick={() => dispatch(connectChannelAsync(newChannel ?? ''))}
+          >
+            <SaveIcon />
+            Save
           </Button>
         </Grid>
-      }
+      )}
 
-      { status === 'change' &&
+      {status === 'change' && (
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectChannelAsync(newChannel ?? ''))}>
-            <SaveIcon/>Save
+          <Button
+            variant="contained"
+            color="success"
+            size="large"
+            onClick={() => dispatch(connectChannelAsync(newChannel ?? ''))}
+          >
+            <SaveIcon />
+            Save
           </Button>
-          <Box marginLeft={2} display='inline'>
-            <Button variant="contained" color="error" size='large' onClick={() => dispatch(setStatus('active'))}>
-              <DoDisturbIcon/>Cancel
+          <Box marginLeft={2} display="inline">
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              onClick={() => dispatch(setStatus('active'))}
+            >
+              <DoDisturbIcon />
+              Cancel
             </Button>
           </Box>
         </Grid>
-      }
+      )}
 
       <Notification
         message={useAppSelector(selectNotificationMessage)}

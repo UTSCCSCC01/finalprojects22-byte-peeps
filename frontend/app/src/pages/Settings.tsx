@@ -34,9 +34,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>{children}</Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -54,7 +52,7 @@ const Settings: React.FunctionComponent<ISettProps> = (props) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-    
+
   const navigate = useNavigate();
 
   return (
@@ -106,6 +104,6 @@ const Settings: React.FunctionComponent<ISettProps> = (props) => {
       </Box>
     </>
   );
-}
+};
 
-export default Settings
+export default Settings;

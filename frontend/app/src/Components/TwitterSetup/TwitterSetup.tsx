@@ -1,5 +1,15 @@
 import { useEffect } from 'react';
-import { Alert, Backdrop, CircularProgress, Grid, Button, FormControl, InputLabel, TextField, Box } from '@mui/material';
+import {
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Button,
+  FormControl,
+  InputLabel,
+  TextField,
+  Box,
+} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
@@ -15,7 +25,7 @@ import {
   connectUsernameAsync,
   selectNewUsername,
   setStatus,
-  setNewUsername
+  setNewUsername,
 } from '../../Redux/Slices/twitterSetup/twitterSetupSlice';
 import { Notification } from '../Notification/Notification';
 
@@ -24,61 +34,85 @@ export function TwitterSetup() {
   const username = useAppSelector(selectUsername);
   const newUsername = useAppSelector(selectNewUsername);
   const dispatch = useAppDispatch();
-  
+
   useEffect(() => {
     dispatch(getSettingsAsync());
   }, [dispatch]);
 
   return (
     <Grid container spacing={2}>
-      { status === 'active' && username &&
+      {status === 'active' && username && (
         <Grid item xs={12}>
           <Alert variant="standard" severity="success">
             Your Twitter account <i>@{username}</i> is connected.
           </Alert>
         </Grid>
-      }
+      )}
 
-      { status === 'active' &&
+      {status === 'active' && (
         <Grid item xs={12}>
-          <Button variant="contained" color="info" size='large' onClick={() => dispatch(setStatus('change'))}>
-            <EditIcon/>Change
+          <Button
+            variant="contained"
+            color="info"
+            size="large"
+            onClick={() => dispatch(setStatus('change'))}
+          >
+            <EditIcon />
+            Change
           </Button>
         </Grid>
-      }
+      )}
 
-      { (status === 'twitter-not-set-up' || status === 'change') &&
+      {(status === 'twitter-not-set-up' || status === 'change') && (
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField 
+            <TextField
               label="Username"
               variant="outlined"
-              onChange={e => dispatch(setNewUsername(e.target.value))}
+              onChange={(e) => dispatch(setNewUsername(e.target.value))}
             />
           </FormControl>
         </Grid>
-      }
+      )}
 
-      { status === 'twitter-not-set-up' &&
+      {status === 'twitter-not-set-up' && (
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}>
-            <SaveIcon/>Save
+          <Button
+            variant="contained"
+            color="success"
+            size="large"
+            onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}
+          >
+            <SaveIcon />
+            Save
           </Button>
         </Grid>
-      }
+      )}
 
-      { status === 'change' &&
+      {status === 'change' && (
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}>
-            <SaveIcon/>Save
+          <Button
+            variant="contained"
+            color="success"
+            size="large"
+            onClick={() => dispatch(connectUsernameAsync(newUsername ?? ''))}
+          >
+            <SaveIcon />
+            Save
           </Button>
-          <Box marginLeft={2} display='inline'>
-            <Button variant="contained" color="error" size='large' onClick={() => dispatch(setStatus('active'))}>
-              <DoDisturbIcon/>Cancel
+          <Box marginLeft={2} display="inline">
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              onClick={() => dispatch(setStatus('active'))}
+            >
+              <DoDisturbIcon />
+              Cancel
             </Button>
           </Box>
         </Grid>
-      }
+      )}
 
       <Notification
         message={useAppSelector(selectNotificationMessage)}
