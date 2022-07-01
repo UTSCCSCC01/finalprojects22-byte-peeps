@@ -82,7 +82,7 @@ const SentimentPieChart = ({
         </Pie>
       </PieChart>
     </ResponsiveContainer>
-  ) : isDataPresent !== null ? (
+  ) : !isDataPresent && error === null ? (
     <Typography variant="subtitle2" align="center" paragraph>
       No Data Present for Selected Date Range
     </Typography>

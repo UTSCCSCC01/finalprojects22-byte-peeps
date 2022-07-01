@@ -10,7 +10,7 @@ export interface SentimentAnalysis {
 
 // Define a type for the slice state
 export interface FacebookState {
-  sentimentAnalysis: SentimentAnalysis;
+  sentimentAnalysis: SentimentAnalysis | null;
   isSentimentAnalysisLoading: boolean;
   error: string | null;
   startDate: String;
@@ -69,6 +69,7 @@ export const facebookSlice = createSlice({
         getCommentsSentimentAnalysis.rejected,
         (state, { payload }: any) => {
           state.isSentimentAnalysisLoading = false;
+          state.sentimentAnalysis = null;
           state.error =
             payload?.message ||
             'There was a problem retrieving the sentiment analysis data.';

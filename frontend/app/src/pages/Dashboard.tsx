@@ -46,16 +46,18 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
     { name: 'Negative', value: 0 },
     { name: 'Neutral', value: 0 },
   ];
-  // let isDataPresent = false;
-  data[0].value = dataRetured.positive;
-  data[1].value = dataRetured.negative;
-  data[2].value = dataRetured.neutral;
-  const isDataPresent =
-    data[0].value > 0 || data[1].value > 0 || data[2].value > 0
-      ? true
-      : data[0].value === 0 || data[1].value === 0 || data[2].value === 0
-      ? false
-      : null;
+  let isDataPresent: Boolean | null = null;
+  if (dataRetured) {
+    data[0].value = dataRetured.positive;
+    data[1].value = dataRetured.negative;
+    data[2].value = dataRetured.neutral;
+    isDataPresent =
+      data[0].value > 0 || data[1].value > 0 || data[2].value > 0
+        ? true
+        : data[0].value === 0 || data[1].value === 0 || data[2].value === 0
+        ? false
+        : null;
+  }
   const COLORS = [
     SentimentAnalysisColors.Positive,
     SentimentAnalysisColors.Neutral,
