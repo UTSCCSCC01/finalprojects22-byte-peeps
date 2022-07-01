@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../store';
-import { fetchSentimentAnalysis } from './facebookAPI';
+import { fetchFacebookStats, fetchSentimentAnalysis } from './facebookAPI';
 
 interface SentimentAnalysis {
-    positve: number,
-    neutral: number,
-    negative: number
+  positve: number;
+  neutral: number;
+  negative: number;
+}
+
+interface Stats {
+  totalCommments: number;
+  totalLikes: number;
 }
 
 // Define a type for the slice state
@@ -13,6 +18,7 @@ export interface FacebookState {
   sentimentAnalysis: SentimentAnalysis;
   isSentimentAnalysisLoading: boolean;
   error: string | null;
+  stats: Stats | null;
 }
 
 // Define the initial state using that type
@@ -23,7 +29,8 @@ const initialState: FacebookState = {
     negative: -1,
   },
   isSentimentAnalysisLoading: false,
-  error: null
+  error: null,
+  stats: null
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -39,6 +46,18 @@ export const getCommentsSentimentAnalysis = createAsyncThunk(
     return response.data;
   }
 );
+
+// export const getCommentsSentimentAnalysis = createAsyncThunk(
+//   'facebook/sentiment_analysis',
+//   async (_, { dispatch, getState, rejectWithValue }: any) => {
+//     const startDate = selectStartDate(getState())
+//       .split('T')[0]
+//       .replaceAll('-', '');
+//     const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
+//     const response = await fetchSentimentAnalysis(startDate, endDate);
+//     return response;
+//   }
+// );
 
 export const facebookSlice = createSlice({
   name: 'facebook',
@@ -58,20 +77,25 @@ export const facebookSlice = createSlice({
         state.sentimentAnalysis = payload.results;
         state.error = null;
       })
-      .addCase(getCommentsSentimentAnalysis.rejected, (state, { payload }: any) => {
-        state.isSentimentAnalysisLoading = false;
-        state.error = payload?.message || "There was a problem retrieving the sentiment analysis data.";
-      });
+      .addCase(
+        getCommentsSentimentAnalysis.rejected,
+        (state, { payload }: any) => {
+          state.isSentimentAnalysisLoading = false;
+          state.error =
+            payload?.message ||
+            'There was a problem retrieving the sentiment analysis data.';
+        }
+      );
   },
 });
-
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 // export const orderSliceSelector = (state: RootState) => state['facebook'];
 
-export const selectSentimentAnalysis = (state: RootState) => state.facebook.sentimentAnalysis;
+export const selectSentimentAnalysis = (state: RootState) =>
+  state.facebook.sentimentAnalysis;
 // export const selectCount = (state: RootState) => state.counter.value;
 
 // We can also write thunks by hand, which may contain both sync and async logic.
