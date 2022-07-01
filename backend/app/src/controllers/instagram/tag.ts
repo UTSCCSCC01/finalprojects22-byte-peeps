@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import InstagramTag from '../../models/instagram/tag';
-import { SentimentAnalysisStatus } from '.././enums';
+import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the 50 most recent Instagram tags

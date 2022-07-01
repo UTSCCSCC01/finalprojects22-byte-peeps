@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import InstagramComment from '../../models/instagram/comment';
 const { sequelize, Op } = require('sequelize');
-import { SentimentAnalysisStatus } from '.././enums';
+import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the 50 most recent Instagram comments

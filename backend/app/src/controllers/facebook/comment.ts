@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import FacebookComment from '../../models/facebook/comment';
 const { Op } = require('sequelize');
-import { SentimentAnalysisStatus } from '.././enums';
+import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the 50 most recent Facebook comments
