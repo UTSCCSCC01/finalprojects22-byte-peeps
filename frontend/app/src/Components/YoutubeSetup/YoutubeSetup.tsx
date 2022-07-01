@@ -1,28 +1,28 @@
 import { useEffect } from 'react';
-import { Alert, Backdrop, CircularProgress, Grid, Button, FormControl, InputLabel, TextField, Box } from '@mui/material';
+import { Alert, Backdrop, CircularProgress, Grid, Button, FormControl, TextField, Box } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
-  selectSubreddit,
+  selectChannel,
   selectNotificationMessage,
   selectNotificationShown,
   selectNotificationType,
   setNotificationShown,
   selectStatus,
-  connectSubredditAsync,
-  selectNewSubreddit,
+  connectChannelAsync,
+  selectNewChannel,
   setStatus,
-  setNewSubreddit
-} from '../../Redux/Slices/redditSetup/redditSetupSlice';
+  setNewChannel
+} from '../../Redux/Slices/youtubeSetup/youtubeSetupSlice';
 import { Notification } from '../Notification/Notification';
 
-export function RedditSetup() {
+export function YoutubeSetup() {
   const status = useAppSelector(selectStatus);
-  const subreddit = useAppSelector(selectSubreddit);
-  const newSubreddit = useAppSelector(selectNewSubreddit);
+  const channel = useAppSelector(selectChannel);
+  const newChannel = useAppSelector(selectNewChannel);
   const dispatch = useAppDispatch();
   
   useEffect(() => {
@@ -31,10 +31,10 @@ export function RedditSetup() {
 
   return (
     <Grid container spacing={2}>
-      { status === 'active' && subreddit &&
+      { status === 'active' && channel &&
         <Grid item xs={12}>
           <Alert variant="standard" severity="success">
-            Your Reddit account <i>{subreddit}</i> is connected.
+            Your youtube channel <i>{channel}</i> is connected.
           </Alert>
         </Grid>
       }
@@ -47,21 +47,30 @@ export function RedditSetup() {
         </Grid>
       }
 
-      { (status === 'reddit-not-set-up' || status === 'change') &&
+      { (status === 'youtube-not-set-up' || status === 'change') &&
+        <Grid item xs={12}>
+          <Alert severity="info">
+            <span>Don't know you Channel ID? </span>
+            <a href="https://www.youtube.com/account_advanced" target="_blank">Show Me</a>
+          </Alert>
+        </Grid>
+      }
+
+      { (status === 'youtube-not-set-up' || status === 'change') &&
         <Grid item xs={12}>
           <FormControl fullWidth>
             <TextField 
-              label="Subreddit Name"
+              label="Channel ID"
               variant="outlined"
-              onChange={e => dispatch(setNewSubreddit(e.target.value))}
+              onChange={e => dispatch(setNewChannel(e.target.value))}
             />
           </FormControl>
         </Grid>
       }
 
-      { status === 'reddit-not-set-up' &&
+      { status === 'youtube-not-set-up' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectSubredditAsync(newSubreddit ?? ''))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectChannelAsync(newChannel ?? ''))}>
             <SaveIcon/>Save
           </Button>
         </Grid>
@@ -69,7 +78,7 @@ export function RedditSetup() {
 
       { status === 'change' &&
         <Grid item xs={12}>
-          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectSubredditAsync(newSubreddit ?? ''))}>
+          <Button variant="contained" color="success" size='large' onClick={() => dispatch(connectChannelAsync(newChannel ?? ''))}>
             <SaveIcon/>Save
           </Button>
           <Box marginLeft={2} display='inline'>

@@ -4,6 +4,7 @@ import facebookSetupReducer from './Slices/facebookSetup/facebookSetupSlice';
 import instagramSetupReducer from './Slices/instagramSetup/instagramSetupSlice';
 import twitterSetupReducer from './Slices/twitterSetup/twitterSetupSlice';
 import redditSetupReducer from './Slices/redditSetup/redditSetupSlice';
+import youtubeSetupReducer from './Slices/youtubeSetup/youtubeSetupSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     instagramSetup: instagramSetupReducer,
     twitterSetup: twitterSetupReducer,
     redditSetup: redditSetupReducer,
+    youtubeSetup: youtubeSetupReducer,
   },
 });
 
