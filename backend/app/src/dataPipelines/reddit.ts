@@ -164,3 +164,13 @@ const updateComment = async (listing: RedditListing) => {
         }
     })
 }
+/**
+ * Cron Job to run the Reddit update script on a daily basis
+ */
+export const redditScheduledJob = new CronJob(
+    '0 0 * * *', // Daily
+    startPipeline,
+    null,
+    false,
+    'America/Toronto'
+);

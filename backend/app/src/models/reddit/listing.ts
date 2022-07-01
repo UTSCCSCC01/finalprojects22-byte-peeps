@@ -9,7 +9,7 @@ import RedditSubreddit from "./subreddit";
 export default class RedditListing extends Model {
   @AllowNull(false)
   @Column
-  dataid: string
+  dataId: string
 
   @AllowNull(false)
   @Column
