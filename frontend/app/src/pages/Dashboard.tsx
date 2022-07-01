@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
-import PieChart from '../Components/Charts/PieChart/SentimentPieChart';
+import PieChart from '../Components/Charts/PieChart/PieChart';
 import { Typography } from '@mui/material';
 import CardCharts from '../Components/Cards/CardCharts';
 import CardInfo from '../Components/Cards/CardInfo';
@@ -18,7 +18,7 @@ import {
   selectIsSentimentAnalysisLoading,
 } from '../Redux/Slices/facebook/facebookSlice';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
-import { PieChartAnalysis } from '../Components/Charts/PieChart/SentimentPieChart';
+import { PieChartAnalysis } from '../Components/Charts/PieChart/PieChart';
 import { SentimentAnalysisColors } from '../utils/enums';
 
 export interface IDashProps {}

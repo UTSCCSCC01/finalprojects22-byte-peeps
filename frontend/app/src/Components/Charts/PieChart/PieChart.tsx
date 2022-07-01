@@ -3,14 +3,14 @@ import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { CircularProgress } from '@mui/material';
 import { Typography } from '@mui/material';
 
-interface SentimentAnalysisData {
+interface SeriesData {
   name: String;
   value: Number;
 }
 
 export interface PieChartAnalysis {
   COLORS: string[];
-  data: SentimentAnalysisData[];
+  data: SeriesData[];
   isLoading: Boolean;
   error: String | null;
   isDataPresent: Boolean | null;
