@@ -7,7 +7,7 @@ import {
 } from './facebookSetupAPI';
 
 export interface FacebookSetupState {
-  stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive';
+  stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive' | 'change';
   pages: { id: string; name: string; access_token: string }[];
   currentPage: string | null;
   // Notification
@@ -62,6 +62,9 @@ export const facebookSetupSlice = createSlice({
     setNotificationType: (state, action) => {
       state.notificationType = action.payload;
     },
+    setStage: (state, action) => {
+      state.stage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -104,6 +107,7 @@ export const facebookSetupSlice = createSlice({
 });
 
 export const {
+  setStage,
   setCurrentPage,
   setNotificationMessage,
   setNotificationShown,

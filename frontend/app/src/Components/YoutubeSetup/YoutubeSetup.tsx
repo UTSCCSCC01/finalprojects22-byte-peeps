@@ -65,7 +65,7 @@ export function YoutubeSetup() {
       {(status === 'youtube-not-set-up' || status === 'change') && (
         <Grid item xs={12}>
           <Alert severity="info">
-            <span>Don't know you Channel ID? </span>
+            <span>Don't know your Channel ID? </span>
             <a href="https://www.youtube.com/account_advanced" target="_blank">
               Show Me
             </a>
