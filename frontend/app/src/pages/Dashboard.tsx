@@ -167,7 +167,6 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               >
                 Sentiment Analysis
               </Typography>
-              {console.log(facebookSentimentAnalysis)}
               <PieChart {...facebookSentimentAnalysis} />
             </CardCharts>
           </Grid>

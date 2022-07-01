@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import FacebookComment from '../../models/facebook/comment';
 const { Op } = require('sequelize');
+import { SentimentAnalysisStatus } from '.././enums';
 
 /**
  * Provides the 50 most recent Facebook comments
@@ -75,7 +76,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         endDate = new Date(year_end, month_end - 1, day_end + 1);
         const positive = await FacebookComment.count({
           where: {
-            sentimentAnalysis: 'positive',
+            sentimentAnalysis: SentimentAnalysisStatus.Positive,
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -83,7 +84,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const neutral = await FacebookComment.count({
           where: {
-            sentimentAnalysis: 'neutral',
+            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -91,7 +92,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const negative = await FacebookComment.count({
           where: {
-            sentimentAnalysis: 'negative',
+            sentimentAnalysis: SentimentAnalysisStatus.Negative,
             date: {
               [Op.between]: [startDate, endDate],
             },

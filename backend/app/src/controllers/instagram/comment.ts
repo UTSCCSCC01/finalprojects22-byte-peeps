@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import InstagramComment from '../../models/instagram/comment';
 const { sequelize, Op } = require('sequelize');
+import { SentimentAnalysisStatus } from '.././enums';
 
 /**
  * Provides the 50 most recent Instagram comments
@@ -75,7 +76,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         endDate = new Date(year_end, month_end - 1, day_end + 1);
         const positive = await InstagramComment.count({
           where: {
-            sentimentAnalysis: 'positive',
+            sentimentAnalysis: SentimentAnalysisStatus.Positive,
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -83,7 +84,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const neutral = await InstagramComment.count({
           where: {
-            sentimentAnalysis: 'neutral',
+            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -91,7 +92,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const negative = await InstagramComment.count({
           where: {
-            sentimentAnalysis: 'negative',
+            sentimentAnalysis: SentimentAnalysisStatus.Negative,
             date: {
               [Op.between]: [startDate, endDate],
             },
