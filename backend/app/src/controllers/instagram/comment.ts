@@ -1,5 +1,7 @@
 import { RequestHandler } from 'express';
 import InstagramComment from '../../models/instagram/comment';
+const { sequelize, Op } = require('sequelize');
+import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the 50 most recent Instagram comments
@@ -39,8 +41,8 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     where: { subjectivityAnalysis: 'objective' },
   });
   res.send({
-    'subjective': subjective,
-    'objective': objective
+    subjective: subjective,
+    objective: objective,
   });
 };
 
@@ -52,18 +54,60 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
   res,
   next
 ) => {
-  const positive = await InstagramComment.count({
-    where: { sentimentAnalysis: 'positive' },
-  });
-  const neutral = await InstagramComment.count({
-    where: { sentimentAnalysis: 'neutral' },
-  });
-  const negative = await InstagramComment.count({
-    where: { sentimentAnalysis: 'negative' },
-  });
-  res.send({
-    'positive': positive,
-    'neutral': neutral,
-    'negative': negative,
-  });
+  const startDateParam = req.query.start;
+  const endDateParam = req.query.end;
+
+  let startDate: Date;
+  let endDate: Date;
+
+  if (startDateParam && endDateParam) {
+    if (startDateParam.length === 8 && endDateParam.length === 8) {
+      // parse
+      const year = parseInt(startDateParam.toString().substring(0, 4));
+      const month = parseInt(startDateParam.toString().substring(4, 6));
+      const day = parseInt(startDateParam.toString().substring(6, 8));
+
+      const year_end = parseInt(endDateParam.toString().substring(0, 4));
+      const month_end = parseInt(endDateParam.toString().substring(4, 6));
+      const day_end = parseInt(endDateParam.toString().substring(6, 8));
+
+      try {
+        startDate = new Date(year, month - 1, day);
+        endDate = new Date(year_end, month_end - 1, day_end + 1);
+        const positive = await InstagramComment.count({
+          where: {
+            sentimentAnalysis: SentimentAnalysisStatus.Positive,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+        });
+        const neutral = await InstagramComment.count({
+          where: {
+            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+        });
+        const negative = await InstagramComment.count({
+          where: {
+            sentimentAnalysis: SentimentAnalysisStatus.Negative,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+        });
+        res.send({
+          positive: positive,
+          neutral: neutral,
+          negative: negative,
+        });
+      } catch (error) {
+        res.status(400).send({ message: 'Invalid Data Input' });
+      }
+    }
+  } else {
+    res.status(400).send({ message: 'Invalid Date Input' });
+  }
 };
