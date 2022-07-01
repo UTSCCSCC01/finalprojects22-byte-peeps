@@ -8,7 +8,11 @@ import RedditSubreddit from "./subreddit";
 export default class RedditListing extends Model {
   @AllowNull(false)
   @Column
-  title: string;
+  dataId: string
+
+  @AllowNull(false)
+  @Column
+  title: string
 
   @AllowNull(false)
   @Column
@@ -28,6 +32,10 @@ export default class RedditListing extends Model {
 
   @DeletedAt
   deletedAt?: Date;
+
+  @AllowNull(false)
+  @Column
+  permalink: string
 
   @ForeignKey(() => RedditSubreddit)
   @AllowNull(false)
