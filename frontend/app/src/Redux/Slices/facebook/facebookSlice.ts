@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { fetchSentimentAnalysis } from './facebookAPI';
 
-interface SentimentAnalysis {
+export interface SentimentAnalysis {
   positive: number;
   neutral: number;
   negative: number;

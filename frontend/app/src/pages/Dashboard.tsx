@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
@@ -11,6 +11,14 @@ import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import DateSelector from '../Components/DateSelector/DateSelector';
+import {
+  getCommentsSentimentAnalysis,
+  selectSentimentAnalysis,
+  selectError,
+  selectIsSentimentAnalysisLoading,
+} from '../Redux/Slices/facebook/facebookSlice';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { PieChartAnalysis } from '../Components/Charts/PieChart/SentimentPieChart';
 
 export interface IDashProps {}
 
@@ -24,6 +32,44 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // Sentiment Analysis (PieChart)
+  const dataRetured = useAppSelector(selectSentimentAnalysis);
+  const error = useAppSelector(selectError);
+  const isSentimentAnalysisLoading = useAppSelector(
+    selectIsSentimentAnalysisLoading
+  );
+  const data = [
+    { name: 'Positve', value: 0 },
+    { name: 'Negative', value: 0 },
+    { name: 'Neutral', value: 0 },
+  ];
+  // let isDataPresent = false;
+  data[0].value = dataRetured.positive;
+  data[1].value = dataRetured.negative;
+  data[2].value = dataRetured.neutral;
+  const isDataPresent =
+    data[0].value > 0 || data[1].value > 0 || data[2].value > 0
+      ? true
+      : data[0].value === 0 || data[1].value === 0 || data[2].value === 0
+      ? false
+      : null;
+  const COLORS = ['#71a6de', '#09213b', '#0088FE'];
+
+  const facebookSentimentAnalysis: PieChartAnalysis = {
+    data,
+    isLoading: isSentimentAnalysisLoading,
+    error,
+    isDataPresent,
+    COLORS,
+  };
+
+  useEffect(() => {
+    // Sentiment Analysis (PieChart)
+    dispatch(getCommentsSentimentAnalysis());
+  }, [dispatch]);
+
   return (
     <>
       <div
@@ -121,7 +167,8 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               >
                 Sentiment Analysis
               </Typography>
-              <PieChart />
+              {console.log(facebookSentimentAnalysis)}
+              <PieChart {...facebookSentimentAnalysis} />
             </CardCharts>
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
