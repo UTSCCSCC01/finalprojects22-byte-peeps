@@ -1,13 +1,13 @@
 .recharts-cartesian-axis-tick {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 .recharts-legend-item {
-  font-size: 0.55rem;
+  font-size: 0.7rem;
 }
 .recharts-label {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
 }
 .tooltiptext {
   visibility: hidden;
