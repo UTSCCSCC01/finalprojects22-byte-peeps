@@ -1,15 +1,16 @@
-import React from 'react'
+import React from 'react';
 import { CardContent, Card } from '@mui/material';
 
-
-const CardCharts = (props: any) => {
-  return (
-    <Card>
-      <CardContent>
-        {props.children}
-      </CardContent>
-    </Card>
-  )
+interface Props {
+  children: React.ReactNode;
 }
 
-export default CardCharts
+const CardCharts: React.FC<Props> = (props) => {
+  return (
+    <Card>
+      <CardContent>{props.children}</CardContent>
+    </Card>
+  );
+};
+
+export default CardCharts;

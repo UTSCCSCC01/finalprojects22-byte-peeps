@@ -19,6 +19,7 @@ import {
 } from '../Redux/Slices/facebook/facebookSlice';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { PieChartAnalysis } from '../Components/Charts/PieChart/SentimentPieChart';
+import { SentimentAnalysisColors } from '../utils/enums';
 
 export interface IDashProps {}
 
@@ -55,7 +56,11 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
       : data[0].value === 0 || data[1].value === 0 || data[2].value === 0
       ? false
       : null;
-  const COLORS = ['#71a6de', '#09213b', '#0088FE'];
+  const COLORS = [
+    SentimentAnalysisColors.Positive,
+    SentimentAnalysisColors.Neutral,
+    SentimentAnalysisColors.Negative,
+  ];
 
   const facebookSentimentAnalysis: PieChartAnalysis = {
     data,
