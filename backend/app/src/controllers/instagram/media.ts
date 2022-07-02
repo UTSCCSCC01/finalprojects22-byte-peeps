@@ -73,13 +73,13 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res
             }
           });
 
-
+          const total = positive + negative + neutral
           data.push({
             date: media.date.toLocaleDateString(),
             time: media.date.toLocaleTimeString('it-IT'),
-            positive,
-            negative,
-            neutral
+            positive: positive / total * 100,
+            negative: negative / total * 100,
+            neutral: neutral / total * 100
           })
         }
 
