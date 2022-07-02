@@ -7,12 +7,14 @@ const getAnalysis = async (
   endDateTime: string
 ): Promise<{
   data: {
-    date: string;
-    time: string;
-    positive: number;
-    negative: number;
-    neutral: number;
-  }[];
+    data: {
+      date: string;
+      time: string;
+      positive: number;
+      negative: number;
+      neutral: number;
+    }[];
+  };
 }> => {
   return HTTP.get('/instagram/media/sentiment_analysis', {
     params: { start: startDateTime, end: endDateTime },

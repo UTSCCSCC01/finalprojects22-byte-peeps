@@ -13,23 +13,26 @@ import Surveys from './pages/Surveys';
 import ReviewApps from './pages/ReviewApps';
 import SocialMedia from './pages/SocialMedia';
 import Header from './Components/Header';
-
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+const queryClient = new QueryClient();
 export interface IAppProps {}
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
   return (
     <>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="surveys" element={<Surveys />} />
-          <Route path="reviews" element={<ReviewApps />} />
-          <Route path="socials" element={<SocialMedia />} />
-        </Routes>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="surveys" element={<Surveys />} />
+            <Route path="reviews" element={<ReviewApps />} />
+            <Route path="socials" element={<SocialMedia />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
     </>
   );
 };

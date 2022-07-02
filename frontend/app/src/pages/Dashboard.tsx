@@ -3,8 +3,8 @@ import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
 import PieChart from '../Components/Charts/PieChart/SentimentPieChart';
-import TimeSeriesChartExample from '../Components/Charts/TimeSeriesChart/TimeSeriesChartExample';
-import InstagramCommentsTimeSeries from '../Components/Charts/TimeSeriesChart/InstagramCommentsTimeSeries';
+
+import TimesSeriesChartExample from '../Components/TimeSeriesChart/TimeSeriesChartExample';
 import { Typography } from '@mui/material';
 import CardCharts from '../Components/Cards/CardCharts';
 import CardInfo from '../Components/Cards/CardInfo';
@@ -157,7 +157,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               >
                 Sentiment Analysis
               </Typography>
-              <InstagramCommentsTimeSeries />
+              <TimesSeriesChartExample />
             </Item>
           </Grid>
         </Grid>
