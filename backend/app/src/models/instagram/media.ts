@@ -1,9 +1,8 @@
-import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull, Default } from 'sequelize-typescript';
+import { Table, Model, Column, BelongsTo, HasMany, ForeignKey, AllowNull, Default, DataType, DeletedAt } from 'sequelize-typescript';
 import InstagramApi from './api';
 import InstagramComment from './comment';
 
 @Table({
-  timestamps: false,
   tableName: 'instagram_media',
 })
 export default class InstagramMedia extends Model {
@@ -12,7 +11,7 @@ export default class InstagramMedia extends Model {
   dataId: string
   
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   caption: string
 
   @AllowNull
@@ -26,6 +25,9 @@ export default class InstagramMedia extends Model {
   @Default(0)
   @Column
   numComments: number
+
+  @DeletedAt
+  deletedAt: Date
 
   @HasMany(() => InstagramComment)
   comments: InstagramComment[];

@@ -1,8 +1,7 @@
-import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Default, DeletedAt, ForeignKey, Model, Table } from "sequelize-typescript";
 import InstagramMedia from "./media";
 
 @Table({
-  timestamps: false,
   tableName: 'instagram_comments',
 })
 export default class InstagramComment extends Model {
@@ -15,7 +14,7 @@ export default class InstagramComment extends Model {
   userName: string
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   message: string
 
   @AllowNull
@@ -25,6 +24,18 @@ export default class InstagramComment extends Model {
   @Default(0)
   @Column
   likes: number
+
+  @Column
+  sentimentAnalysis: string
+
+  @Column
+  topicClassification: string
+
+  @Column
+  subjectivityAnalysis: string
+
+  @DeletedAt
+  deletedAt: Date
 
   @ForeignKey(() => InstagramMedia)
   @AllowNull(false)

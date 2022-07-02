@@ -50,8 +50,8 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 - If you were on MacOS, you need to download Pgadmin [here](https://www.pgadmin.org/download/pgadmin-4-macos/)
 - Open Pgadmin
 - Click on Local server
-  - If you do not see this option on the dashboard, click 'Add New Server'. 
-  - Under the ``Connection`` tab fill in 'localhost' for the host name field
+  - If you do not see this option on the dashboard, click 'Add New Server'.
+  - Under the `Connection` tab fill in 'localhost' for the host name field
   - Ensure port 5432 is the selected port
   - Input your postgres password. If you get a password authentication error and cannot remember your password then [reset it](https://stackoverflow.com/a/67902158)
 - Right click databases
@@ -78,6 +78,10 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 
 ### Backend Setup
 
+Before completing your backend set up, you require a [DatumBox](https://www.datumbox.com/machine-learning-api/) API key. To obtain the key, you require to go register on the DatumBox [website](https://www.datumbox.com/machine-learning-api/): click register, then go back to this [page](https://www.datumbox.com/machine-learning-api/), scroll down to `How to use the API?` on the bottom right and click the text hyperlink `API Key`.
+
+Now you can complete the backend set up.
+
 1. cd into the backend folder then app folder and run the command:
 
 ```
@@ -87,11 +91,19 @@ npm i --include=dev
 2. Create a `.env` file in the `backend/app` directory. Paste the following content
 
 ```
+BACKEND_PORT=3000
+FRONTEND_PORT=3001
+
 VIRTUAL_HOST=localhost
 PORT=5432
 POSTGRES_DB=c01
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=<YOUR-POSTGRES-PASSWORD>
+DATUMBOX_API_KEY=<YOUR-DATUMBOX-API-KEY>
+
+# Facebook API
+FACEBOOK_APP_ID=724313855458609
+FACEBOOK_APP_SECRET=<FACEBOOK-APP-SECRET>
 ```
 
 3. To run the dev server:
@@ -112,7 +124,10 @@ npm i --include=dev
 
 ```
 REACT_APP_BACKEND_ENDPOINT=http://localhost:3000/
-PORT=80
+PORT=3001
+
+# Facebook API
+REACT_APP_FACEBOOK_APP_ID=724313855458609
 ```
 
 3. To start the server:
@@ -163,7 +178,31 @@ Due to github actions being displayed, we will be running the github actions loc
 
 Currently, the website is deployed at: https://c01.mohamedtayeh.com/
 
-Deployment instructions coming soon...
+- Installation:
+
+  - **Pre-requisite:** must have docker installed and instructions are [here](https://docs.docker.com/engine/install/)
+  - Act command line tool installation instructions [here](https://github.com/nektos/act)
+
+- Files:
+
+  - The following files are needed and should be placed at the root directy of the code:
+
+    1. `ssh-key.txt`
+    2. `my.secrets`
+
+- Run the following commands at the root directory:
+
+  1. Backend Deployment:
+
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
+  ```
+
+  2. Frontend Deployment:
+
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-frontend.yml
+  ```
 
 ## Authors
 

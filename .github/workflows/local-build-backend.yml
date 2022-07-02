@@ -1,0 +1,62 @@
+name: Publish Backend to Virtual Machine
+
+on:
+  push:
+    # Only run this workflow if it is a commit to main.
+    branches:
+      - main
+    # Only run this workflow if the commit has modified files from backend
+    paths:
+      - backend/**
+      - .github/workflows/build-backend.yml
+
+jobs:
+  # Push image to GitHub Packages - https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create backend env vars
+        working-directory: backend/app
+        run: |
+          touch .env
+          echo VIRTUAL_HOST=${{ secrets.VIRTUAL_HOST }} >> .env
+          echo PORT=${{ secrets.POSTGRES_PORT }} >> .env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag backend-bytepeeps
+
+      - name: Export image to tar
+        run: docker save -o backend-bytepeeps.tar backend-bytepeeps
+
+      - name: scp command to copy image to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          source: './backend-bytepeeps.tar'
+          target: '~/images/'
+
+      - name: ssh commands to deploy load and deploy the docker containers
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker load < ~/images/backend-bytepeeps.tar && docker compose up -d
+
+      # Command
+      # act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml

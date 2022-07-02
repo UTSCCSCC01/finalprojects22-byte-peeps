@@ -1,0 +1,59 @@
+name: Publish Frontend to Virtual Machine
+
+on:
+  push:
+    # Only run this workflow if it is a commit to main.
+    branches:
+      - main
+    # Only run this workflow if the commit has modified files from frontend
+    paths:
+      - frontend/**
+      - .github/workflows/build-frontend.yml
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create frontend env vars
+        working-directory: frontend/app
+        run: |
+          touch .env
+          echo REACT_APP_BACKEND_ENDPOINT=${{ secrets.REACT_APP_BACKEND_ENDPOINT }} >> .env
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag frontend-bytepeeps --no-cache
+
+      - name: Export image to tar
+        run: docker save -o frontend-bytepeeps.tar frontend-bytepeeps
+
+      - name: scp command to copy image to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          source: './frontend-bytepeeps.tar'
+          target: '~/images/'
+
+      - name: ssh commands to deploy load and deploy the docker containers
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d
+
+      # Command
+      # act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
