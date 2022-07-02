@@ -19,35 +19,13 @@ import setupRoutes from './routes/setup/routes';
 import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
 import errorHandler from './middlewares/errorHandler';
+import corsHandler from './middlewares/corsHandler';
 
 const app = express();
 
 const PORT = process.env.BACKEND_PORT;
 
-// Adapted from: https://medium.com/zero-equals-false/using-cors-in-express-cac7e29b005b
-let allowedOrigins = [
-  `http://localhost:${process.env.FRONTEND_PORT}`,
-  'http://yourapp.com',
-];
-
-app.use(
-  cors({
-    origin: function (origin: string | undefined, callback: Function) {
-      // allow requests with no origin
-      // (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.indexOf(origin) === -1) {
-        var msg =
-          'The CORS policy for this site does not ' +
-          'allow access from the specified Origin.';
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    credentials: true,
-  })
-);
+app.use(cors(corsHandler));
 
 app.use(
   session({
