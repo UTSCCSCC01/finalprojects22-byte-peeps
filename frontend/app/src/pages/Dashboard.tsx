@@ -3,7 +3,6 @@ import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
-import { Box, Grid, Paper } from '@mui/material';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../Components/Charts/PieChart/PieChartAnalysis';
