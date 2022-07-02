@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import { unknownError } from '../globalHelpers/globalConstants';
 
-const errorHandler = (
+const errorHandler: ErrorRequestHandler = (
   err: Error,
   req: Request,
   res: Response,

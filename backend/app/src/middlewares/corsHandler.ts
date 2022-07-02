@@ -1,7 +1,7 @@
 // Adapted from: https://medium.com/zero-equals-false/using-cors-in-express-cac7e29b005b
 let allowedOrigins = [
   `http://localhost:${process.env.FRONTEND_PORT}`,
-  'http://yourapp.com',
+  'https://c01.mohamedtayeh.com',
 ];
 
 const corsHandler = {
