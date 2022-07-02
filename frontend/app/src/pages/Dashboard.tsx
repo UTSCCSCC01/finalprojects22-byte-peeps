@@ -156,7 +156,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
                   fontSize: '1.3rem',
                 }}
               >
-                Likes: 11348
+                Likes: {facebookStats?.totalLikes}
               </Typography>
             </CardInfo>
           </Grid>
@@ -172,7 +172,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
                   fontSize: '1.3rem',
                 }}
               >
-                Comments: 333
+                Comments: {facebookStats?.totalComments}
               </Typography>
             </CardInfo>
           </Grid>

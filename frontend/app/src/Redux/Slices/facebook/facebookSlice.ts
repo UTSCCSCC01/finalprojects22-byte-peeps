@@ -55,6 +55,7 @@ export const getFacebookStats = createAsyncThunk(
       .replaceAll('-', '');
     const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
     const response = await fetchFacebookStats(startDate, endDate);
+    console.log(response);
     return response;
   }
 );

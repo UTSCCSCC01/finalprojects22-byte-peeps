@@ -30,7 +30,13 @@ export const getStats: RequestHandler = async (req, res, next) => {
         endDate = new Date(year_end, month_end - 1, day_end + 1);
 
         // Get Total comments
-        const commentCount = await FacebookComment.count();
+        const commentCount = await FacebookComment.count({
+          where: {
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+        });
         // Get Total likes
         let totalAmount = await FacebookPost.findAll({
           where: {
@@ -42,11 +48,11 @@ export const getStats: RequestHandler = async (req, res, next) => {
             [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
           ],
         });
-        let totalLikes = totalAmount.flat(1).slice()[0].toJSON();
-
+        let totalLikes = totalAmount.flat(1).slice()[0].toJSON().totalLikes;
+        totalLikes = totalLikes === null ? 0 : totalLikes;
         res.send({
           totalComments: commentCount,
-          ...totalLikes,
+          totalLikes,
         });
       } catch (error) {
         res.status(400).send(error);
