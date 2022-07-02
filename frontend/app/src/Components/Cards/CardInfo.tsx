@@ -3,12 +3,12 @@ import { CardContent, Card } from '@mui/material';
 import { Loader, ErrorMessage } from '../Charts/PieChart/PieChartAnalysis';
 
 export interface CardInfoProps {
-  error: String;
+  error: String | null;
   isLoading: Boolean;
-  children: any;
+  children: React.ReactNode;
 }
 
-const CardInfo = (props: any) => {
+const CardInfo: React.FC<CardInfoProps> = (props: CardInfoProps) => {
   const { children, error, isLoading }: CardInfoProps = props;
 
   return (
