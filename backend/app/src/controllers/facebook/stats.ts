@@ -28,35 +28,31 @@ export const getStats: RequestHandler = async (req, res, next) => {
       try {
         startDate = new Date(year, month - 1, day);
         endDate = new Date(year_end, month_end - 1, day_end + 1);
-        console.log(startDate, endDate);
 
         // Get Total comments
         const commentCount = await FacebookComment.count();
-
         // Get Total likes
-        const totalAmount = await FacebookPost.findAll({
+        let totalAmount = await FacebookPost.findAll({
           where: {
             date: {
               [Op.between]: [startDate, endDate],
             },
           },
           attributes: [
-            [Sequelize.fn('sum', Sequelize.col('likes')), 'total_amount'],
+            [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
           ],
         });
-
-        console.log(commentCount);
-        console.log(totalAmount);
+        let totalLikes = totalAmount.flat(1).slice()[0].toJSON();
 
         res.send({
           totalComments: commentCount,
-          totalAmount,
+          ...totalLikes,
         });
       } catch (error) {
-        res.status(404).send(error);
+        res.status(400).send(error);
       }
     }
   } else {
-    res.status(404).send('Invalid Date Input');
+    res.status(400).send('Invalid Date Input');
   }
 };

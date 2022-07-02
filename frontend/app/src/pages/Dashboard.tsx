@@ -15,9 +15,12 @@ import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import DateSelector from '../Components/DateSelector/DateSelector';
 import {
   getCommentsSentimentAnalysis,
+  getFacebookStats,
   selectSentimentAnalysis,
   selectError,
   selectIsSentimentAnalysisLoading,
+  selectIsStatsLoading,
+  selectFacebookStats,
 } from '../Redux/Slices/facebook/facebookSlice';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { SentimentAnalysisColors } from '../utils/enums';
@@ -35,6 +38,14 @@ const Item = styled(Paper)(({ theme }) => ({
 const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  // Facebook Stats
+  const facebookStats = useAppSelector(selectFacebookStats);
+  const isStatsLoading = useAppSelector(selectIsStatsLoading);
+  const facebookStatsObj = {
+    facebookStats,
+    isStatsLoading,
+  };
 
   // Sentiment Analysis (PieChart)
   const dataRetured = useAppSelector(selectSentimentAnalysis);
@@ -76,6 +87,9 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   useEffect(() => {
     // Sentiment Analysis (PieChart)
     dispatch(getCommentsSentimentAnalysis());
+
+    // Facebook stats
+    dispatch(getFacebookStats());
   }, [dispatch]);
 
   return (
