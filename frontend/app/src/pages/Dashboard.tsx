@@ -1,9 +1,8 @@
 import React from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
 
-export interface IDashProps {}
+interface Props {}
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -13,8 +12,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
-  const navigate = useNavigate();
+const Dashboard: React.FunctionComponent<Props> = () => {
   return (
     <>
       <div
@@ -25,12 +23,8 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
         }}
       >
         <h1>Dashboard</h1>
-        <button onClick={() => navigate('/')}>log out</button>
       </div>
-      {/* <button onClick={() => navigate('/dashboard')}>Dashboard</button>
-      <button onClick={() => navigate('/surveys')}>Surveys</button>
-      <button onClick={() => navigate('/reviews')}>Review Apps</button>
-      <button onClick={() => navigate('/socials')}>Social Media</button> */}
+
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Grid
           container
