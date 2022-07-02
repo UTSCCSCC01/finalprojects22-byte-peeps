@@ -10,6 +10,8 @@ import {
   Select,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useEffect } from 'react';
 import FacebookLogin from 'react-facebook-login';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
@@ -27,6 +29,7 @@ import {
   setNotificationMessage,
   setNotificationShown,
   setNotificationType,
+  setStage,
 } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
 import { Notification } from '../Notification/Notification';
 
@@ -68,6 +71,7 @@ export function FacebookSetup() {
     buttonText += ' with ' + currentPage;
   }
 
+
   return (
     <Grid container spacing={2}>
       {stage === 'inactive' && (
@@ -78,19 +82,21 @@ export function FacebookSetup() {
         </Grid>
       )}
 
-      <Grid item xs={12}>
-        <FacebookLogin
-          appId={facebookAppId}
-          fields="accounts"
-          scope={facebookScopes}
-          returnScopes={true}
-          callback={responseFacebook}
-          size="small"
-          icon="fa-facebook"
-          buttonStyle={buttonStyle}
-          textButton={buttonText}
-        />
-      </Grid>
+      {(stage === 'inactive' || stage === 'logIn' || stage === 'change') && (
+        <Grid item xs={12}>
+          <FacebookLogin
+            appId={facebookAppId}
+            fields="accounts"
+            scope={facebookScopes}
+            returnScopes={true}
+            callback={responseFacebook}
+            size="small"
+            icon="fa-facebook"
+            buttonStyle={buttonStyle}
+            textButton={buttonText}
+          />
+        </Grid>
+      )}
 
       {stage === 'selectPage' && (
         <Grid item xs={12}>
@@ -124,6 +130,42 @@ export function FacebookSetup() {
           >
             <SaveIcon />
             Save
+          </Button>
+        </Grid>
+      )}
+
+      {stage === 'active' && currentPage && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="success">
+            Your Facebook page <i>{currentPage}</i> is connected.
+          </Alert>
+        </Grid>
+      )}
+
+      {stage === 'active' && (
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="info"
+            size="large"
+            onClick={() => dispatch(setStage('change'))}
+          >
+            <EditIcon />
+            Change
+          </Button>
+        </Grid>
+      )}
+
+      {stage === 'change' && (
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="error"
+            size="large"
+            onClick={() => dispatch(setStage('active'))}
+          >
+            <DoDisturbIcon />
+            Cancel
           </Button>
         </Grid>
       )}

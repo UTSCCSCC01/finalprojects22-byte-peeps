@@ -52,7 +52,7 @@ declare module 'express-session' {
 app.use("/user", userRoutes);
 
 /* Social Media Routing */
-app.use('/instagram', instagramRoutes);
+app.use('/instagram', authenticateUser, instagramRoutes);
 app.use('/facebook', facebookRoutes);
 
 /* Setup Routing */
