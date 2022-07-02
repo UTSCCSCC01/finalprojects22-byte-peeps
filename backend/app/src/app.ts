@@ -23,6 +23,12 @@ import corsHandler from './middlewares/corsHandler';
 
 const app = express();
 
+declare module 'express-session' {
+  export interface SessionData {
+    username: { [key: string]: any };
+  }
+}
+
 const PORT = process.env.BACKEND_PORT;
 
 app.use(cors(corsHandler));
@@ -37,18 +43,12 @@ app.use(
 
 app.use(bodyParser.json());
 
-declare module 'express-session' {
-  export interface SessionData {
-    username: { [key: string]: any };
-  }
-}
-
 /* User Routes */
 app.use('/user', userRoutes);
 
 /* Social Media Routing */
-app.use('/instagram', instagramRoutes);
-app.use('/facebook', facebookRoutes);
+app.use('/instagram', authenticateUser, instagramRoutes);
+app.use('/facebook', authenticateUser, facebookRoutes);
 
 /* Setup Routing */
 app.use('/setup', authenticateUser, setupRoutes);
