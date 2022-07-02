@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import InstagramTag from '../../models/instagram/tag';
+import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the 50 most recent Instagram tags
@@ -28,7 +29,7 @@ export const getTagsSubjectivityAnalysis: RequestHandler = async (
   });
   res.send({
     subjective: subjective,
-    'objective': objective,
+    objective: objective,
   });
 };
 
@@ -41,13 +42,13 @@ export const getTagsSentimentAnalysis: RequestHandler = async (
   next
 ) => {
   const positive = await InstagramTag.count({
-    where: { sentimentAnalysis: 'positive' },
+    where: { sentimentAnalysis: SentimentAnalysisStatus.Positive },
   });
   const neutral = await InstagramTag.count({
-    where: { sentimentAnalysis: 'neutral' },
+    where: { sentimentAnalysis: SentimentAnalysisStatus.Neutral },
   });
   const negative = await InstagramTag.count({
-    where: { sentimentAnalysis: 'negative' },
+    where: { sentimentAnalysis: SentimentAnalysisStatus.Negative },
   });
   res.send({
     positive: positive,
