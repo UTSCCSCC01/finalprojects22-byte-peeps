@@ -16,6 +16,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import AppsIcon from '@mui/icons-material/Apps';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/People';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,6 +25,7 @@ const data = [
   { name: 'Surveys', icon: <ListAltIcon />, link: '/surveys' },
   { name: 'Review Apps', icon: <AppsIcon />, link: '/reviews' },
   { name: 'Social Media', icon: <PeopleIcon />, link: '/socials' },
+  { name: 'Settings', icon: <SettingsIcon />, link: '/settings' },
 ];
 
 export default function Header() {
