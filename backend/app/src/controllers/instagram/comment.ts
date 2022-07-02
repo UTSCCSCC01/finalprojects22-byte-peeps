@@ -1,17 +1,33 @@
 import { RequestHandler } from 'express';
+import { unknownError } from '../../globalHelpers/globalConstants';
+import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
+import InstagramMedia from '../../models/instagram/media';
+import User from '../../models/user/user';
 const { sequelize, Op } = require('sequelize');
 import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
- * Provides the 50 most recent Instagram comments
+ * Provides the page number and size, provides comments of any IG media related to the user API
  */
 export const getComments: RequestHandler = async (req, res, next) => {
-  const comments = await InstagramComment.findAll({
-    order: [['date', 'DESC']],
-    limit: 50,
-  });
-  res.send(comments);
+  try {
+    const user = await User.findOne({where: { username: req.session.username }, include: InstagramApi});
+    const pageNumber = parseInt(req.query.page?.toString() ?? '0');
+    const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
+
+    if (!user?.instagramApi)
+      return res.send({ count: 0, data: [] });
+
+    const media = await InstagramMedia.findAll({ where: { apiId: user!.instagramApi.id }});
+    const mediaIds: number[] = media.map(m => m.id);
+    const comments = await InstagramComment.findAll({ where: {mediaId: mediaIds}, order: [['date', 'DESC']], attributes: ['id', 'userName', 'message', 'likes', 'sentimentAnalysis', 'topicClassification', 'subjectivityAnalysis'] });
+    const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
+    res.send({ count: comments.length, data: filteredComments });
+  } catch(e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError });
+  }
 };
 
 /**

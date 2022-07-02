@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
+import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../Components/Charts/PieChart/PieChartAnalysis';
-import { Typography } from '@mui/material';
 import CardCharts from '../Components/Cards/CardCharts';
 import CardInfo from '../Components/Cards/CardInfo';
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
@@ -177,6 +177,22 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               </Typography>
               <PieChart {...facebookSentimentAnalysis} />
             </CardCharts>
+          </Grid>
+          <Grid item xs={12}>
+            <Item>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                Comments
+              </Typography>
+              <InstagramCommentsTable />
+            </Item>
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
             <Item>charts/stats, to be added</Item>
