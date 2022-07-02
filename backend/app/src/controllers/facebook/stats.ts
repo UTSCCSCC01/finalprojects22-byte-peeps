@@ -39,13 +39,20 @@ export const getStats: RequestHandler = async (req, res, next) => {
         startDate = new Date(year, month - 1, day);
         endDate = new Date(year_end, month_end - 1, day_end + 1);
 
+        const allUserPosts = await FacebookPost.findAll({
+          where: {
+            apiId: user!.facebookApi.id,
+          },
+        });
+        const postIds: number[] = allUserPosts.map((p) => p.id);
+
         // Get Total comments
         const commentCount = await FacebookComment.count({
           where: {
+            postId: postIds,
             date: {
               [Op.between]: [startDate, endDate],
             },
-            userName: req.session.username,
           },
         });
 
