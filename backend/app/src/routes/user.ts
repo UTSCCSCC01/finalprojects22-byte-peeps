@@ -1,12 +1,14 @@
 import { Router } from 'express';
 
-import { register as registrationHandler, login as loginhandler, logout as logouthandler } from '../controllers/users';
+import { signIn, signOut, signUp } from '../controllers/user/user';
+import authenticateUser from '../middlewares/validateAuth';
 
 const router = Router();
 
-router.post('/register/', ((req, res, next) => registrationHandler(req, res, next)))
-router.post('/login/', ((req, res, next) => loginhandler(req, res, next)));
-router.get('/logout/', ((req, res, next) => logouthandler(req, res, next)));
-
+router.post('/signin', (req, res, next) => signIn(req, res, next));
+router.post('/signout', authenticateUser, (req, res, next) =>
+  signOut(req, res, next)
+);
+router.post('/signup', (req, res, next) => signUp(req, res, next));
 
 export default router;
