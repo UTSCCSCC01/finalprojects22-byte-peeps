@@ -8,11 +8,10 @@ import PieChart, {
 } from '../Components/Charts/PieChart/PieChartAnalysis';
 import CardCharts from '../Components/Cards/CardCharts';
 import CardInfo from '../Components/Cards/CardInfo';
-import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
-import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import DateSelector from '../Components/DateSelector/DateSelector';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ChatIcon from '@mui/icons-material/Chat';
 import {
   getCommentsSentimentAnalysis,
   selectSentimentAnalysis,
@@ -80,19 +79,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <h1>Dashboard</h1>
-        <DateSelector />
-        <button onClick={() => navigate('/')}>log out</button>
-      </div>
-
-      <Box sx={{ flexGrow: 1, p: 2 }}>
+      <Box sx={{ flexGrow: 1, p: 3 }}>
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
@@ -100,7 +87,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
         >
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-              <OndemandVideoTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <OndemandVideoIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
                 sx={{
@@ -116,7 +103,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-              <RemoveRedEyeTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <RemoveRedEyeIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
                 sx={{
@@ -132,7 +119,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-              <ThumbUpTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <ThumbUpIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
                 sx={{
@@ -148,7 +135,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
             <CardInfo>
-              <ChatTwoToneIcon style={{ verticalAlign: 'middle' }} />
+              <ChatIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
                 sx={{

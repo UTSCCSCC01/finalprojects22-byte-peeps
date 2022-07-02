@@ -68,6 +68,7 @@ const DateSelector = () => {
         )}`}
         readOnly
         className={styles.inputBox}
+        style={{ color: 'white', background: 'none', borderColor: 'white', outline: 'none', cursor: 'pointer' }}
         onClick={() => setOpen((open) => !open)}
       />
 
