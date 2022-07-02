@@ -56,7 +56,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 ) => {
   const startDateParam = req.query.start;
   const endDateParam = req.query.end;
-  
+
   let startDate: Date;
   let endDate: Date;
 
@@ -76,15 +76,15 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         endDate = new Date(year_end, month_end - 1, day_end + 1);
         console.log(startDate, endDate);
         const positive = await InstagramComment.count({
-          where: { 
-            sentimentAnalysis: 'positive', 
+          where: {
+            sentimentAnalysis: 'positive',
             date: {
               [Op.between]: [startDate, endDate]
             }
           },
         });
         const neutral = await InstagramComment.count({
-          where: { 
+          where: {
             sentimentAnalysis: 'neutral',
             date: {
               [Op.between]: [startDate, endDate]
@@ -92,8 +92,8 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           },
         });
         const negative = await InstagramComment.count({
-          where: { 
-            sentimentAnalysis: 'negative', 
+          where: {
+            sentimentAnalysis: 'negative',
             date: {
               [Op.between]: [startDate, endDate]
             }
@@ -105,10 +105,11 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           'negative': negative,
         });
       } catch (error) {
+        console.log(error)
         res.status(404).send("Invalid Data Input");
       }
     }
-  }else {
+  } else {
     res.status(404).send("Invalid Date Input");
   }
 };
