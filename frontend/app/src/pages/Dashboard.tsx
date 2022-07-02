@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper } from '@mui/material';
 import PieChart from '../Components/Charts/PieChart/SentimentPieChart';
 import TimeSeriesChartExample from '../Components/Charts/TimeSeriesChart/TimeSeriesChartExample';
+import InstagramCommentsTimeSeries from '../Components/Charts/TimeSeriesChart/InstagramCommentsTimeSeries';
 import { Typography } from '@mui/material';
 import CardCharts from '../Components/Cards/CardCharts';
 import CardInfo from '../Components/Cards/CardInfo';
@@ -37,7 +38,10 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
         <h1>Dashboard</h1>
         <button onClick={() => navigate('/')}>log out</button>
       </div>
-
+      {/* <button onClick={() => navigate('/dashboard')}>Dashboard</button>
+      <button onClick={() => navigate('/surveys')}>Surveys</button>
+      <button onClick={() => navigate('/reviews')}>Review Apps</button>
+      <button onClick={() => navigate('/socials')}>Social Media</button> */}
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Grid
           container
@@ -153,7 +157,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               >
                 Sentiment Analysis
               </Typography>
-              <TimeSeriesChartExample />
+              <InstagramCommentsTimeSeries />
             </Item>
           </Grid>
         </Grid>
