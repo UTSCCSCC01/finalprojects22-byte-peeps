@@ -3,12 +3,14 @@ dotenv.config();
 
 import express from 'express';
 import connection from './db/configs';
-import { unknownError } from './globalHelpers/globalConstants';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import cors from 'cors';
+import authenticateUser from './middlewares/validateAuth';
+import notFoundHandler from './middlewares/notFoundHandler';
 
 /* Routing imports */
-import userRoutes from './routes/user'
+import userRoutes from './routes/user';
 import instagramRoutes from './routes/instagram/routes';
 import facebookRoutes from './routes/facebook/routes';
 import setupRoutes from './routes/setup/routes';
@@ -16,31 +18,47 @@ import setupRoutes from './routes/setup/routes';
 /* Cron Job imports */
 import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
-import authenticateUser from './middlewares/validateAuth';
+import errorHandler from './middlewares/errorHandler';
 
 const app = express();
-const cors = require('cors');
+
 const PORT = process.env.BACKEND_PORT;
 
-app.use(cors({ origin: `http://localhost:${process.env.FRONTEND_PORT}`, credentials: true }));
+// Adapted from: https://medium.com/zero-equals-false/using-cors-in-express-cac7e29b005b
+let allowedOrigins = [
+  `http://localhost:${process.env.FRONTEND_PORT}`,
+  'http://yourapp.com',
+];
+
+app.use(
+  cors({
+    origin: function (origin: string | undefined, callback: Function) {
+      // allow requests with no origin
+      // (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        var msg =
+          'The CORS policy for this site does not ' +
+          'allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
+
 app.use(
   session({
-    secret: 'please change this secret',
+    secret: String(process.env.SESSION_SECRET),
     resave: false,
     saveUninitialized: true,
   })
 );
+
 app.use(bodyParser.json());
-app.use(
-  (
-    err: Error,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    res.status(500).json({ message: unknownError });
-  }
-);
+
 declare module 'express-session' {
   export interface SessionData {
     username: { [key: string]: any };
@@ -48,18 +66,21 @@ declare module 'express-session' {
 }
 
 /* User Routes */
-app.use("/user", userRoutes);
+app.use('/user', userRoutes);
 
 /* Social Media Routing */
 app.use('/instagram', instagramRoutes);
 app.use('/facebook', facebookRoutes);
 
 /* Setup Routing */
-app.use("/setup", authenticateUser, setupRoutes);
+app.use('/setup', authenticateUser, setupRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 connection
   .sync()
