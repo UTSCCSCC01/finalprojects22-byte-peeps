@@ -1,20 +1,21 @@
 input.inputBox {
-    font-size: 22px;
-    padding: 5px 8px 4px 8px;
-    border-radius: 3px;
-    border: 1px solid #666;
+  font-size: 16px;
+  padding: 5px 8px 4px 8px;
+  border-radius: 3px;
+  border: 1px solid #666;
+  text-align: center;
 }
 
 .calendarWrap {
-    display: inline-block;
-    position: relative;
+  display: inline-block;
+  position: relative;
 }
 
 .calendarElement {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%);
-    top: 40px;
-    border: 1px solid #ccc;
-    z-index: 999;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: 40px;
+  border: 1px solid #ccc;
+  z-index: 999;
 }
