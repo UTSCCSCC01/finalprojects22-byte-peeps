@@ -9,6 +9,7 @@ import {
   setStartDate,
   setEndDate,
   getCommentsSentimentAnalysis,
+  getFacebookStats,
 } from '../../Redux/Slices/facebook/facebookSlice';
 
 import 'react-date-range/dist/styles.css';
@@ -43,6 +44,7 @@ const DateSelector = () => {
     dispatch(setStartDate(range[0].startDate?.toISOString()));
     dispatch(setEndDate(range[0].endDate?.toISOString()));
     dispatch(getCommentsSentimentAnalysis());
+    dispatch(getFacebookStats());
   }, [range, dispatch]);
 
   // hide dropdown on ESC press

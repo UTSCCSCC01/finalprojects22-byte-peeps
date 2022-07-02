@@ -59,6 +59,18 @@ export function FacebookSetup() {
 
   let buttonStyle: React.CSSProperties = { width: '100%', height: '100%' };
   let buttonText = undefined;
+  if (stage === 'selectPage' || stage === 'active') {
+    buttonStyle = {
+      ...buttonStyle,
+      backgroundColor: 'green',
+      borderColor: 'green',
+    };
+    buttonText = 'Logged In';
+  }
+  if (stage === 'active') {
+    buttonText += ' with ' + currentPage;
+  }
+
 
   return (
     <Grid container spacing={2}>

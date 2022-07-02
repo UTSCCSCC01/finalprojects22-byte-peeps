@@ -72,7 +72,6 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 ) => {
   const startDateParam = req.query.start;
   const endDateParam = req.query.end;
-
   let startDate: Date;
   let endDate: Date;
 

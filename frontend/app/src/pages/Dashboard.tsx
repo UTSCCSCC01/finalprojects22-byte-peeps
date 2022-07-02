@@ -15,9 +15,13 @@ import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import DateSelector from '../Components/DateSelector/DateSelector';
 import {
   getCommentsSentimentAnalysis,
+  getFacebookStats,
   selectSentimentAnalysis,
   selectError,
   selectIsSentimentAnalysisLoading,
+  selectIsStatsLoading,
+  selectFacebookStats,
+  selectStatsError,
 } from '../Redux/Slices/facebook/facebookSlice';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { SentimentAnalysisColors } from '../utils/enums';
@@ -35,6 +39,15 @@ const Item = styled(Paper)(({ theme }) => ({
 const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  // Facebook Stats
+  const facebookStats = useAppSelector(selectFacebookStats);
+  const isStatsLoading = useAppSelector(selectIsStatsLoading);
+  const statsError = useAppSelector(selectStatsError);
+  const facebookStatsObj = {
+    isLoading: isStatsLoading,
+    error: statsError,
+  };
 
   // Sentiment Analysis (PieChart)
   const dataRetured = useAppSelector(selectSentimentAnalysis);
@@ -76,6 +89,9 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   useEffect(() => {
     // Sentiment Analysis (PieChart)
     dispatch(getCommentsSentimentAnalysis());
+
+    // Facebook stats
+    dispatch(getFacebookStats());
   }, [dispatch]);
 
   return (
@@ -99,7 +115,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo error={null} isLoading={false}>
               <OndemandVideoTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -115,7 +131,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo error={null} isLoading={false}>
               <RemoveRedEyeTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -131,7 +147,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo {...facebookStatsObj}>
               <ThumbUpTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -142,12 +158,12 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
                   fontSize: '1.3rem',
                 }}
               >
-                Likes: 11348
+                Likes: {facebookStats?.totalLikes}
               </Typography>
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo {...facebookStatsObj}>
               <ChatTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -158,7 +174,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
                   fontSize: '1.3rem',
                 }}
               >
-                Comments: 333
+                Comments: {facebookStats?.totalComments}
               </Typography>
             </CardInfo>
           </Grid>
