@@ -1,6 +1,8 @@
 import { RequestHandler } from 'express';
+import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
+import User from '../../models/user/user';
 const { Sequelize, Op } = require('sequelize');
 // const Op = Sequelize.Op;
 
@@ -13,6 +15,14 @@ export const getStats: RequestHandler = async (req, res, next) => {
 
   let startDate: Date;
   let endDate: Date;
+
+  const user = await User.findOne({
+    where: { username: req.session.username },
+    include: FacebookApi,
+  });
+
+  if (!user?.facebookApi)
+    return res.send({ totalComments: null, totalLikes: null });
 
   if (startDateParam && endDateParam) {
     if (startDateParam.length === 8 && endDateParam.length === 8) {
@@ -35,21 +45,26 @@ export const getStats: RequestHandler = async (req, res, next) => {
             date: {
               [Op.between]: [startDate, endDate],
             },
+            userName: req.session.username,
           },
         });
+
         // Get Total likes
         let totalAmount = await FacebookPost.findAll({
           where: {
             date: {
               [Op.between]: [startDate, endDate],
             },
+            apiId: user!.facebookApi.id,
           },
           attributes: [
             [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
           ],
         });
+
         let totalLikes = totalAmount.flat(1).slice()[0].toJSON().totalLikes;
         totalLikes = totalLikes === null ? 0 : totalLikes;
+
         res.send({
           totalComments: commentCount,
           totalLikes,

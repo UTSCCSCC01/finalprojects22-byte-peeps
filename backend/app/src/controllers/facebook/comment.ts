@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
 import FacebookComment from '../../models/facebook/comment';
 const { Op } = require('sequelize');
-import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the 50 most recent Facebook comments
@@ -56,6 +55,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 ) => {
   const startDateParam = req.query.start;
   const endDateParam = req.query.end;
+
   let startDate: Date;
   let endDate: Date;
 
@@ -73,9 +73,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       try {
         startDate = new Date(year, month - 1, day);
         endDate = new Date(year_end, month_end - 1, day_end + 1);
+        console.log(startDate, endDate);
         const positive = await FacebookComment.count({
           where: {
-            sentimentAnalysis: SentimentAnalysisStatus.Positive,
+            sentimentAnalysis: 'positive',
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -83,7 +84,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const neutral = await FacebookComment.count({
           where: {
-            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
+            sentimentAnalysis: 'neutral',
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -91,7 +92,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const negative = await FacebookComment.count({
           where: {
-            sentimentAnalysis: SentimentAnalysisStatus.Negative,
+            sentimentAnalysis: 'negative',
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -103,10 +104,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           negative: negative,
         });
       } catch (error) {
-        res.status(400).send({ message: 'Date Input not Provided' });
+        res.status(404).send('Date Input not Provided');
       }
     }
   } else {
-    res.status(400).send({ message: 'Invalid Date Input' });
+    res.status(404).send('Invalid Date Input');
   }
 };
