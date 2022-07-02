@@ -21,6 +21,7 @@ import {
   selectIsSentimentAnalysisLoading,
   selectIsStatsLoading,
   selectFacebookStats,
+  selectStatsError,
 } from '../Redux/Slices/facebook/facebookSlice';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { SentimentAnalysisColors } from '../utils/enums';
@@ -42,9 +43,10 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
   // Facebook Stats
   const facebookStats = useAppSelector(selectFacebookStats);
   const isStatsLoading = useAppSelector(selectIsStatsLoading);
+  const statsError = useAppSelector(selectStatsError);
   const facebookStatsObj = {
-    facebookStats,
-    isStatsLoading,
+    isLoading: isStatsLoading,
+    error: statsError,
   };
 
   // Sentiment Analysis (PieChart)
@@ -113,7 +115,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo error={null} isLoading={false}>
               <OndemandVideoTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -129,7 +131,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo error={null} isLoading={false}>
               <RemoveRedEyeTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -145,7 +147,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo {...facebookStatsObj}>
               <ThumbUpTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -161,7 +163,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
             </CardInfo>
           </Grid>
           <Grid item xs={2} sm={2} md={3}>
-            <CardInfo>
+            <CardInfo {...facebookStatsObj}>
               <ChatTwoToneIcon style={{ verticalAlign: 'middle' }} />
               <Typography
                 variant="h5"
@@ -192,21 +194,7 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               <PieChart {...facebookSentimentAnalysis} />
             </CardCharts>
           </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
+
         </Grid>
       </Box>
     </>

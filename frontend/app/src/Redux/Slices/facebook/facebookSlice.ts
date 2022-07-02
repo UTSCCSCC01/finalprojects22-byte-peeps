@@ -22,6 +22,7 @@ export interface FacebookState {
   startDate: String;
   endDate: String;
   stats: Stats | null;
+  statsError: String | null;
 }
 
 // Define the initial state using that type
@@ -33,6 +34,7 @@ const initialState: FacebookState = {
   startDate: new Date().toISOString(),
   endDate: new Date().toISOString(),
   stats: null,
+  statsError: null,
 };
 
 export const getCommentsSentimentAnalysis = createAsyncThunk(
@@ -55,7 +57,6 @@ export const getFacebookStats = createAsyncThunk(
       .replaceAll('-', '');
     const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
     const response = await fetchFacebookStats(startDate, endDate);
-    console.log(response);
     return response;
   }
 );
@@ -96,14 +97,17 @@ export const facebookSlice = createSlice({
     builder
       .addCase(getFacebookStats.pending, (state) => {
         state.isStatsLoading = true;
+        state.statsError = null;
       })
       .addCase(getFacebookStats.fulfilled, (state, { payload }) => {
         state.isStatsLoading = false;
         state.stats = payload;
+        state.statsError = null;
       })
       .addCase(getFacebookStats.rejected, (state, { payload }: any) => {
         state.isStatsLoading = false;
         state.stats = null;
+        state.statsError = 'There was a problem retreiving the data';
       });
   },
 });
@@ -120,5 +124,6 @@ export const selectIsSentimentAnalysisLoading = (state: RootState) =>
 export const selectFacebookStats = (state: RootState) => state.facebook.stats;
 export const selectIsStatsLoading = (state: RootState) =>
   state.facebook.isStatsLoading;
+export const selectStatsError = (state: RootState) => state.facebook.statsError;
 
 export default facebookSlice.reducer;

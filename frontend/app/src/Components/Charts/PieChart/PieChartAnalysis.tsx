@@ -25,7 +25,7 @@ interface ErrorMessageProps {
   error: String | null;
 }
 
-const Loader = () => (
+export const Loader = () => (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
     <CircularProgress
       style={{
@@ -85,7 +85,7 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => (
   </ResponsiveContainer>
 );
 
-const ErrorMessage = (message: ErrorMessageProps) => (
+export const ErrorMessage = (message: ErrorMessageProps) => (
   <Typography variant="subtitle2" align="center" paragraph>
     {message.error}
   </Typography>
