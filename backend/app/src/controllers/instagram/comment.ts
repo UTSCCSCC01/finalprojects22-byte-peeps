@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { unknownError } from '../../globalHelpers/globalConstants';
 import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
@@ -22,8 +23,8 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
     res.send({ count: comments.length, data: filteredComments });
   } catch(e) {
-    console.log(e)
-    res.status(500).send();
+    console.log(e);
+    res.status(500).json({ message: unknownError });
   }
 };
 
