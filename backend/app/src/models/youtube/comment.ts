@@ -1,11 +1,22 @@
-import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, Model, Table } from "sequelize-typescript";
-import YouTubeVideo from "./video";
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  Default,
+  DeletedAt,
+  ForeignKey,
+  Model,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
+import YouTubeVideo from './video';
 
 @Table({
   tableName: 'youtube_comments',
 })
-export default class YoutubeComment extends Model {
+export default class YouTubeComment extends Model {
   @AllowNull(false)
+  @Unique
   @Column
   resourceId: string;
 
