@@ -94,8 +94,8 @@ npm i --include=dev
 BACKEND_PORT=3000
 FRONTEND_PORT=3001
 
-VIRTUAL_HOST=localhost
-PORT=5432
+DB_HOST=localhost
+POSTGRES_PORT=5432
 POSTGRES_DB=c01
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=<YOUR-POSTGRES-PASSWORD>
@@ -201,14 +201,16 @@ Currently, the website is deployed at: https://c01.mohamedtayeh.com/
   1. Backend Deployment:
 
   ```
-  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
   ```
 
   2. Frontend Deployment:
 
   ```
-  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-frontend.yml
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
   ```
+
+- **Note:** the last command will say failure but it did actually work.
 
 ## Authors
 

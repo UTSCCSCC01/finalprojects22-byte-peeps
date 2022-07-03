@@ -1,7 +1,7 @@
 # Dockerfile adapted from
 # https://javascript.plainenglish.io/create-and-dockerize-an-express-typescript-application-5c9f6d67ec2f
 
-FROM node:16
+FROM node:16-alpine3.15
 WORKDIR /usr/src/app
 
 COPY ./app/package*.json ./

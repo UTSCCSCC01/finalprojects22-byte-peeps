@@ -7,9 +7,8 @@ services:
     restart: always
     expose:
       - 80
-    environment:
-      - VIRTUAL_HOST=c01.mohamedtayeh.com
-      - LETSENCRYPT_HOST=c01.mohamedtayeh.com
+    env_file:
+      - fe.env
 
   backend:
     image: backend-bytepeeps
@@ -17,9 +16,8 @@ services:
     restart: always
     expose:
       - 3000
-    environment:
-      - VIRTUAL_HOST=c01api.mohamedtayeh.com
-      - LETSENCRYPT_HOST=c01api.mohamedtayeh.com
+    env_file:
+      - be.env
 
   nginx-proxy:
     image: jwilder/nginx-proxy
