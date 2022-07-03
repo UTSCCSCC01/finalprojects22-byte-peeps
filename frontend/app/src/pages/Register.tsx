@@ -38,7 +38,6 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
       );
       toggleSuccess(true);
       setMsg('registration successful!');
-      console.log(success);
     } catch (err: any) {
       if (err.response?.status === 409) {
         toggleSuccess(false);

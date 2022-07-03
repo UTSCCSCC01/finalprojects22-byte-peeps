@@ -6,7 +6,6 @@ import {
   Grid,
   Button,
   FormControl,
-  InputLabel,
   TextField,
   Box,
 } from '@mui/material';
@@ -17,10 +16,6 @@ import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
   selectSubreddit,
-  selectNotificationMessage,
-  selectNotificationShown,
-  selectNotificationType,
-  setNotificationShown,
   selectStatus,
   connectSubredditAsync,
   selectNewSubreddit,
@@ -28,8 +23,17 @@ import {
   setNewSubreddit,
 } from '../../Redux/Slices/redditSetup/redditSetupSlice';
 import { Notification } from '../Notification/Notification';
+import useNotification, {
+  NotificationState,
+} from '../../utils/hooks/Notification';
+
+let notification: NotificationState;
+export function getRedditSetupNotification(): NotificationState {
+  return notification;
+}
 
 export function RedditSetup() {
+  notification = useNotification({});
   const status = useAppSelector(selectStatus);
   const subreddit = useAppSelector(selectSubreddit);
   const newSubreddit = useAppSelector(selectNewSubreddit);
@@ -114,12 +118,8 @@ export function RedditSetup() {
         </Grid>
       )}
 
-      <Notification
-        message={useAppSelector(selectNotificationMessage)}
-        type={useAppSelector(selectNotificationType)}
-        show={useAppSelector(selectNotificationShown)}
-        dispatchHide={() => dispatch(setNotificationShown(false))}
-      />
+      <Notification state={notification} />
+
       <Backdrop
         sx={{ color: '#fff', zIndex: 1000 }}
         open={status === 'loading'}
