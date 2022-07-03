@@ -1,31 +1,36 @@
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
-import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import { Box, Grid, Paper, Typography } from '@mui/material';
-import { experimentalStyled as styled } from '@mui/material/styles';
 import React, { useEffect } from 'react';
-import CardCharts from '../Components/Cards/CardCharts';
-import CardInfo from '../Components/Cards/CardInfo';
+import { experimentalStyled as styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { Box, Grid, Paper, Typography } from '@mui/material';
+import TimesSeriesChartExample from '../Components/TimeSeriesChart/TimeSeriesChartExample';
+
+import InstagramCommentsTimeSeries from '../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
+
+import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../Components/Charts/PieChart/PieChartAnalysis';
+import CardCharts from '../Components/Cards/CardCharts';
+import CardInfo from '../Components/Cards/CardInfo';
+import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
+import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
+import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import DateSelector from '../Components/DateSelector/DateSelector';
-import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
-import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import {
   getCommentsSentimentAnalysis,
   getFacebookStats,
+  selectSentimentAnalysis,
   selectError,
-  selectFacebookStats,
   selectIsSentimentAnalysisLoading,
   selectIsStatsLoading,
-  selectSentimentAnalysis,
+  selectFacebookStats,
   selectStatsError,
 } from '../Redux/Slices/facebook/facebookSlice';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { SentimentAnalysisColors } from '../utils/enums';
 
-interface Props {}
+export interface IDashProps {}
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -35,7 +40,8 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const Dashboard: React.FunctionComponent<Props> = (props) => {
+const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   // Facebook Stats
@@ -103,6 +109,7 @@ const Dashboard: React.FunctionComponent<Props> = (props) => {
       >
         <h1>Dashboard</h1>
         <DateSelector />
+        <button onClick={() => navigate('/')}>log out</button>
       </div>
 
       <Box sx={{ flexGrow: 1, p: 2 }}>
@@ -207,8 +214,21 @@ const Dashboard: React.FunctionComponent<Props> = (props) => {
               <InstagramCommentsTable />
             </Item>
           </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
+          <Grid item xs={12}>
+            <Item>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                Sentiment Analysis
+              </Typography>
+              <TimesSeriesChartExample />
+            </Item>
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
             <Item>charts/stats, to be added</Item>
@@ -221,6 +241,25 @@ const Dashboard: React.FunctionComponent<Props> = (props) => {
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
             <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={12}>
+            <Item>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                Sentiment Analysis
+              </Typography>
+              <TimesSeriesChartExample />
+            </Item>
           </Grid>
         </Grid>
       </Box>
