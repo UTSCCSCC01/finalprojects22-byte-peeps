@@ -73,7 +73,7 @@ export const twitterSetupSlice = createSlice({
         state.notificationShown = true;
         state.notificationMessage = action.payload.message;
         state.notificationType =
-          action.payload.status == 'active' ? 'success' : 'error';
+          action.payload.status === 'active' ? 'success' : 'error';
       });
   },
 });

@@ -6,12 +6,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Auth.css';
 import { LockOutlined } from '@mui/icons-material';
 import {
   selectSignInError,
+  selectSignInStatus,
   selectUserErrorMessage,
   signIn,
 } from '../../Redux/Slices/user/userSlice';
@@ -24,16 +25,22 @@ const SignIn: React.FunctionComponent<Props> = () => {
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
 
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
+  const isSignedUp = useAppSelector(selectSignInStatus);
   const isSignInError = useAppSelector(selectSignInError);
   const userErrorMsg = useAppSelector(selectUserErrorMessage);
 
   const handleLogin = () => {
     dispatch(signIn({ username: user, password: pwd }));
-    navigate(RoutePaths.Dashboard);
   };
+
+  useEffect(() => {
+    if (isSignedUp) {
+      navigate(RoutePaths.Dashboard);
+    }
+  }, [navigate, isSignedUp]);
 
   return (
     <Box
