@@ -8,6 +8,8 @@ import session from 'express-session';
 import cors from 'cors';
 import authenticateUser from './middlewares/validateAuth';
 import notFoundHandler from './middlewares/notFoundHandler';
+import errorHandler from './middlewares/errorHandler';
+import corsHandler from './middlewares/corsHandler';
 
 /* Routing imports */
 import userRoutes from './routes/user';
@@ -18,8 +20,7 @@ import setupRoutes from './routes/setup/routes';
 /* Cron Job imports */
 import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
-import errorHandler from './middlewares/errorHandler';
-import corsHandler from './middlewares/corsHandler';
+import { redditScheduledJob } from './dataPipelines/reddit';
 
 const app = express();
 
@@ -76,3 +77,4 @@ app.listen(PORT, () => {
 /* Cron Jobs */
 instagramScheduledJob.start();
 facebookScheduledJob.start();
+redditScheduledJob.start();
