@@ -3,6 +3,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/People';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   AppBar,
   Box,
@@ -35,6 +36,11 @@ const Pages = [
   { name: RouteNames.Surveys, icon: <ListAltIcon />, link: RoutePaths.Surveys },
   { name: RouteNames.Reviews, icon: <AppsIcon />, link: RoutePaths.Reviews },
   { name: RouteNames.Socials, icon: <PeopleIcon />, link: RoutePaths.Socials },
+  {
+    name: RouteNames.Settings,
+    icon: <SettingsIcon />,
+    link: RoutePaths.Settings,
+  },
 ];
 
 export default function Header() {

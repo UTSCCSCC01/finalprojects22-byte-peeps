@@ -5,6 +5,7 @@ export enum RoutePaths {
   Surveys = '/surveys',
   Reviews = '/reviews',
   Socials = '/socials',
+  Settings = '/settings',
 }
 
 export enum RouteNames {
@@ -14,4 +15,5 @@ export enum RouteNames {
   Surveys = 'Surveys',
   Reviews = 'Review Apps',
   Socials = 'Social Media',
+  Settings = 'Settings',
 }
