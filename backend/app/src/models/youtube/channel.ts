@@ -12,7 +12,6 @@ import User from '../user/user';
 import YouTubeVideo from './video';
 
 @Table({
-  timestamps: false,
   tableName: 'youtube_channels',
 })
 export default class YouTubeChannel extends Model {

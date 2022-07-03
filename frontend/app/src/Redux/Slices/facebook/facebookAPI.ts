@@ -14,3 +14,8 @@ export async function fetchPages(token: string): Promise<{ id: string, name: str
   const response = await HTTP.get('/setup/facebook/pages', { params: { token: token }});
   return response.data;
 }
+
+export async function fetchFacebookStats(startDate: string, endDate: string) {
+  const response = await HTTP.get(`/facebook/stats?start=${startDate}&end=${endDate}`);
+  return response.data;
+} 

@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Settings from './pages/Settings';
 import Dashboard from './pages/Dashboard';
 import Surveys from './pages/Surveys';
 import ReviewApps from './pages/ReviewApps';
@@ -24,6 +25,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="settings" element={<Settings />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="surveys" element={<Surveys />} />
           <Route path="reviews" element={<ReviewApps />} />

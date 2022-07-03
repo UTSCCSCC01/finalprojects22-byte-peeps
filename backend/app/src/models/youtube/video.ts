@@ -3,6 +3,7 @@ import {
   BelongsTo,
   Column,
   Default,
+  DeletedAt,
   ForeignKey,
   HasMany,
   Model,
@@ -13,7 +14,6 @@ import YouTubeChannel from './channel';
 import YouTubeComment from './comment';
 
 @Table({
-  timestamps: false,
   tableName: 'youtube_videos',
 })
 export default class YouTubeVideo extends Model {
@@ -41,6 +41,9 @@ export default class YouTubeVideo extends Model {
   @Default(0)
   @Column
   likes: number;
+
+  @DeletedAt
+  deletedAt?: Date;
 
   @ForeignKey(() => YouTubeChannel)
   @AllowNull(false)

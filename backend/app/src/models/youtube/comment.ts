@@ -3,6 +3,7 @@ import {
   BelongsTo,
   Column,
   Default,
+  DeletedAt,
   ForeignKey,
   Model,
   Table,
@@ -11,7 +12,6 @@ import {
 import YouTubeVideo from './video';
 
 @Table({
-  timestamps: false,
   tableName: 'youtube_comments',
 })
 export default class YouTubeComment extends Model {
@@ -44,6 +44,9 @@ export default class YouTubeComment extends Model {
 
   @Column
   subjectivityAnalysis: string;
+
+  @DeletedAt
+  deletedAt?: Date;
 
   @ForeignKey(() => YouTubeVideo)
   @AllowNull(false)
