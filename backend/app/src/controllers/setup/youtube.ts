@@ -41,7 +41,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
     // Existing setup
     if (user?.youtubeChannel != undefined) {
       // If channel is same as existing, return
-      if (user.youtubeChannel.resourceId == newChannel) {
+      if (user.youtubeChannel.channelId == newChannel) {
         return res.status(200).send({
           status: 'active',
           channel: newChannel,
