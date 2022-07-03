@@ -11,7 +11,7 @@ export interface FacebookSetupState {
 }
 
 const initialState: FacebookSetupState = {
-  stage: "loading",
+  stage: 'loading',
   pages: [],
   currentPage: null
 };
@@ -50,25 +50,27 @@ export const facebookSetupSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCurrentPageAsync.pending, (state) => {
-        state.stage = "loading";
+        state.stage = 'loading';
       })
       .addCase(getCurrentPageAsync.fulfilled, (state, action) => {
-        if (action.payload === "not-set-up") {
-          state.stage = "logIn";
+        if (action.payload === 'not-set-up') {
+          state.stage = 'logIn';
           state.currentPage = null;
-        } else if (action.payload === "inactive") {
-          state.stage = "inactive";
+        } else if (action.payload === 'inactive') {
+          state.stage = 'inactive';
           state.currentPage = null;
         } else {
-          state.stage = "active";
-          state.currentPage = (action.payload as {id: string, name: string}).name;          
+          state.stage = 'active';
+          state.currentPage = (
+            action.payload as { id: string; name: string }
+          ).name;
         }
       })
       .addCase(saveCurrentPageAsync.pending, (state) => {
-        state.stage = "loading";
+        state.stage = 'loading';
       })
       .addCase(saveCurrentPageAsync.fulfilled, (state, action) => {
-        state.stage = "active";
+        state.stage = 'active';
         state.currentPage = action.payload;
 
         const notification = getFacebookSetupNotification();
@@ -77,11 +79,11 @@ export const facebookSetupSlice = createSlice({
         notification.setShown(true);
       })
       .addCase(retrievePagesAsync.pending, (state) => {
-        state.stage = "loading";
+        state.stage = 'loading';
       })
       .addCase(retrievePagesAsync.fulfilled, (state, action) => {
-        state.pages = action.payload
-        state.stage = "selectPage";
+        state.pages = action.payload;
+        state.stage = 'selectPage';
       });
   },
 });
@@ -90,6 +92,7 @@ export const { setCurrentPage } = facebookSetupSlice.actions;
 
 export const selectStage = (state: RootState) => state.facebookSetup.stage;
 export const selectPages = (state: RootState) => state.facebookSetup.pages;
-export const selectCurrentPage = (state: RootState) => state.facebookSetup.currentPage;
+export const selectCurrentPage = (state: RootState) =>
+  state.facebookSetup.currentPage;
 
 export default facebookSetupSlice.reducer;

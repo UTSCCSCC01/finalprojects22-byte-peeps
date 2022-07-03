@@ -36,7 +36,7 @@ export const instagramSetupSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getSettingsAsync.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(getSettingsAsync.fulfilled, (state, action) => {
         state.status = action.payload.status;
@@ -44,11 +44,12 @@ export const instagramSetupSlice = createSlice({
         state.connectedPageId = action.payload.connectedPageId;
       })
       .addCase(connectPageAsync.pending, (state) => {
-        state.status = "loading";
+        state.status = 'loading';
       })
       .addCase(connectPageAsync.fulfilled, (state, action) => {
-        state.status = "active"
+        state.status = 'active';
         state.connectedPageId = state.page!.id;
+        
         const notification = getInstagramSetupNotification();
         notification.setMessage("Instagram page has been connected successfully!");
         notification.setType("success");

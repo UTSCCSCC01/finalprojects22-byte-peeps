@@ -1,44 +1,46 @@
-import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, Model, Table } from "sequelize-typescript";
 import TwitterTweet from "./tweet";
 
 @Table({
-  timestamps: false,
   tableName: 'twitter_conversations',
 })
 export default class TwitterConversation extends Model {
   @AllowNull(false)
   @Column
-  text: string
+  text: string;
 
   @AllowNull
   @Column
-  date: Date
+  date: Date;
 
   @Default(0)
   @Column
-  retweets: number
+  retweets: number;
 
   @Default(0)
   @Column
-  replies: number
+  replies: number;
 
   @Default(0)
   @Column
-  likes: number
+  likes: number;
 
   @Column
-  sentimentAnalysis: string
+  sentimentAnalysis: string;
 
   @Column
-  topicClassification: string
+  topicClassification: string;
 
   @Column
-  subjectivityAnalysis: string
+  subjectivityAnalysis: string;
+
+  @DeletedAt
+  deletedAt?: Date;
 
   @ForeignKey(() => TwitterTweet)
   @AllowNull(false)
   @Column
-  tweetId: number
+  tweetId: number;
 
   @BelongsTo(() => TwitterTweet)
   tweet: TwitterTweet[];

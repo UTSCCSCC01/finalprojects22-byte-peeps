@@ -1,44 +1,46 @@
-import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, Model, Table } from "sequelize-typescript";
 import YouTubeVideo from "./video";
 
 @Table({
-  timestamps: false,
   tableName: 'youtube_comments',
 })
 export default class YoutubeComment extends Model {
   @AllowNull(false)
   @Column
-  resourceId: string
-  
-  @AllowNull(false)
-  @Column
-  userName: string
+  resourceId: string;
 
   @AllowNull(false)
   @Column
-  message: string
+  userName: string;
+
+  @AllowNull(false)
+  @Column
+  message: string;
 
   @AllowNull
   @Column
-  date: Date
+  date: Date;
 
   @Default(0)
   @Column
-  likes: number
+  likes: number;
 
   @Column
-  sentimentAnalysis: string
+  sentimentAnalysis: string;
 
   @Column
-  topicClassification: string
+  topicClassification: string;
 
   @Column
-  subjectivityAnalysis: string
+  subjectivityAnalysis: string;
+
+  @DeletedAt
+  deletedAt?: Date;
 
   @ForeignKey(() => YouTubeVideo)
   @AllowNull(false)
   @Column
-  videoId: number
+  videoId: number;
 
   @BelongsTo(() => YouTubeVideo)
   videos: YouTubeVideo[];
