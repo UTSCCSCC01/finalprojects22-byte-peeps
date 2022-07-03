@@ -3,8 +3,8 @@ import { CronJob } from 'cron';
 import YouTubeChannel from '../models/youtube/channel';
 import YouTubeVideo from '../models/youtube/video';
 import YouTubeComment from '../models/youtube/comment';
-import DatumBoxAPICall from '../middleware/datumBox/datumBox';
-import { DatumAPICallResult } from '../middleware/datumBox/datumBoxTypes';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
+import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
 
 const YouTubeApiEndPoint = google.youtube({
   version: 'v3',
