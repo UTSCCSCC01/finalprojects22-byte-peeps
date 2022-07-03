@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import TimesSeriesChartExample from '../Components/TimeSeriesChart/TimeSeriesChartExample';
 
+import InstagramCommentsTimeSeries from '../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
+
 import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
 import PieChart, {
   PieChartAnalysisProps,
@@ -210,6 +212,22 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
                 Comments
               </Typography>
               <InstagramCommentsTable />
+            </Item>
+          </Grid>
+          <Grid item xs={12}>
+            <Item>
+              <Typography
+                variant="h5"
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontSize: '1.3rem',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                Sentiment Analysis
+              </Typography>
+              <TimesSeriesChartExample />
             </Item>
           </Grid>
           <Grid item xs={2} sm={4} md={4}>
