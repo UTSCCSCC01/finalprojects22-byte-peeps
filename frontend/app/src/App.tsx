@@ -1,40 +1,16 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  BrowserRouter,
-  Routes,
-} from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Settings from './pages/Settings';
-import Dashboard from './pages/Dashboard';
-import Surveys from './pages/Surveys';
-import ReviewApps from './pages/ReviewApps';
-import SocialMedia from './pages/SocialMedia';
-import Header from './Components/Header';
-import { InactiveApiChecker } from './Components/InactiveApiChecker/InactiveApiChecker';
+import RouterComponent from './RouterComponent';
+import './App.css';
+import { ThemeProvider } from '@mui/material';
+import MuiTheme from './Components/MuiTheme/MuiTheme';
 
-export interface IAppProps {}
+interface Props {}
 
-const App: React.FunctionComponent<IAppProps> = (props) => {
+const App: React.FC<Props> = () => {
   return (
-    <>
-      <BrowserRouter>
-        <Header />
-        <InactiveApiChecker />
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="surveys" element={<Surveys />} />
-          <Route path="reviews" element={<ReviewApps />} />
-          <Route path="socials" element={<SocialMedia />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <ThemeProvider theme={MuiTheme}>
+      <RouterComponent />;
+    </ThemeProvider>
   );
 };
 

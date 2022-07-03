@@ -1,0 +1,11 @@
+.userInfo {
+  margin-left: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.username {
+  margin-right: 10px;
+}

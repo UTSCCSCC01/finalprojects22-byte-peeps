@@ -1,5 +1,6 @@
 export const unknownError =
   'An unknown error has occured! We are working on it!';
+export const resourceNotFound = 'Resource not found!';
 
 export enum SentimentAnalysisColors {
   Positive = '#0088FE',
@@ -12,4 +13,3 @@ export enum SentimentAnalysisStatus {
   Negative = 'negative',
   Neutral = 'neutral',
 }
-
