@@ -18,7 +18,7 @@ const InstagramGraphApiUrl = 'https://graph.facebook.com';
  *           related to this Instagram account, and for each one
  *           fetches and updates the comments.
  */
-export async function startPipeline() {
+async function startPipeline() {
   /* Get stored Instagram Accounts (API) */
   let instagramApis = await InstagramApi.findAll({ include: FacebookApi });
   if (instagramApis.length == 0) return;
