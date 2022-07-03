@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getTwitterSetupNotification } from '../../../Components/TwitterSetup/TwitterSetup';
 import { RootState } from '../../store';
 import { fetchSettings, saveUsername } from './twitterSetupAPI';
 
@@ -6,19 +7,12 @@ export interface TwitterSetupState {
   status: 'loading' | 'twitter-not-set-up' | 'active' | 'change';
   username: string | null;
   newUsername: string;
-  // Notification
-  notificationShown: boolean;
-  notificationMessage: string;
-  notificationType: 'success' | 'error' | 'warning' | 'info';
 }
 
 const initialState: TwitterSetupState = {
   status: 'loading',
   username: null,
-  newUsername: '',
-  notificationShown: false,
-  notificationMessage: '',
-  notificationType: 'success',
+  newUsername: ''
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -39,15 +33,6 @@ export const twitterSetupSlice = createSlice({
   name: 'twitterSetup',
   initialState,
   reducers: {
-    setNotificationShown: (state, action) => {
-      state.notificationShown = action.payload;
-    },
-    setNotificationMessage: (state, action) => {
-      state.notificationMessage = action.payload;
-    },
-    setNotificationType: (state, action) => {
-      state.notificationType = action.payload;
-    },
     setNewUsername: (state, action) => {
       state.newUsername = action.payload;
     },
@@ -70,30 +55,22 @@ export const twitterSetupSlice = createSlice({
       .addCase(connectUsernameAsync.fulfilled, (state, action) => {
         state.status = action.payload.status;
         state.username = action.payload.username;
-        state.notificationShown = true;
-        state.notificationMessage = action.payload.message;
-        state.notificationType =
-          action.payload.status == 'active' ? 'success' : 'error';
+
+        const notification = getTwitterSetupNotification();
+        notification.setMessage(action.payload.message);
+        notification.setType(action.payload.status === 'active' ? 'success' : 'error');
+        notification.setShown(true);          
       });
   },
 });
 
 export const {
   setStatus,
-  setNewUsername,
-  setNotificationMessage,
-  setNotificationShown,
-  setNotificationType,
+  setNewUsername
 } = twitterSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.twitterSetup.status;
 export const selectUsername = (state: RootState) => state.twitterSetup.username;
-export const selectNotificationShown = (state: RootState) =>
-  state.twitterSetup.notificationShown;
-export const selectNotificationMessage = (state: RootState) =>
-  state.twitterSetup.notificationMessage;
-export const selectNotificationType = (state: RootState) =>
-  state.twitterSetup.notificationType;
 export const selectNewUsername = (state: RootState) =>
   state.twitterSetup.newUsername;
 

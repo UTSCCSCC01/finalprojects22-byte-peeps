@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getRedditSetupNotification } from '../../../Components/RedditSetup/RedditSetup';
 import { RootState } from '../../store';
 import { fetchSettings, saveSubreddit } from './redditSetupAPI';
 
@@ -6,19 +7,12 @@ export interface redditSetupState {
   status: 'loading' | 'reddit-not-set-up' | 'active' | 'change';
   subreddit: string | null;
   newSubreddit: string;
-  // Notification
-  notificationShown: boolean;
-  notificationMessage: string;
-  notificationType: 'success' | 'error' | 'warning' | 'info';
 }
 
 const initialState: redditSetupState = {
   status: 'loading',
   subreddit: null,
-  newSubreddit: '',
-  notificationShown: false,
-  notificationMessage: '',
-  notificationType: 'success',
+  newSubreddit: ''
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -39,15 +33,6 @@ export const redditSetupSlice = createSlice({
   name: 'redditSetup',
   initialState,
   reducers: {
-    setNotificationShown: (state, action) => {
-      state.notificationShown = action.payload;
-    },
-    setNotificationMessage: (state, action) => {
-      state.notificationMessage = action.payload;
-    },
-    setNotificationType: (state, action) => {
-      state.notificationType = action.payload;
-    },
     setNewSubreddit: (state, action) => {
       state.newSubreddit = action.payload;
     },
@@ -70,31 +55,23 @@ export const redditSetupSlice = createSlice({
       .addCase(connectSubredditAsync.fulfilled, (state, action) => {
         state.status = action.payload.status;
         state.subreddit = action.payload.subreddit;
-        state.notificationShown = true;
-        state.notificationMessage = action.payload.message;
-        state.notificationType =
-          action.payload.status == 'active' ? 'success' : 'error';
+
+        const notification = getRedditSetupNotification();
+        notification.setMessage(action.payload.message);
+        notification.setType(action.payload.status === 'active' ? 'success' : 'error');
+        notification.setShown(true);          
       });
   },
 });
 
 export const {
   setStatus,
-  setNewSubreddit,
-  setNotificationMessage,
-  setNotificationShown,
-  setNotificationType,
+  setNewSubreddit
 } = redditSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.redditSetup.status;
 export const selectSubreddit = (state: RootState) =>
   state.redditSetup.subreddit;
-export const selectNotificationShown = (state: RootState) =>
-  state.redditSetup.notificationShown;
-export const selectNotificationMessage = (state: RootState) =>
-  state.redditSetup.notificationMessage;
-export const selectNotificationType = (state: RootState) =>
-  state.redditSetup.notificationType;
 export const selectNewSubreddit = (state: RootState) =>
   state.redditSetup.newSubreddit;
 

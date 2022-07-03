@@ -1,28 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
-import {
-  fetchCurrentPage,
-  fetchPages,
-  saveCurrentPage,
-} from './facebookSetupAPI';
+import { RootState, store } from '../../store';
+import { fetchCurrentPage, fetchPages, saveCurrentPage } from './facebookSetupAPI';
+import { getFacebookSetupNotification } from '../../../Components/FacebookSetup/FacebookSetup';
+import { getSettingsAsync } from '../instagramSetup/instagramSetupSlice';
 
 export interface FacebookSetupState {
   stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive' | 'change';
-  pages: { id: string; name: string; access_token: string }[];
-  currentPage: string | null;
-  // Notification
-  notificationShown: boolean;
-  notificationMessage: string;
-  notificationType: 'success' | 'error' | 'warning' | 'info';
+  pages: { id: string, name: string, access_token: string }[]
+  currentPage: string | null
 }
 
 const initialState: FacebookSetupState = {
   stage: 'loading',
   pages: [],
-  currentPage: null,
-  notificationShown: false,
-  notificationMessage: '',
-  notificationType: 'success',
+  currentPage: null
 };
 
 export const getCurrentPageAsync = createAsyncThunk(
@@ -34,8 +25,10 @@ export const getCurrentPageAsync = createAsyncThunk(
 
 export const saveCurrentPageAsync = createAsyncThunk(
   'facebookSetup/saveCurrentPage',
-  async (pageToken: string) => {
-    return await saveCurrentPage(pageToken);
+  async (pageToken: string, thunkApi) => {
+    const status = await saveCurrentPage(pageToken);
+    thunkApi.dispatch(getSettingsAsync())
+    return status;
   }
 );
 
@@ -53,18 +46,9 @@ export const facebookSetupSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
-    setNotificationShown: (state, action) => {
-      state.notificationShown = action.payload;
-    },
-    setNotificationMessage: (state, action) => {
-      state.notificationMessage = action.payload;
-    },
-    setNotificationType: (state, action) => {
-      state.notificationType = action.payload;
-    },
     setStage: (state, action) => {
       state.stage = action.payload;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -91,10 +75,11 @@ export const facebookSetupSlice = createSlice({
       .addCase(saveCurrentPageAsync.fulfilled, (state, action) => {
         state.stage = 'active';
         state.currentPage = action.payload;
-        state.notificationShown = true;
-        state.notificationMessage =
-          'Page settings has been saved successfully!';
-        state.notificationType = 'success';
+
+        const notification = getFacebookSetupNotification();
+        notification.setMessage("Page settings has been saved successfully!");
+        notification.setType("success");
+        notification.setShown(true);
       })
       .addCase(retrievePagesAsync.pending, (state) => {
         state.stage = 'loading';
@@ -106,21 +91,9 @@ export const facebookSetupSlice = createSlice({
   },
 });
 
-export const {
-  setStage,
-  setCurrentPage,
-  setNotificationMessage,
-  setNotificationShown,
-  setNotificationType,
-} = facebookSetupSlice.actions;
+export const { setCurrentPage, setStage } = facebookSetupSlice.actions;
 
 export const selectStage = (state: RootState) => state.facebookSetup.stage;
-export const selectNotificationShown = (state: RootState) =>
-  state.facebookSetup.notificationShown;
-export const selectNotificationMessage = (state: RootState) =>
-  state.facebookSetup.notificationMessage;
-export const selectNotificationType = (state: RootState) =>
-  state.facebookSetup.notificationType;
 export const selectPages = (state: RootState) => state.facebookSetup.pages;
 export const selectCurrentPage = (state: RootState) =>
   state.facebookSetup.currentPage;
