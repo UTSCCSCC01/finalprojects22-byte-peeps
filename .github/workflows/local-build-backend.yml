@@ -22,16 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create backend env vars
-        working-directory: backend/app
-        run: |
-          touch .env
-          echo VIRTUAL_HOST=${{ secrets.VIRTUAL_HOST }} >> .env
-          echo PORT=${{ secrets.POSTGRES_PORT }} >> .env
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-
       - name: Build image
         run: docker build . --file Dockerfile --tag backend-bytepeeps
 
@@ -45,8 +35,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: './backend-bytepeeps.tar'
-          target: '~/images/'
+          source: 'backend/backend-bytepeeps.tar' # doesn't follow the default workdir
+          target: '~/images'
+          strip_components: 1
 
       - name: ssh commands to deploy load and deploy the docker containers
         uses: appleboy/ssh-action@master
@@ -56,7 +47,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker load < ~/images/backend-bytepeeps.tar && docker compose up -d
+            docker load < ~/images/backend-bytepeeps.tar && docker compose up -d && docker rmi $(docker images | grep '')
 
       # Command
-      # act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
+      # act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/local-build-backend.yml

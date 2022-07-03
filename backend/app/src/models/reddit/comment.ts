@@ -1,41 +1,47 @@
-import { AllowNull, BelongsTo, Column, Default, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, Model, Table } from "sequelize-typescript";
 import RedditListing from "./listing";
 
 @Table({
-  timestamps: false,
   tableName: 'reddit_comments',
 })
 export default class RedditComment extends Model {
+  @AllowNull(false)
+  @Column
+  dataId: string
+
   @AllowNull(false)
   @Column
   text: string
 
   @AllowNull
   @Column
-  date: Date
+  date: Date;
 
   @Default(0)
   @Column
-  score: number
+  score: number;
 
   @Default(0)
   @Column
-  replies: number
+  replies: number;
 
   @Column
-  sentimentAnalysis: string
+  sentimentAnalysis: string;
 
   @Column
-  topicClassification: string
+  topicClassification: string;
 
   @Column
-  subjectivityAnalysis: string
+  subjectivityAnalysis: string;
+
+  @DeletedAt
+  deletedAt?: Date;
 
   @ForeignKey(() => RedditListing)
   @AllowNull(false)
   @Column
-  listingId: number
+  listingId: number;
 
   @BelongsTo(() => RedditListing)
-  tweet: RedditListing[];
+  listing: RedditListing[];
 }

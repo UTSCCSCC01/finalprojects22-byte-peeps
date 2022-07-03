@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { connectPage, getCurrentPage, getPages } from '../../controllers/setup/facebook';
+import {
+  connectPage,
+  getCurrentPage,
+  getPages,
+} from '../../controllers/setup/facebook';
 
 const facebookRouter = Router();
 

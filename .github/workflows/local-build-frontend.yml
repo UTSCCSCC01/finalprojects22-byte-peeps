@@ -30,7 +30,7 @@ jobs:
           echo REACT_APP_BACKEND_ENDPOINT=${{ secrets.REACT_APP_BACKEND_ENDPOINT }} >> .env
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag frontend-bytepeeps --no-cache
+        run: docker build . --file Dockerfile --tag frontend-bytepeeps
 
       - name: Export image to tar
         run: docker save -o frontend-bytepeeps.tar frontend-bytepeeps
@@ -42,8 +42,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: './frontend-bytepeeps.tar'
-          target: '~/images/'
+          source: 'frontend/frontend-bytepeeps.tar' # doesn't follow the default workdir
+          target: '~/images'
+          strip_components: 1
 
       - name: ssh commands to deploy load and deploy the docker containers
         uses: appleboy/ssh-action@master
@@ -53,7 +54,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d
+            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d && docker rmi $(docker images | grep '')
 
       # Command
-      # act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/build-backend.yml
+      # act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/local-build-frontend.yml

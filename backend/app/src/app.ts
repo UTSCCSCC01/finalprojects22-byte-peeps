@@ -16,6 +16,7 @@ import setupRoutes from './routes/setup/routes';
 /* Cron Job imports */
 import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
+import { redditScheduledJob } from './dataPipelines/reddit';
 import authenticateUser from './middlewares/validateAuth';
 
 const app = express();
@@ -56,7 +57,7 @@ declare module 'express-session' {
 app.use('/user', userRoutes);
 
 /* Social Media Routing */
-app.use('/instagram', instagramRoutes);
+app.use('/instagram', authenticateUser, instagramRoutes);
 app.use('/facebook', facebookRoutes);
 
 /* Setup Routing */
@@ -82,3 +83,4 @@ app.listen(PORT, () => {
 /* Cron Jobs */
 instagramScheduledJob.start();
 facebookScheduledJob.start();
+redditScheduledJob.start();
