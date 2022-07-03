@@ -12,7 +12,6 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
-import { useEffect } from 'react';
 import FacebookLogin from 'react-facebook-login';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
@@ -22,6 +21,7 @@ import {
   selectPages,
   selectStage,
   setCurrentPage,
+  setStage,
 } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
 import useNotification, {
   NotificationState,

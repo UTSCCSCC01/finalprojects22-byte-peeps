@@ -64,7 +64,6 @@ const updateListings = async (subreddit: Subreddit) => {
 
         data['data']['children'].forEach(async (element: { [key: string]: any }) => {
             const listing = element['data'];
-            //console.log(subreddit);
 
             try {
                 await RedditListing.findOrCreate({
@@ -88,7 +87,6 @@ const updateListings = async (subreddit: Subreddit) => {
         })
         // get the listings on the next few pages
         while (data['data']['after'] != null) {
-            console.log(data['data']['after'])
             listingsUrl = listingsUrl + '&after=' + data['data']['after']
             response = await fetch(listingsUrl)
             data = await response.json();

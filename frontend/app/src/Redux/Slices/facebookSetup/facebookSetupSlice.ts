@@ -5,7 +5,7 @@ import { getFacebookSetupNotification } from '../../../Components/FacebookSetup/
 import { getSettingsAsync } from '../instagramSetup/instagramSetupSlice';
 
 export interface FacebookSetupState {
-  stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive',
+  stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive' | 'change';
   pages: { id: string, name: string, access_token: string }[]
   currentPage: string | null
 }
@@ -45,6 +45,9 @@ export const facebookSetupSlice = createSlice({
   reducers: {
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
+    },
+    setStage: (state, action) => {
+      state.stage = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -88,7 +91,7 @@ export const facebookSetupSlice = createSlice({
   },
 });
 
-export const { setCurrentPage } = facebookSetupSlice.actions;
+export const { setCurrentPage, setStage } = facebookSetupSlice.actions;
 
 export const selectStage = (state: RootState) => state.facebookSetup.stage;
 export const selectPages = (state: RootState) => state.facebookSetup.pages;
