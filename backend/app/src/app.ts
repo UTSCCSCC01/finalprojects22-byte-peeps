@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 
 /* Routing imports */
-import userRoutes from './routes/user'
+import userRoutes from './routes/user';
 import instagramRoutes from './routes/instagram/routes';
 import facebookRoutes from './routes/facebook/routes';
 import setupRoutes from './routes/setup/routes';
@@ -18,12 +18,18 @@ import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
 import { redditScheduledJob } from './dataPipelines/reddit';
 import authenticateUser from './middlewares/validateAuth';
+import { youtubeScheduledJob } from './dataPipelines/youtube';
 
 const app = express();
 const cors = require('cors');
 const PORT = process.env.BACKEND_PORT;
 
-app.use(cors({ origin: `http://localhost:${process.env.FRONTEND_PORT}`, credentials: true }));
+app.use(
+  cors({
+    origin: `http://localhost:${process.env.FRONTEND_PORT}`,
+    credentials: true,
+  })
+);
 app.use(
   session({
     secret: 'please change this secret',
@@ -49,14 +55,14 @@ declare module 'express-session' {
 }
 
 /* User Routes */
-app.use("/user", userRoutes);
+app.use('/user', userRoutes);
 
 /* Social Media Routing */
 app.use('/instagram', authenticateUser, instagramRoutes);
 app.use('/facebook', facebookRoutes);
 
 /* Setup Routing */
-app.use("/setup", authenticateUser, setupRoutes);
+app.use('/setup', authenticateUser, setupRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -78,4 +84,5 @@ app.listen(PORT, () => {
 /* Cron Jobs */
 instagramScheduledJob.start();
 facebookScheduledJob.start();
+youtubeScheduledJob.start();
 redditScheduledJob.start();
