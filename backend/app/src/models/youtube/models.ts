@@ -1,7 +1,7 @@
-import YoutubeChannel from "./channel";
-import YoutubeComment from "./comment";
-import YouTubeVideo from "./video";
+import YoutubeChannel from './channel';
+import YouTubeComment from './comment';
+import YouTubeVideo from './video';
 
-const youtubeModels = [YoutubeChannel, YouTubeVideo, YoutubeComment];
+const youtubeModels = [YoutubeChannel, YouTubeVideo, YouTubeComment];
 
 export default youtubeModels;

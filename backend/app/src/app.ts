@@ -18,6 +18,7 @@ import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
 import { redditScheduledJob } from './dataPipelines/reddit';
 import authenticateUser from './middlewares/validateAuth';
+import { youtubeScheduledJob } from './dataPipelines/youtube';
 
 const app = express();
 const cors = require('cors');
@@ -83,4 +84,5 @@ app.listen(PORT, () => {
 /* Cron Jobs */
 instagramScheduledJob.start();
 facebookScheduledJob.start();
+youtubeScheduledJob.start();
 redditScheduledJob.start();

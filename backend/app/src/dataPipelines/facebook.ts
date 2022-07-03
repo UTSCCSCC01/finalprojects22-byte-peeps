@@ -15,7 +15,7 @@ const FacebookGraphApiUrl = 'https://graph.facebook.com';
  *           related to this Facebook account, and for each one
  *           fetches and updates the comments.
  */
-export async function startPipeline() {
+async function startPipeline() {
   /* Get stored Facebook Accounts (API) */
   let facebookApis = await FacebookApi.findAll();
   if (facebookApis.length == 0) return;
