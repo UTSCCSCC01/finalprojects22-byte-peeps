@@ -109,3 +109,12 @@
     - Old wrapper implementation that depends on vulnerable versions of helper libraries (Made our own wrapper library)
 
 - Stopped the research here since this wins by miles due to having quota per day rather than per month and doesn't require credit card registration)
+
+### Machine Learning - Keyword Extraction
+
+- The Datum API has keyword extraction however it doesn't remove [stopwords](https://en.wikipedia.org/wiki/Stop_word). Therefore, a separate API/algorithm is used to extract keywords.
+- The library that uses the library was achieved from [node-rake](https://www.npmjs.com/package/node-rake) based on the popular NLP [RAKE](https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents) algorithm with a node wrapper.
+- The stopwords used were obtained from the [stopwords-en](https://github.com/stopwords-iso/stopwords-en)
+- In this manner, we will not have a limit on the number of API calls and have a decent proof of concept.
+- Unfortunately the library introduced doesn't return the score for each keyword, therefore we assign them scores based on ordering to ensure a decent proof of concept.
+- Later this can be replaced by a paid for API
