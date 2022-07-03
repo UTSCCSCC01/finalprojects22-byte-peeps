@@ -14,6 +14,7 @@ import Surveys from './pages/Surveys';
 import ReviewApps from './pages/ReviewApps';
 import SocialMedia from './pages/SocialMedia';
 import Header from './Components/Header';
+import { InactiveApiChecker } from './Components/InactiveApiChecker/InactiveApiChecker';
 
 export interface IAppProps {}
 
@@ -22,6 +23,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
     <>
       <BrowserRouter>
         <Header />
+        <InactiveApiChecker />
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
