@@ -1,24 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getInstagramSetupNotification } from '../../../Components/InstagramSetup/InstagramSetup';
 import { RootState } from '../../store';
 import { fetchSettings, savePage } from './instagramSetupAPI';
 
 export interface InstagramSetupState {
-  status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive';
-  page: { id: string; name: string } | null;
-  connectedPageId: string | null;
-  // Notification
-  notificationShown: boolean;
-  notificationMessage: string;
-  notificationType: 'success' | 'error' | 'warning' | 'info';
+ status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive',
+ page: { id: string, name: string } | null,
+ connectedPageId: string | null,
 }
 
 const initialState: InstagramSetupState = {
   status: 'loading',
   page: null,
   connectedPageId: null,
-  notificationShown: false,
-  notificationMessage: '',
-  notificationType: 'success',
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -38,17 +32,7 @@ export const connectPageAsync = createAsyncThunk(
 export const instagramSetupSlice = createSlice({
   name: 'instagramSetup',
   initialState,
-  reducers: {
-    setNotificationShown: (state, action) => {
-      state.notificationShown = action.payload;
-    },
-    setNotificationMessage: (state, action) => {
-      state.notificationMessage = action.payload;
-    },
-    setNotificationType: (state, action) => {
-      state.notificationType = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getSettingsAsync.pending, (state) => {
@@ -65,29 +49,19 @@ export const instagramSetupSlice = createSlice({
       .addCase(connectPageAsync.fulfilled, (state, action) => {
         state.status = 'active';
         state.connectedPageId = state.page!.id;
-        state.notificationShown = true;
-        state.notificationMessage =
-          'Instagram page has been connected successfully!';
-        state.notificationType = 'success';
+        
+        const notification = getInstagramSetupNotification();
+        notification.setMessage("Instagram page has been connected successfully!");
+        notification.setType("success");
+        notification.setShown(true);
       });
   },
 });
 
-export const {
-  setNotificationMessage,
-  setNotificationShown,
-  setNotificationType,
-} = instagramSetupSlice.actions;
+export const {} = instagramSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.instagramSetup.status;
 export const selectPage = (state: RootState) => state.instagramSetup.page;
-export const selectConnectedPageId = (state: RootState) =>
-  state.instagramSetup.connectedPageId;
-export const selectNotificationShown = (state: RootState) =>
-  state.instagramSetup.notificationShown;
-export const selectNotificationMessage = (state: RootState) =>
-  state.instagramSetup.notificationMessage;
-export const selectNotificationType = (state: RootState) =>
-  state.instagramSetup.notificationType;
+export const selectConnectedPageId = (state: RootState) => state.instagramSetup.connectedPageId;
 
 export default instagramSetupSlice.reducer;
