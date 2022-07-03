@@ -6,7 +6,6 @@ import {
   Grid,
   Button,
   FormControl,
-  InputLabel,
   TextField,
   Box,
 } from '@mui/material';
@@ -17,10 +16,6 @@ import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
   selectUsername,
-  selectNotificationMessage,
-  selectNotificationShown,
-  selectNotificationType,
-  setNotificationShown,
   selectStatus,
   connectUsernameAsync,
   selectNewUsername,
@@ -28,8 +23,17 @@ import {
   setNewUsername,
 } from '../../Redux/Slices/twitterSetup/twitterSetupSlice';
 import { Notification } from '../Notification/Notification';
+import useNotification, {
+  NotificationState,
+} from '../../utils/hooks/Notification';
+
+let notification: NotificationState;
+export function getTwitterSetupNotification(): NotificationState {
+  return notification;
+}
 
 export function TwitterSetup() {
+  notification = useNotification({});
   const status = useAppSelector(selectStatus);
   const username = useAppSelector(selectUsername);
   const newUsername = useAppSelector(selectNewUsername);
@@ -114,12 +118,8 @@ export function TwitterSetup() {
         </Grid>
       )}
 
-      <Notification
-        message={useAppSelector(selectNotificationMessage)}
-        type={useAppSelector(selectNotificationType)}
-        show={useAppSelector(selectNotificationShown)}
-        dispatchHide={() => dispatch(setNotificationShown(false))}
-      />
+      <Notification state={notification} />
+
       <Backdrop
         sx={{ color: '#fff', zIndex: 1000 }}
         open={status === 'loading'}

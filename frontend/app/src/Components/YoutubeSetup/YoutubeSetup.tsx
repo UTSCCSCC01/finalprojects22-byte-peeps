@@ -16,10 +16,6 @@ import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
   selectChannel,
-  selectNotificationMessage,
-  selectNotificationShown,
-  selectNotificationType,
-  setNotificationShown,
   selectStatus,
   connectChannelAsync,
   selectNewChannel,
@@ -27,8 +23,17 @@ import {
   setNewChannel,
 } from '../../Redux/Slices/youtubeSetup/youtubeSetupSlice';
 import { Notification } from '../Notification/Notification';
+import useNotification, {
+  NotificationState,
+} from '../../utils/hooks/Notification';
+
+let notification: NotificationState;
+export function getYouTubeSetupNotification(): NotificationState {
+  return notification;
+}
 
 export function YoutubeSetup() {
+  notification = useNotification({});
   const status = useAppSelector(selectStatus);
   const channel = useAppSelector(selectChannel);
   const newChannel = useAppSelector(selectNewChannel);
@@ -66,7 +71,11 @@ export function YoutubeSetup() {
         <Grid item xs={12}>
           <Alert severity="info">
             <span>Don't know your Channel ID? </span>
-            <a href="https://www.youtube.com/account_advanced" target="_blank">
+            <a
+              href="https://www.youtube.com/account_advanced"
+              target="_blank"
+              rel="noreferrer"
+            >
               Show Me
             </a>
           </Alert>
@@ -124,12 +133,8 @@ export function YoutubeSetup() {
         </Grid>
       )}
 
-      <Notification
-        message={useAppSelector(selectNotificationMessage)}
-        type={useAppSelector(selectNotificationType)}
-        show={useAppSelector(selectNotificationShown)}
-        dispatchHide={() => dispatch(setNotificationShown(false))}
-      />
+      <Notification state={notification} />
+
       <Backdrop
         sx={{ color: '#fff', zIndex: 1000 }}
         open={status === 'loading'}

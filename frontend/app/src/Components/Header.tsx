@@ -65,7 +65,11 @@ export default function Header() {
             {getList()}
           </Drawer>
           <Typography variant="h6" color="inherit" component="div">
-            Datalytic
+            <img
+              src="/images/logo-white.png"
+              alt="logo"
+              style={{ width: '155px', marginTop: '7px' }}
+            />
           </Typography>
         </Toolbar>
       </AppBar>

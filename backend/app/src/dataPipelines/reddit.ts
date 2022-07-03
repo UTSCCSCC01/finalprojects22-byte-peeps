@@ -61,24 +61,83 @@ const updateListings = async (subreddit: Subreddit) => {
       async (element: { [key: string]: any }) => {
         const listing = element['data'];
         //console.log(subreddit);
+        let response = await fetch(listingsUrl);
+        let data = await response.json();
+        if (data['data'] === undefined || data['data'].length == 0) return;
 
-        try {
-          await RedditListing.findOrCreate({
-            where: {
-              dataid: listing['id'],
-            },
-            defaults: {
-              title: listing['title'],
-              text: listing['selftext'],
-              date: listing['created'],
-              score: listing['score'],
-              numComments: listing['num_comments'],
-              permalink: listing['permalink'],
-              subredditId: subreddit.id,
-            },
-          });
-        } catch (err) {
-          console.error(err);
+        data['data']['children'].forEach(
+          async (element: { [key: string]: any }) => {
+            const listing = element['data'];
+
+            try {
+              await RedditListing.findOrCreate({
+                where: {
+                  dataid: listing['id'],
+                },
+                defaults: {
+                  title: listing['title'],
+                  text: listing['selftext'],
+                  date: listing['created'],
+                  score: listing['score'],
+                  numComments: listing['num_comments'],
+                  permalink: listing['permalink'],
+                  subredditId: subreddit.id,
+                },
+              });
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        );
+        // get the listings on the next few pages
+        while (data['data']['after'] != null) {
+          listingsUrl = listingsUrl + '&after=' + data['data']['after'];
+          response = await fetch(listingsUrl);
+          data = await response.json();
+          if (data['data'] === undefined || data['data'].length == 0) return;
+
+          data['data']['children'].forEach(
+            async (element: { [key: string]: any }) => {
+              const listing = element['data'];
+              try {
+                await RedditListing.findOrCreate({
+                  where: {
+                    dataid: listing['id'],
+                  },
+                  defaults: {
+                    title: listing['title'],
+                    text: listing['selftext'],
+                    date: listing['created'],
+                    score: listing['score'],
+                    numComments: listing['num_comments'],
+                    permalink: listing['permalink'],
+                    subredditId: subreddit.id,
+                  },
+                });
+              } catch (err) {
+                console.error(err);
+              }
+            }
+          );
+
+          try {
+            await RedditListing.findOrCreate({
+              where: {
+                dataid: listing['id'],
+              },
+              defaults: {
+                title: listing['title'],
+                text: listing['selftext'],
+                date: listing['created'],
+                score: listing['score'],
+                numComments: listing['num_comments'],
+                permalink: listing['permalink'],
+                subredditId: subreddit.id,
+              },
+            });
+          } catch (err) {
+            console.error(err);
+          }
         }
       }
     );
