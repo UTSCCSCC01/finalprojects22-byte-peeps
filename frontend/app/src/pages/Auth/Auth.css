@@ -1,0 +1,20 @@
+.formContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  border-radius: 2px;
+  padding: 5px;
+  width: 25%;
+  margin: auto;
+  margin-top: 10%;
+}
+
+.error {
+  color: 'red';
+}
+
+.signUp {
+  margin-top: 15px;
+}

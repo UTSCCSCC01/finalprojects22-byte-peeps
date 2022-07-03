@@ -1,0 +1,67 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getInstagramSetupNotification } from '../../../Components/InstagramSetup/InstagramSetup';
+import { RootState } from '../../store';
+import { fetchSettings, savePage } from './instagramSetupAPI';
+
+export interface InstagramSetupState {
+ status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive',
+ page: { id: string, name: string } | null,
+ connectedPageId: string | null,
+}
+
+const initialState: InstagramSetupState = {
+  status: 'loading',
+  page: null,
+  connectedPageId: null,
+};
+
+export const getSettingsAsync = createAsyncThunk(
+  'instagramSetup/fetchSettings',
+  async () => {
+    return await fetchSettings();
+  }
+);
+
+export const connectPageAsync = createAsyncThunk(
+  'instagramSetup/savePage',
+  async () => {
+    return await savePage();
+  }
+);
+
+export const instagramSetupSlice = createSlice({
+  name: 'instagramSetup',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getSettingsAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getSettingsAsync.fulfilled, (state, action) => {
+        state.status = action.payload.status;
+        state.page = action.payload.page;
+        state.connectedPageId = action.payload.connectedPageId;
+      })
+      .addCase(connectPageAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(connectPageAsync.fulfilled, (state, action) => {
+        state.status = 'active';
+        state.connectedPageId = state.page!.id;
+        
+        const notification = getInstagramSetupNotification();
+        notification.setMessage("Instagram page has been connected successfully!");
+        notification.setType("success");
+        notification.setShown(true);
+      });
+  },
+});
+
+export const {} = instagramSetupSlice.actions;
+
+export const selectStatus = (state: RootState) => state.instagramSetup.status;
+export const selectPage = (state: RootState) => state.instagramSetup.page;
+export const selectConnectedPageId = (state: RootState) => state.instagramSetup.connectedPageId;
+
+export default instagramSetupSlice.reducer;

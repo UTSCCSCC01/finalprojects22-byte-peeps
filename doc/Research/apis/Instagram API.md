@@ -3,7 +3,7 @@
 ## Overview
 The Facebook Graph API (discussed in Facebook API.md), can be configured with additional permissions to enable the retrieval of data related to an Instagram page. 
 
-The instagram page must be connected to the Facebook account, so that there's a shared access token with which you can authenticate to pull data from both platforms.
+The Instagram page must be connected to the Facebook account, so that there's a shared access token with which you can use to authenticate and pull data from both platforms.
 
 ## Prerequisites
 - The user must have an Instagram professional account that is connected to a Facebook page
@@ -26,3 +26,6 @@ The instagram page must be connected to the Facebook account, so that there's a 
 
 ## References
 - [Instagram API](https://developers.facebook.com/docs/instagram-api/overview)
+- [Media Endpoint](https://developers.facebook.com/docs/instagram-api/reference/ig-user/media)
+- [Comments Endpoint](https://developers.facebook.com/docs/instagram-api/reference/ig-media/comments)
+- [Tags Endpoints](https://developers.facebook.com/docs/instagram-api/reference/ig-user/tags)

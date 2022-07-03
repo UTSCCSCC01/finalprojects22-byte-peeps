@@ -2,51 +2,65 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
-import todoRoutes from './routes/todos';
 import connection from './db/configs';
-import { unknownError } from './globalHelpers/globalConstants';
-import userRoutes from './routes/user'
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import authenticateUser from '../src/middlewares/validateAuth'
+import cors from 'cors';
+import authenticateUser from './middlewares/validateAuth';
+import notFoundHandler from './middlewares/notFoundHandler';
+import errorHandler from './middlewares/errorHandler';
+import corsHandler from './middlewares/corsHandler';
+
+/* Routing imports */
+import userRoutes from './routes/user';
+import instagramRoutes from './routes/instagram/routes';
+import facebookRoutes from './routes/facebook/routes';
+import setupRoutes from './routes/setup/routes';
+
+/* Cron Job imports */
+import { instagramScheduledJob } from './dataPipelines/instagram';
+import { facebookScheduledJob } from './dataPipelines/facebook';
+import { redditScheduledJob } from './dataPipelines/reddit';
+import { youtubeScheduledJob } from './dataPipelines/youtube';
 
 const app = express();
-const cors = require('cors');
-const PORT = 3000;
-app.use(cors())
-app.use(
-  session({
-    secret: 'please change this secret',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+
 declare module 'express-session' {
   export interface SessionData {
     username: { [key: string]: any };
   }
 }
-app.use(bodyParser.json());
-app.get('/private/', authenticateUser, function (req, res, next) {
-  return res.end("This is private");
-});
-app.use("/user", userRoutes);
+
+const PORT = process.env.BACKEND_PORT;
+
+app.use(cors(corsHandler));
+
 app.use(
-  (
-    err: Error,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    res.status(500).json({ message: unknownError });
-  }
+  session({
+    secret: String(process.env.SESSION_SECRET),
+    resave: false,
+    saveUninitialized: true,
+  })
 );
 
-app.use('/todos', todoRoutes);
+app.use(bodyParser.json());
+
+/* User Routes */
+app.use('/user', userRoutes);
+
+/* Social Media Routing */
+app.use('/instagram', authenticateUser, instagramRoutes);
+app.use('/facebook', authenticateUser, facebookRoutes);
+
+/* Setup Routing */
+app.use('/setup', authenticateUser, setupRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 connection
   .sync()
@@ -60,3 +74,9 @@ connection
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+/* Cron Jobs */
+instagramScheduledJob.start();
+facebookScheduledJob.start();
+youtubeScheduledJob.start();
+redditScheduledJob.start();

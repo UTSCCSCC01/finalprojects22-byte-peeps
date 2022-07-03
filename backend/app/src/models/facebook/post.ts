@@ -1,9 +1,8 @@
-import { AllowNull, BelongsTo, Column, Default, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import FacebookApi from "./api";
 import FacebookComment from "./comment";
 
 @Table({
-  timestamps: false,
   tableName: 'facebook_posts',
 })
 export default class FacebookPost extends Model {
@@ -50,6 +49,9 @@ export default class FacebookPost extends Model {
   @AllowNull(false)
   @Column
   dataId: string
+
+  @DeletedAt
+  deletedAt: Date
 
   @ForeignKey(() => FacebookApi)
   @AllowNull(false)
