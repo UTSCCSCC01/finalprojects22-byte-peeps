@@ -3,9 +3,13 @@ dotenv.config();
 
 import express from 'express';
 import connection from './db/configs';
-import { unknownError } from './globalHelpers/globalConstants';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import cors from 'cors';
+import authenticateUser from './middlewares/validateAuth';
+import notFoundHandler from './middlewares/notFoundHandler';
+import errorHandler from './middlewares/errorHandler';
+import corsHandler from './middlewares/corsHandler';
 
 /* Routing imports */
 import userRoutes from './routes/user';
@@ -17,49 +21,36 @@ import setupRoutes from './routes/setup/routes';
 import { instagramScheduledJob } from './dataPipelines/instagram';
 import { facebookScheduledJob } from './dataPipelines/facebook';
 import { redditScheduledJob } from './dataPipelines/reddit';
-import authenticateUser from './middlewares/validateAuth';
 import { youtubeScheduledJob } from './dataPipelines/youtube';
 
 const app = express();
-const cors = require('cors');
-const PORT = process.env.BACKEND_PORT;
 
-app.use(
-  cors({
-    origin: `http://localhost:${process.env.FRONTEND_PORT}`,
-    credentials: true,
-  })
-);
-app.use(
-  session({
-    secret: 'please change this secret',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-app.use(bodyParser.json());
-app.use(
-  (
-    err: Error,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    res.status(500).json({ message: unknownError });
-  }
-);
 declare module 'express-session' {
   export interface SessionData {
     username: { [key: string]: any };
   }
 }
 
+const PORT = process.env.BACKEND_PORT;
+
+app.use(cors(corsHandler));
+
+app.use(
+  session({
+    secret: String(process.env.SESSION_SECRET),
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(bodyParser.json());
+
 /* User Routes */
 app.use('/user', userRoutes);
 
 /* Social Media Routing */
 app.use('/instagram', authenticateUser, instagramRoutes);
-app.use('/facebook', facebookRoutes);
+app.use('/facebook', authenticateUser, facebookRoutes);
 
 /* Setup Routing */
 app.use('/setup', authenticateUser, setupRoutes);
@@ -67,6 +58,9 @@ app.use('/setup', authenticateUser, setupRoutes);
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 connection
   .sync()
