@@ -1,24 +1,26 @@
-import { AllowNull, BelongsTo, Column, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DeletedAt, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import User from "../user/user";
 import RedditListing from "./listing";
 
 @Table({
-  timestamps: false,
   tableName: 'reddit_subreddits',
 })
 export default class RedditSubreddit extends Model {
   @AllowNull(false)
   @Column
-  name: string
+  name: string;
+
+  @DeletedAt
+  deletedAt?: Date;
 
   @ForeignKey(() => User)
   @AllowNull(false)
   @Column
-  userId: number
+  userId: number;
 
   @BelongsTo(() => User)
   user: User;
 
   @HasMany(() => RedditListing)
-  tweets: RedditListing[]
+  listings: RedditListing[];
 }
