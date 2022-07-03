@@ -3,7 +3,7 @@ import { experimentalStyled as styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import TimesSeriesChartExample from '../Components/TimeSeriesChart/TimeSeriesChartExample';
-
+import InstagramCommentsTimeSeries from '../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
 import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
 import PieChart, {
   PieChartAnalysisProps,
@@ -212,21 +212,6 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               <InstagramCommentsTable />
             </Item>
           </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
-          <Grid item xs={2} sm={4} md={4}>
-            <Item>charts/stats, to be added</Item>
-          </Grid>
           <Grid item xs={12}>
             <Item>
               <Typography
@@ -242,6 +227,21 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
               </Typography>
               <TimesSeriesChartExample />
             </Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
+          </Grid>
+          <Grid item xs={2} sm={4} md={4}>
+            <Item>charts/stats, to be added</Item>
           </Grid>
         </Grid>
       </Box>
