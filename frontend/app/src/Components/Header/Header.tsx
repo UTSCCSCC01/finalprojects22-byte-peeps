@@ -7,7 +7,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import {
   AppBar,
   Box,
-  Button,
   Drawer,
   IconButton,
   ListItem,
@@ -18,13 +17,13 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
+import { useAppSelector } from '../../Redux/hooks';
 import {
   selectSignInStatus,
   selectUserName,
-  signOut,
 } from '../../Redux/Slices/user/userSlice';
-import { RouteNames, RoutePaths } from '../../RoutesConstants';
+import { RouteNames, RoutePaths } from '../Router/RoutesConstants';
+import SignOutBtn from '../SignOutBtn/SignOutBtn';
 import './Header.css';
 
 const Pages = [
@@ -47,15 +46,9 @@ export default function Header() {
   const [open, setOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const userSignedIn: boolean = useAppSelector(selectSignInStatus);
   const username: string = useAppSelector(selectUserName);
-
-  const handleSignOut = () => {
-    dispatch(signOut(null));
-    navigate(RoutePaths.SignIn);
-  };
 
   const getList = () => (
     <div style={{ width: 250 }} onClick={() => setOpen(true)}>
@@ -101,13 +94,7 @@ export default function Header() {
           {userSignedIn && (
             <div className="userInfo">
               <div className="username">{username}</div>
-              <Button
-                color="inherit"
-                variant="text"
-                onClick={() => handleSignOut()}
-              >
-                Sign Out
-              </Button>
+              <SignOutBtn></SignOutBtn>
             </div>
           )}
         </Toolbar>

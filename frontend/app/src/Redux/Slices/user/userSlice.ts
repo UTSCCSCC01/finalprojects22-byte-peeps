@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { history } from '../../../Components/Router/RouterComponent';
+import { RoutePaths } from '../../../Components/Router/RoutesConstants';
 import { ErrorResponse, ReduxStatus } from '../../reduxConstants';
 import { AppDispatch, RootState } from '../../store';
 import { signInAPI, signOutAPI, signUpAPI } from './userAPI';
@@ -30,7 +32,7 @@ export const signIn = createAsyncThunk<
   try {
     const response = await signInAPI(user);
     thunkAPI.dispatch(setUsername(user.username));
-
+    history.push(RoutePaths.Dashboard);
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -39,13 +41,16 @@ export const signIn = createAsyncThunk<
 
 export const signOut = createAsyncThunk<
   null | ErrorResponse,
-  null,
+  {},
   {
     dispatch: AppDispatch;
   }
 >('user/signOut', async (user, thunkAPI) => {
   try {
     const response = await signOutAPI();
+    thunkAPI.dispatch(setUsername(''));
+    history.push(RoutePaths.SignIn);
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
