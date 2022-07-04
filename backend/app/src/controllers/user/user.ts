@@ -33,10 +33,7 @@ export const signIn: RequestHandler = async function (req, res, next) {
     password,
     user.password,
     function (err: Error | undefined, valid: boolean) {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: err });
-      }
+      if (err) next(err);
 
       if (!valid) return res.status(401).json({ message: invalidCredentials });
       req.session.username = username;
@@ -67,6 +64,7 @@ export const signUp: RequestHandler = async function (req, res, next) {
 
   const saltRounds = 10;
   bcrypt.hash(password, saltRounds, async function (err: any, hash: any) {
+    if (err) next(err);
     await Users.create({ username, password: hash });
     return res.status(200).send();
   });
@@ -79,9 +77,7 @@ export const signUp: RequestHandler = async function (req, res, next) {
  */
 export const signOut: RequestHandler = function (req, res, next) {
   req.session.destroy(function (err) {
-    if (!err) return null;
-    console.error(err);
-    return res.status(500).json({ message: unknownError });
+    if (err) next(err);
   });
 
   return res.status(200).send();
