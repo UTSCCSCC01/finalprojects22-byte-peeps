@@ -1,20 +1,6 @@
-import React from 'react';
-import './styles.css';
-import { useState } from 'react';
 import { useQuery } from 'react-query';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+import './styles.css';
 
-import CustomizedTooltip from './InnerComponents/CustomizedTootip';
-import CustomizedTick from './InnerComponents/CutomizedTick';
 import Chart from './InnerComponents/Chart';
 
 interface TimeSeriesProps {
@@ -28,7 +14,7 @@ interface TimeSeriesProps {
   }>;
 }
 export default function TimeSeriesChart(props: TimeSeriesProps) {
-  const { data, isLoading, isSuccess } = useQuery(
+  const { data, isSuccess } = useQuery(
     [props.startDateTime, props.endDateTime],
     () =>
       props

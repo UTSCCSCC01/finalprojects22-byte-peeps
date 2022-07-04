@@ -4,9 +4,9 @@ import { RootState } from '../../store';
 import { fetchSettings, savePage } from './instagramSetupAPI';
 
 export interface InstagramSetupState {
- status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive',
- page: { id: string, name: string } | null,
- connectedPageId: string | null,
+  status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive';
+  page: { id: string; name: string } | null;
+  connectedPageId: string | null;
 }
 
 const initialState: InstagramSetupState = {
@@ -49,19 +49,20 @@ export const instagramSetupSlice = createSlice({
       .addCase(connectPageAsync.fulfilled, (state, action) => {
         state.status = 'active';
         state.connectedPageId = state.page!.id;
-        
+
         const notification = getInstagramSetupNotification();
-        notification.setMessage("Instagram page has been connected successfully!");
-        notification.setType("success");
+        notification.setMessage(
+          'Instagram page has been connected successfully!'
+        );
+        notification.setType('success');
         notification.setShown(true);
       });
   },
 });
 
-export const {} = instagramSetupSlice.actions;
-
 export const selectStatus = (state: RootState) => state.instagramSetup.status;
 export const selectPage = (state: RootState) => state.instagramSetup.page;
-export const selectConnectedPageId = (state: RootState) => state.instagramSetup.connectedPageId;
+export const selectConnectedPageId = (state: RootState) =>
+  state.instagramSetup.connectedPageId;
 
 export default instagramSetupSlice.reducer;
