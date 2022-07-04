@@ -32,7 +32,7 @@ export const signIn = createAsyncThunk<
 >('user/signIn', async (user, thunkAPI) => {
   try {
     const response = await signInAPI(user);
-    AuthStorage.storeSession(user.username, 'response');
+    AuthStorage.storeSession(user.username);
     thunkAPI.dispatch(setUsername(user.username));
     history.push(RoutePaths.Dashboard);
     return response.data;

@@ -1,36 +1,45 @@
 import { useState } from 'react';
 import { useAppDispatch } from '../../Redux/hooks';
 import { setUsername } from '../../Redux/Slices/user/userSlice';
-import { keyName, userObjType } from './AuthStorageConstants';
+import { keyName } from './AuthStorageConstants';
 
-function storeSession(username: string, sessionId: string): void {
-  let userObj: userObjType = {
-    username,
-    sessionId,
-  };
-  sessionStorage.setItem(keyName, JSON.stringify(userObj));
+/**
+ * Stores the username in the session API storage
+ * @param {string} username
+ * @return {void}
+ */
+function storeSession(username: string): void {
+  sessionStorage.setItem(keyName, username);
 }
 
+/**
+ * Removes the username in the session API storage
+ * @return {void}
+ */
 function removeSession(): void {
   sessionStorage.removeItem(keyName);
 }
 
-function getSession(): void | userObjType {
-  let userObjString = sessionStorage.getItem(keyName);
-  if (!userObjString) return;
-
-  let userObj: userObjType = JSON.parse(userObjString);
-  return userObj;
+/**
+ * Gets the current session if there is one
+ * @return {null | string}
+ */
+function getSession(): null | string {
+  return sessionStorage.getItem(keyName);
 }
 
+/**
+ * Custom hook to see if there is a session based on the session API storage
+ * @return { [boolean]}
+ */
 export function useGetSession(): [boolean] {
   const dispatch = useAppDispatch();
   const [isSignedIn] = useState<boolean>(checkForSession());
 
   function checkForSession(): boolean {
-    const userObj = getSession();
-    if (!userObj) return false;
-    dispatch(setUsername(userObj.username));
+    const username = getSession();
+    if (!username) return false;
+    dispatch(setUsername(username));
     return true;
   }
 
