@@ -19,18 +19,17 @@ const PORT = process.env.BACKEND_PORT;
 app.use(bodyParser.json());
 app.use(sessionHandler);
 app.use(cors(corsHandler));
-
 app.use(requestRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 connection
-  .sync()
+  .sync({ alter: true })
   .then(() => {
-    console.log('Database successfully connected');
+    console.log('Database successfully synced and connected');
   })
   .catch((err) => {
-    console.log('Error', err);
+    console.log('Error: ', err);
   });
 
 app.listen(PORT, () => {

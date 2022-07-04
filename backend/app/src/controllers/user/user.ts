@@ -1,7 +1,6 @@
+import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
 import Users from '../../models/user/user';
-import bcrypt from 'bcrypt';
-import { unknownError } from '../../globalHelpers/globalConstants';
 import {
   invalidCredentials,
   invalidPassword,
