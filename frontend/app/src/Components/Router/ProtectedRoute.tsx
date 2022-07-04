@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../../Redux/hooks';
-import { selectSignInStatus } from '../../Redux/Slices/user/userSlice';
+import { useGetSession } from '../AuthStorage/AuthStorage';
 import { RoutePaths } from './RoutesConstants';
 
 interface Props {
@@ -8,7 +7,7 @@ interface Props {
 }
 
 const ProtectedRoute: React.FC<Props> = (props) => {
-  const isSignedIn = useAppSelector(selectSignInStatus);
+  const [isSignedIn] = useGetSession();
 
   if (!isSignedIn) return <Navigate to={RoutePaths.SignIn} />;
 
