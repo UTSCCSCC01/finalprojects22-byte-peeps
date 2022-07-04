@@ -7,6 +7,7 @@ import ReviewApps from './pages/ReviewApps';
 import SocialMedia from './pages/SocialMedia';
 import { RoutePaths } from './RoutesConstants';
 import SignIn from './pages/Auth/SignIn';
+import Settings from './pages/Settings';
 
 interface Props {}
 
@@ -21,6 +22,7 @@ const RouterComponent: React.FC<Props> = () => {
         <Route path={RoutePaths.Surveys} element={<Surveys />} />
         <Route path={RoutePaths.Reviews} element={<ReviewApps />} />
         <Route path={RoutePaths.Socials} element={<SocialMedia />} />
+        <Route path={RoutePaths.Settings} element={<Settings />} />
       </Routes>
     </BrowserRouter>
   );
