@@ -81,7 +81,6 @@ export const userSlice = createSlice({
   reducers: {
     setUsername: (state, action) => {
       state.username = action.payload;
-      state.signInStatus = ReduxStatus.success;
     },
   },
   extraReducers: (builder) => {
@@ -134,7 +133,7 @@ export const userSlice = createSlice({
 
 // selectors
 export const selectSignInStatus = (state: RootState) =>
-  state.user.signInStatus === ReduxStatus.success;
+  state.user.username !== '';
 export const selectSignInLoading = (state: RootState) =>
   state.user.signInStatus === ReduxStatus.loading;
 export const selectSignInError = (state: RootState) =>

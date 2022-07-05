@@ -7,14 +7,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useGetSession } from '../../Components/AuthStorage/AuthStorage';
 import { RoutePaths } from '../../Components/Router/RoutesConstants';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   selectSignInError,
   selectUserErrorMessage,
   signIn,
+  signOut,
 } from '../../Redux/Slices/user/userSlice';
 import './Auth.css';
 
@@ -23,11 +25,16 @@ interface Props {}
 const SignIn: React.FC<Props> = () => {
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
+  const [isSignedIn] = useGetSession();
 
   const dispatch = useAppDispatch();
 
   const isSignInError = useAppSelector(selectSignInError);
   const userErrorMsg = useAppSelector(selectUserErrorMessage);
+
+  useEffect(() => {
+    if (isSignedIn) dispatch(signOut({})); // user goes back to sign in page so sign out
+  }, [dispatch, isSignedIn]);
 
   const handleLogin = () => {
     dispatch(signIn({ username: user, password: pwd }));
