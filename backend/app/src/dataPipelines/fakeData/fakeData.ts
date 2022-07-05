@@ -4,7 +4,6 @@ import YouTubeChannel from '../../models/youtube/channel';
 import YouTubeVideo from '../../models/youtube/video';
 import YouTubeComment from '../../models/youtube/comment';
 import { faker } from '@faker-js/faker';
-import { convertCompilerOptionsFromJson } from 'typescript';
 import FacebookApi from '../../models/facebook/api';
 import FacebookPost from '../../models/facebook/post';
 import FacebookComment from '../../models/facebook/comment';
@@ -29,12 +28,20 @@ function randomIndex(number: number = fakeData.length): number {
   return Math.floor(Math.random() * number);
 }
 
+/**
+ * Returns a random subjectivity analysis
+ * @return {string} subjective or objective
+ */
 function randomSubjectivity(): string {
   let i = randomIndex(2);
   if (i === 0) return 'subjective';
   else return 'objective';
 }
 
+/**
+ * Returns a random topic classification in correspondence with the topics available in datumbox
+ * @return {string}
+ */
 function randomTopicClassification(): string {
   let i = randomIndex(11);
   switch (i) {
@@ -63,18 +70,23 @@ function randomTopicClassification(): string {
   }
 }
 
+/**
+ * Deletes all the data in the database
+ * @return {Promise<void>}
+ */
 async function deleteAllData(): Promise<void> {
   await User.destroy({ where: {} });
   await YouTubeChannel.destroy({ where: {} });
   await YouTubeVideo.destroy({ where: {} });
   await YouTubeComment.destroy({ where: {} });
+  await FacebookApi.destroy({ where: {} });
+  await FacebookPost.destroy({ where: {} });
+  await FacebookComment.destroy({ where: {} });
 }
 
 /**
- * Brief description of the function here.
- * @summary If the description is long, write your summary here. Otherwise, feel free to remove this.
- * @param {ParamDataTypeHere} parameterNameHere - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
- * @return {ReturnValueDataTypeHere} Brief description of the returning value here.
+ * Adds the user and their APIs to the database
+ * @return {Promise<RegisteredUser>} Object that has the database IDs of the user and their APIs
  */
 async function userAndAPIs(): Promise<RegisteredUser> {
   const saltRounds = 10;
@@ -127,7 +139,8 @@ async function userAndAPIs(): Promise<RegisteredUser> {
 
 /**
  * Adds fake youtube data to the database
- * @param {RegisteredUser} registeredUser - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
  */
 async function addYouTubeData(registeredUser: RegisteredUser): Promise<void> {
   Array.from({ length: numberOfPosts }).forEach(async () => {
@@ -168,6 +181,11 @@ async function addYouTubeData(registeredUser: RegisteredUser): Promise<void> {
   });
 }
 
+/**
+ * Adds fake facebook data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
 async function addFacebookData(registeredUser: RegisteredUser): Promise<void> {
   Array.from({ length: numberOfPosts }).forEach(async () => {
     let date = faker.date.betweens(startDate, endDate, 1)[0];
@@ -208,14 +226,34 @@ async function addFacebookData(registeredUser: RegisteredUser): Promise<void> {
   });
 }
 
+/**
+ * Adds fake instagram data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
 async function addInstagramData(
   registeredUser: RegisteredUser
 ): Promise<void> {}
 
+/**
+ * Adds fake reddit data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
 async function addRedditData(registeredUser: RegisteredUser): Promise<void> {}
 
+/**
+ * Adds fake twitter data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
 async function addTwitterData(registeredUser: RegisteredUser): Promise<void> {}
 
+/**
+ * Wrapper to add the data in order
+ * @summary deletes all the data in the database and adds new data
+ * @return {Promise<void>}
+ */
 async function addFakeData(): Promise<void> {
   console.log('Adding fake data...');
   await deleteAllData();
