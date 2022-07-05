@@ -6,12 +6,14 @@ import {
   selectStatus,
   connectPageAsync,
   selectConnectedPageId,
+  getSettingsAsync,
 } from '../../Redux/Slices/instagramSetup/instagramSetupSlice';
 import useNotification, {
   NotificationState,
 } from '../../utils/hooks/Notification';
 import { Notification } from '../Notification/Notification';
 import { selectStage } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
+import { useEffect } from 'react';
 
 let notification: NotificationState;
 export function getInstagramSetupNotification(): NotificationState {
@@ -25,6 +27,10 @@ export function InstagramSetup() {
   const page = useAppSelector(selectPage);
   const connectedPageId = useAppSelector(selectConnectedPageId);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getSettingsAsync());
+  }, [dispatch]);
 
   return (
     <Grid container spacing={2}>

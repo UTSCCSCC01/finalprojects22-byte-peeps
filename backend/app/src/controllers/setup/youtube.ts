@@ -33,6 +33,8 @@ export const connectUser: RequestHandler = async (req, res, next) => {
     let returnChannel = null;
     const newChannel = req.body.channel;
 
+    console.log(newChannel);
+
     const user = await User.findOne({
       where: { username: req.session.username },
       include: [YoutubeChannel],
@@ -61,7 +63,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
 
       // Check if new channel already exists
       const existingChannel = await YoutubeChannel.findOne({
-        where: { resourceId: newChannel },
+        where: { channelId: newChannel },
         paranoid: false,
       });
 
@@ -98,7 +100,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
 
       // Create channel
       await YoutubeChannel.create({
-        resourceId: newChannel,
+        channelId: newChannel,
         name: channelName,
         userId: user!.id,
       });
@@ -112,6 +114,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
       message: 'Youtube account has been connected successfully!',
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send(err);
   }
 };
