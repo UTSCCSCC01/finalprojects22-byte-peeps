@@ -1,4 +1,14 @@
-import { Table, Model, Column, BelongsTo, ForeignKey, AllowNull, Default, DeletedAt } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  BelongsTo,
+  ForeignKey,
+  AllowNull,
+  Default,
+  DeletedAt,
+  DataType,
+} from 'sequelize-typescript';
 import FacebookPost from './post';
 
 @Table({
@@ -7,40 +17,40 @@ import FacebookPost from './post';
 export default class FacebookComment extends Model {
   @AllowNull(false)
   @Column
-  dataId: string
-  
-  @AllowNull(false)
-  @Column
-  userName: string
-  
-  @AllowNull(false)
-  @Column
-  message: string
+  dataId: string;
 
   @AllowNull(false)
   @Column
-  date: Date
+  userName: string;
+
+  @AllowNull(false)
+  @Column(DataType.TEXT)
+  message: string;
+
+  @AllowNull(false)
+  @Column
+  date: Date;
 
   @Default(0)
   @Column
-  likes: number
+  likes: number;
 
   @Column
-  sentimentAnalysis: string
+  sentimentAnalysis: string;
 
   @Column
-  topicClassification: string
+  topicClassification: string;
 
   @Column
-  subjectivityAnalysis: string
+  subjectivityAnalysis: string;
 
   @DeletedAt
-  deletedAt: Date
+  deletedAt: Date;
 
   @ForeignKey(() => FacebookPost)
   @AllowNull(false)
   @Column
-  postId: number
+  postId: number;
 
   @BelongsTo(() => FacebookPost)
   post: FacebookPost;

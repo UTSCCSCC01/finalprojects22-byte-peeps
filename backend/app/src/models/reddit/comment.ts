@@ -1,5 +1,15 @@
-import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, Model, Table } from "sequelize-typescript";
-import RedditListing from "./listing";
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  DeletedAt,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import RedditListing from './listing';
 
 @Table({
   tableName: 'reddit_comments',
@@ -7,11 +17,11 @@ import RedditListing from "./listing";
 export default class RedditComment extends Model {
   @AllowNull(false)
   @Column
-  dataId: string
+  dataId: string;
 
   @AllowNull(false)
-  @Column
-  text: string
+  @Column(DataType.TEXT)
+  text: string;
 
   @AllowNull
   @Column
