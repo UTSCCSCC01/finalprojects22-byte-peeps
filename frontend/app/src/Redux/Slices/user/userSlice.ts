@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import AuthStorage from '../../../Components/AuthStorage/AuthStorage';
+import { history } from '../../../Components/Router/RouterComponent';
+import { RoutePaths } from '../../../Components/Router/RoutesConstants';
 import { ErrorResponse, ReduxStatus } from '../../reduxConstants';
 import { AppDispatch, RootState } from '../../store';
 import { signInAPI, signOutAPI, signUpAPI } from './userAPI';
 import { User } from './userSliceConstants';
 
-export interface UserState {
+interface UserState {
   username: string;
   signInStatus: ReduxStatus;
   signOutStatus: ReduxStatus;
@@ -29,8 +32,9 @@ export const signIn = createAsyncThunk<
 >('user/signIn', async (user, thunkAPI) => {
   try {
     const response = await signInAPI(user);
+    AuthStorage.storeSession(user.username);
     thunkAPI.dispatch(setUsername(user.username));
-
+    history.push(RoutePaths.Dashboard);
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -39,13 +43,17 @@ export const signIn = createAsyncThunk<
 
 export const signOut = createAsyncThunk<
   null | ErrorResponse,
-  null,
+  {},
   {
     dispatch: AppDispatch;
   }
 >('user/signOut', async (user, thunkAPI) => {
   try {
     const response = await signOutAPI();
+    AuthStorage.removeSession();
+    thunkAPI.dispatch(setUsername(''));
+    history.push(RoutePaths.SignIn);
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -125,7 +133,7 @@ export const userSlice = createSlice({
 
 // selectors
 export const selectSignInStatus = (state: RootState) =>
-  state.user.signInStatus === ReduxStatus.success;
+  state.user.username !== '';
 export const selectSignInLoading = (state: RootState) =>
   state.user.signInStatus === ReduxStatus.loading;
 export const selectSignInError = (state: RootState) =>

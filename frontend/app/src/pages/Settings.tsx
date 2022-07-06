@@ -1,18 +1,16 @@
-import React from 'react';
-import { experimentalStyled as styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Tab, Tabs } from '@mui/material';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import RedditIcon from '@mui/icons-material/Reddit';
 import GoogleIcon from '@mui/icons-material/Google';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import RedditIcon from '@mui/icons-material/Reddit';
 import StarIcon from '@mui/icons-material/Star';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import { Box, Tab, Tabs } from '@mui/material';
+import React from 'react';
 import { FacebookSetup } from '../Components/FacebookSetup/FacebookSetup';
 import { InstagramSetup } from '../Components/InstagramSetup/InstagramSetup';
-import { TwitterSetup } from '../Components/TwitterSetup/TwitterSetup';
 import { RedditSetup } from '../Components/RedditSetup/RedditSetup';
+import { TwitterSetup } from '../Components/TwitterSetup/TwitterSetup';
 import { YoutubeSetup } from '../Components/YoutubeSetup/YoutubeSetup';
 
 export interface ISettProps {}
@@ -52,8 +50,6 @@ const Settings: React.FunctionComponent<ISettProps> = (props) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-  const navigate = useNavigate();
 
   return (
     <>

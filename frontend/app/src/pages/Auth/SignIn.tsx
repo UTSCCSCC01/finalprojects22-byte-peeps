@@ -1,3 +1,4 @@
+import { LockOutlined } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -7,40 +8,37 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './Auth.css';
-import { LockOutlined } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+import { useGetSession } from '../../Components/AuthStorage/AuthStorage';
+import { RoutePaths } from '../../Components/Router/RoutesConstants';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   selectSignInError,
-  selectSignInStatus,
   selectUserErrorMessage,
   signIn,
+  signOut,
 } from '../../Redux/Slices/user/userSlice';
-import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { RoutePaths } from '../../RoutesConstants';
+import './Auth.css';
 
 interface Props {}
 
-const SignIn: React.FunctionComponent<Props> = () => {
+const SignIn: React.FC<Props> = () => {
   const [user, setUser] = useState('');
   const [pwd, setPwd] = useState('');
+  const [isSignedIn] = useGetSession();
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
-  const isSignedUp = useAppSelector(selectSignInStatus);
   const isSignInError = useAppSelector(selectSignInError);
   const userErrorMsg = useAppSelector(selectUserErrorMessage);
+
+  useEffect(() => {
+    if (isSignedIn) dispatch(signOut({})); // user goes back to sign in page so sign out
+  }, [dispatch, isSignedIn]);
 
   const handleLogin = () => {
     dispatch(signIn({ username: user, password: pwd }));
   };
-
-  useEffect(() => {
-    if (isSignedUp) {
-      navigate(RoutePaths.Dashboard);
-    }
-  }, [navigate, isSignedUp]);
 
   return (
     <Box

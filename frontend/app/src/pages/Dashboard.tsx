@@ -1,33 +1,30 @@
-import React, { useEffect } from 'react';
-import { experimentalStyled as styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Typography } from '@mui/material';
+import { experimentalStyled as styled } from '@mui/material/styles';
+import React, { useEffect } from 'react';
 import TimesSeriesChartExample from '../Components/TimeSeriesChart/TimeSeriesChartExample';
 
-import InstagramCommentsTimeSeries from '../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
-
-import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
+import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
+import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
+import CardCharts from '../Components/Cards/CardCharts';
+import CardInfo from '../Components/Cards/CardInfo';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../Components/Charts/PieChart/PieChartAnalysis';
-import CardCharts from '../Components/Cards/CardCharts';
-import CardInfo from '../Components/Cards/CardInfo';
-import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
-import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone';
-import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import DateSelector from '../Components/DateSelector/DateSelector';
+import InstagramCommentsTable from '../Components/MetricsTable/InstagramCommentsTable';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import {
   getCommentsSentimentAnalysis,
   getFacebookStats,
-  selectSentimentAnalysis,
   selectError,
+  selectFacebookStats,
   selectIsSentimentAnalysisLoading,
   selectIsStatsLoading,
-  selectFacebookStats,
+  selectSentimentAnalysis,
   selectStatsError,
 } from '../Redux/Slices/facebook/facebookSlice';
-import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { SentimentAnalysisColors } from '../utils/enums';
 
 export interface IDashProps {}
@@ -41,7 +38,6 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   // Facebook Stats
@@ -109,7 +105,6 @@ const Dashboard: React.FunctionComponent<IDashProps> = (props) => {
       >
         <h1>Dashboard</h1>
         <DateSelector />
-        <button onClick={() => navigate('/')}>log out</button>
       </div>
 
       <Box sx={{ flexGrow: 1, p: 2 }}>
