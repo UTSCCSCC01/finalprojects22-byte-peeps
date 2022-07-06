@@ -30,10 +30,6 @@ export default class YouTubeVideo extends Model {
   @Column
   title: string;
 
-  @AllowNull(false)
-  @Column
-  publishTime: Date;
-
   @Default(0)
   @Column
   views: number;

@@ -1,6 +1,17 @@
-import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
-import RedditComment from "./comment";
-import RedditSubreddit from "./subreddit";
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  DeletedAt,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import RedditComment from './comment';
+import RedditSubreddit from './subreddit';
 
 @Table({
   tableName: 'reddit_listings',
@@ -8,14 +19,14 @@ import RedditSubreddit from "./subreddit";
 export default class RedditListing extends Model {
   @AllowNull(false)
   @Column
-  dataId: string
+  dataId: string;
 
   @AllowNull(false)
   @Column
-  title: string
+  title: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   text: string;
 
   @AllowNull
@@ -35,7 +46,7 @@ export default class RedditListing extends Model {
 
   @AllowNull(false)
   @Column
-  permalink: string
+  permalink: string;
 
   @ForeignKey(() => RedditSubreddit)
   @AllowNull(false)

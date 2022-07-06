@@ -1,13 +1,24 @@
-import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
-import TwitterConversation from "./conversation";
-import TwitterUser from "./user";
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  DeletedAt,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import TwitterConversation from './conversation';
+import TwitterUser from './user';
 
 @Table({
   tableName: 'twitter_tweets',
 })
 export default class TwitterTweet extends Model {
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   text: string;
 
   @AllowNull

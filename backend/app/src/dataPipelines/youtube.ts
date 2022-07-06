@@ -19,7 +19,7 @@ const YouTubeApiEndPoint = google.youtube({
  * 3. Update all comments
  * @returns {Promise<void>} - Promise that resolves when the function is complete
  */
-async function startPipeline(): Promise<void> {
+export async function startPipeline(): Promise<void> {
   let youtubeChannels = await YouTubeChannel.findAll();
   if (youtubeChannels.length == 0) return;
 
@@ -38,9 +38,9 @@ async function startPipeline(): Promise<void> {
     /* Last day that a YouTube video was published */
     let lastDate: Date = await YouTubeVideo.findOne({
       where: { channelId: channelIdKey },
-      order: [['publishTime', 'DESC']],
+      order: [['date', 'DESC']],
     }).then((video) => {
-      if (video) return video.publishTime;
+      if (video) return video.date;
       return new Date(0);
     });
 
@@ -97,15 +97,14 @@ async function updateVideos(
 
     for (let i = 0; i < data.items.length; i++) {
       const video = data.items[i];
-      let publishTime = video.snippet?.publishedAt;
+      let date = video.snippet?.publishedAt;
       let title = video.snippet?.title;
       let videoId = video.id?.videoId;
 
       const query = YouTubeVideo.upsert({
         resourceId: videoId,
-        date: new Date(),
         title,
-        publishTime,
+        date,
         channelId: channelIdKey,
       });
 
@@ -217,7 +216,7 @@ async function updateComments(
       let authorDisplayName = topLevelComment?.snippet?.authorDisplayName;
       let commentMessage = topLevelComment?.snippet?.textDisplay;
       let commentLikes = topLevelComment?.snippet?.likeCount;
-      let publishedAt = topLevelComment?.snippet?.publishedAt;
+      let date = topLevelComment?.snippet?.publishedAt;
 
       if (!commentMessage) continue;
 
@@ -227,7 +226,7 @@ async function updateComments(
 
       let dbCommentUpdateQuery = YouTubeComment.upsert({
         resourceId: commentId,
-        date: publishedAt,
+        date: date,
         userName: authorDisplayName,
         message: commentMessage,
         likes: commentLikes,
