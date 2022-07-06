@@ -61,7 +61,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
 
       // Check if new channel already exists
       const existingChannel = await YoutubeChannel.findOne({
-        where: { resourceId: newChannel },
+        where: { channelId: newChannel },
         paranoid: false,
       });
 
@@ -98,7 +98,7 @@ export const connectUser: RequestHandler = async (req, res, next) => {
 
       // Create channel
       await YoutubeChannel.create({
-        resourceId: newChannel,
+        channelId: newChannel,
         name: channelName,
         userId: user!.id,
       });

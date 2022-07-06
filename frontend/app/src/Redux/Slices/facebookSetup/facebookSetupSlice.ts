@@ -1,19 +1,23 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState, store } from '../../store';
-import { fetchCurrentPage, fetchPages, saveCurrentPage } from './facebookSetupAPI';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getFacebookSetupNotification } from '../../../Components/FacebookSetup/FacebookSetup';
+import { RootState } from '../../store';
 import { getSettingsAsync } from '../instagramSetup/instagramSetupSlice';
+import {
+  fetchCurrentPage,
+  fetchPages,
+  saveCurrentPage,
+} from './facebookSetupAPI';
 
 export interface FacebookSetupState {
   stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive' | 'change';
-  pages: { id: string, name: string, access_token: string }[]
-  currentPage: string | null
+  pages: { id: string; name: string; access_token: string }[];
+  currentPage: string | null;
 }
 
 const initialState: FacebookSetupState = {
   stage: 'loading',
   pages: [],
-  currentPage: null
+  currentPage: null,
 };
 
 export const getCurrentPageAsync = createAsyncThunk(
@@ -27,7 +31,7 @@ export const saveCurrentPageAsync = createAsyncThunk(
   'facebookSetup/saveCurrentPage',
   async (pageToken: string, thunkApi) => {
     const status = await saveCurrentPage(pageToken);
-    thunkApi.dispatch(getSettingsAsync())
+    thunkApi.dispatch(getSettingsAsync());
     return status;
   }
 );
@@ -48,7 +52,7 @@ export const facebookSetupSlice = createSlice({
     },
     setStage: (state, action) => {
       state.stage = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -77,8 +81,8 @@ export const facebookSetupSlice = createSlice({
         state.currentPage = action.payload;
 
         const notification = getFacebookSetupNotification();
-        notification.setMessage("Page settings has been saved successfully!");
-        notification.setType("success");
+        notification.setMessage('Page settings has been saved successfully!');
+        notification.setType('success');
         notification.setShown(true);
       })
       .addCase(retrievePagesAsync.pending, (state) => {

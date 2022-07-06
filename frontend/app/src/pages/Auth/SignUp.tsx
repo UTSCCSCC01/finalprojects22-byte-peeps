@@ -16,7 +16,7 @@ import {
   selectUserErrorMessage,
   signUp,
 } from '../../Redux/Slices/user/userSlice';
-import { RoutePaths } from '../../RoutesConstants';
+import { RoutePaths } from '../../Components/Router/RoutesConstants';
 import './Auth.css';
 
 interface Props {}
