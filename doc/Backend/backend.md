@@ -30,3 +30,13 @@ promiseCall.then((result: resultType) => {
     if(err) next(err);
 })
 ```
+
+## Fake Data
+
+- **Note:** The fake data call will delete all the current data in the database
+
+- Instructions:
+
+1. Add the call `addFakeData();` at the end of the `app.ts`
+2. After saving, the `app.ts` should restart
+3. Log in with username `data` and password `data`

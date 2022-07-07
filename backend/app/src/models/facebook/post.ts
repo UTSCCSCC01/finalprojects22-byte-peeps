@@ -1,62 +1,81 @@
-import { AllowNull, BelongsTo, Column, Default, DeletedAt, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
-import FacebookApi from "./api";
-import FacebookComment from "./comment";
+import {
+  AllowNull,
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  DeletedAt,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import FacebookApi from './api';
+import FacebookComment from './comment';
 
 @Table({
   tableName: 'facebook_posts',
 })
 export default class FacebookPost extends Model {
   @AllowNull(false)
-  @Column
-  message: string
+  @Column(DataType.TEXT)
+  message: string;
 
   @AllowNull(false)
   @Column
-  date: Date
+  date: Date;
 
   @Default(0)
   @Column
-  likes: number
+  likes: number;
 
   @Default(0)
   @Column
-  loves: number
+  loves: number;
 
   @Default(0)
   @Column
-  cares: number
+  cares: number;
 
   @Default(0)
   @Column
-  hahas: number
+  hahas: number;
 
   @Default(0)
   @Column
-  wows: number
+  wows: number;
 
   @Default(0)
   @Column
-  sads: number
+  sads: number;
 
   @Default(0)
   @Column
-  angrys: number
+  angrys: number;
 
   getNumberOfReactions() {
-    return this.likes + this.loves + this.cares + this.hahas + this.wows + this.sads + this.angrys;
+    return (
+      this.likes +
+      this.loves +
+      this.cares +
+      this.hahas +
+      this.wows +
+      this.sads +
+      this.angrys
+    );
   }
 
   @AllowNull(false)
   @Column
-  dataId: string
+  dataId: string;
 
   @DeletedAt
-  deletedAt: Date
+  deletedAt: Date;
 
   @ForeignKey(() => FacebookApi)
   @AllowNull(false)
   @Column
-  apiId: number
+  apiId: number;
 
   @BelongsTo(() => FacebookApi)
   api: FacebookApi;
