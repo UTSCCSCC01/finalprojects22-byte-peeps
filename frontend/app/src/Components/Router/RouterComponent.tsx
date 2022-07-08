@@ -6,10 +6,10 @@ import {
 } from 'react-router-dom';
 import SignIn from '../../pages/Auth/SignIn';
 import SignUp from '../../pages/Auth/SignUp';
-import Dashboard from '../../pages/Dashboard';
+import Dashboard from '../../pages/Dashboard/Dashboard';
 import ReviewApps from '../../pages/ReviewApps';
-import Settings from '../../pages/Settings';
-import SocialMedia from '../../pages/SocialMedia';
+import Settings from '../../pages/Settings/Settings';
+import SocialMedia from '../../pages/SocialMedia/SocialMedia';
 import Surveys from '../../pages/Surveys';
 import Header from '../Header/Header';
 import ProtectedRoute from './ProtectedRoute';
