@@ -55,6 +55,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.0.14"
+    "@types/react": "^18.0.14",
+    "@types/react-date-range": "^1.4.3"
   }
 }
