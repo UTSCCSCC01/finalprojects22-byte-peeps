@@ -2,6 +2,7 @@ import { useQuery } from 'react-query';
 import './styles.css';
 
 import Chart from './InnerComponents/Chart';
+import NoData from '../NoData/NoData';
 
 interface TimeSeriesProps {
   startDateTime: string;
@@ -22,5 +23,9 @@ export default function TimeSeriesChart(props: TimeSeriesProps) {
         .then((x) => x.data)
   );
 
-  return isSuccess ? <Chart data={data.data} /> : <div>Failed to load</div>;
+  return isSuccess && data.data.length ? (
+    <Chart data={data.data} />
+  ) : (
+    <NoData className="noChartData" />
+  );
 }
