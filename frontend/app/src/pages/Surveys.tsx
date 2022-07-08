@@ -1,15 +1,17 @@
-import React from 'react';
-import { Counter } from '../Components/Counter/Counter';
+import React, { useEffect } from 'react';
+import { RouteNames } from '../Components/Router/RoutesConstants';
+import { useAppDispatch } from '../Redux/hooks';
+import { setPageName } from '../Redux/Slices/global/globalSlice';
 
-export interface ISurveysProps {}
+interface Props {}
 
-const Surveys: React.FunctionComponent<ISurveysProps> = (props) => {
-  return (
-    <div>
-      <h1>Surveys</h1>
-      <Counter />
-    </div>
-  );
+const Surveys: React.FC<Props> = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setPageName(RouteNames.Surveys));
+  }, [dispatch]);
+  return <></>;
 };
 
 export default Surveys;
