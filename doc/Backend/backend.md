@@ -40,3 +40,13 @@ promiseCall.then((result: resultType) => {
 1. Add the call `addFakeData();` at the end of the `app.ts`
 2. After saving, the `app.ts` should restart
 3. Log in with username `data` and password `data`
+
+## Error messages
+
+All error messages from the backend should take the format:
+
+```
+{
+    "message": "this is an error message"
+}
+```
