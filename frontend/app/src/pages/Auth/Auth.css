@@ -1,20 +1,20 @@
 .formContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
   border-radius: 2px;
   padding: 5px;
-  width: 25%;
+  width: 300px;
+  height: 400px;
   margin: auto;
-  margin-top: 10%;
+  margin-top: 200px;
 }
 
 .error {
   color: 'red';
 }
 
-.signUp {
-  margin-top: 15px;
+.authButton {
+  width: 212px !important;
+}
+
+.footer {
+  margin-top: 50px !important;
 }
