@@ -9,7 +9,7 @@ interface Props {}
 const App: React.FC<Props> = () => {
   return (
     <ThemeProvider theme={MuiTheme}>
-      <RouterComponent />;
+      <RouterComponent />
     </ThemeProvider>
   );
 };

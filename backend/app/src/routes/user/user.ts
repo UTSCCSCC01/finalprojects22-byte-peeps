@@ -5,10 +5,8 @@ import authenticateUser from '../../middlewares/validateAuth';
 
 const userRoutes = Router();
 
-userRoutes.post('/signin', (req, res, next) => signIn(req, res, next));
-userRoutes.post('/signout', authenticateUser, (req, res, next) =>
-  signOut(req, res, next)
-);
-userRoutes.post('/signup', (req, res, next) => signUp(req, res, next));
+userRoutes.post('/signin', signIn);
+userRoutes.post('/signout', authenticateUser, signOut);
+userRoutes.post('/signup', signUp);
 
 export default userRoutes;
