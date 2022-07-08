@@ -1,6 +1,6 @@
 // custom tooltip component
 export default function CustomizedTooltip(props: { [key: string]: any }) {
-  const { payload, label } = props;
+  const { payload } = props;
 
   if (payload.length !== 0) {
     return (

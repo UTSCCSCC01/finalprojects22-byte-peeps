@@ -1,6 +1,6 @@
 // custom tick component
 export default function CustomizedTick(props: { [key: string]: any }) {
-  const { x, y, stroke, payload } = props;
+  const { x, y, payload } = props;
 
   const tspans: string[] = payload.value.split(' ');
   return (
