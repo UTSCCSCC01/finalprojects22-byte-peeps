@@ -19,41 +19,45 @@ const InstagramGraphApiUrl = 'https://graph.facebook.com';
  *           fetches and updates the comments.
  */
 async function startPipeline() {
-  /* Get stored Instagram Accounts (API) */
-  let instagramApis = await InstagramApi.findAll({ include: FacebookApi });
-  if (instagramApis.length == 0) return;
+  try {
+    /* Get stored Instagram Accounts (API) */
+    let instagramApis = await InstagramApi.findAll({ include: FacebookApi });
+    if (instagramApis.length == 0) return;
 
-  /* Get boundary dates */
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const today = new Date();
-  const dates = [
-    Math.round(yesterday.getTime() / 1000),
-    Math.round(today.getTime() / 1000),
-  ];
+    /* Get boundary dates */
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const today = new Date();
+    const dates = [
+      Math.round(yesterday.getTime() / 1000),
+      Math.round(today.getTime() / 1000),
+    ];
 
-  /* Update data for each IG account */
-  instagramApis.forEach(async (api) => {
-    /* Get IG account data */
-    const instagramAccountId = api.nodeId;
-    const accessToken = api.facebookApi.token;
-    const apiId = api.id;
+    /* Update data for each IG account */
+    instagramApis.forEach(async (api) => {
+      /* Get IG account data */
+      const instagramAccountId = api.nodeId;
+      const accessToken = api.facebookApi.token;
+      const apiId = api.id;
 
-    /* Fetch and update media */
-    updateAccountMedia(instagramAccountId, accessToken, apiId, dates);
+      /* Fetch and update media */
+      updateAccountMedia(instagramAccountId, accessToken, apiId, dates);
 
-    /* Fetch and update tags */
-    updateAccountTags(instagramAccountId, accessToken, apiId, dates);
+      /* Fetch and update tags */
+      updateAccountTags(instagramAccountId, accessToken, apiId, dates);
 
-    /* Fetch and update comments */
-    const media = await InstagramMedia.findAll({
-      where: { apiId: api.id },
+      /* Fetch and update comments */
+      const media = await InstagramMedia.findAll({
+        where: { apiId: api.id },
+      });
+      if (media.length == 0) return;
+      media.forEach((media) => {
+        updateMediaComments(media.dataId, accessToken, media.id, dates);
+      });
     });
-    if (media.length == 0) return;
-    media.forEach((media) => {
-      updateMediaComments(media.dataId, accessToken, media.id, dates);
-    });
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
