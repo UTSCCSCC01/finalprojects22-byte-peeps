@@ -15,6 +15,10 @@ import { CardData } from '../Cards/CardInfo';
 import CardHeaderIcons from './CardsHeaderIconConst';
 import CardHeaderNames from './CardsHeaderNameConst';
 import {
+  DictCardHeaderQuery,
+  UseCardsHeaderQuery,
+} from './CardsHeaderQueryTypes';
+import {
   CardHeaderResponse,
   CardHeaderURLRequest,
 } from './CardsHeaderURLConst';
@@ -46,84 +50,55 @@ function formatData(
   return fromattedCardStatsData;
 }
 
-type chooseAppType = {
-  cardQuery: string;
-  cardNames: { [key: string]: string };
-  cardIcons: { [key: string]: React.ReactElement };
-  cardLength: number;
-};
-
-/**
- * Chooses the correct app to get the card header data
- * @param {string} appName
- * @return {chooseAppType}
- */
-function chooseApp(appName: string): chooseAppType {
-  switch (appName) {
-    case AppNames.Facebook:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    case AppNames.Instagram:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    case AppNames.Twitter:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    case AppNames.YouTube:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    case AppNames.Reddit:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    case AppNames.GoogleReviews:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    case AppNames.Yelp:
-      return {
-        cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-        cardNames: CardHeaderNames.FacebookCardNames,
-        cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-        cardIcons: CardHeaderIcons.FacebookCardIcons,
-      };
-    default:
-      return {
-        cardQuery: '',
-        cardNames: {},
-        cardLength: 0,
-        cardIcons: {},
-      };
-  }
-}
-
-type UseCardsHeaderQuery = {
-  data: CardData[] | undefined | null;
-  isLoading: boolean;
-  dataLength: number;
-  error: string | null;
+const AppCardHeaderQuery: DictCardHeaderQuery = {
+  [AppNames.Facebook]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  [AppNames.Instagram]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  [AppNames.Twitter]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  [AppNames.YouTube]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  [AppNames.Reddit]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  [AppNames.GoogleReviews]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  [AppNames.Yelp]: {
+    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
+    cardNames: CardHeaderNames.FacebookCardNames,
+    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
+    cardIcons: CardHeaderIcons.FacebookCardIcons,
+  },
+  default: {
+    cardQuery: '',
+    cardNames: {},
+    cardLength: 0,
+    cardIcons: {},
+  },
 };
 
 /**
@@ -136,7 +111,8 @@ function useCardsHeaderQuery(): UseCardsHeaderQuery {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
-  const { cardQuery, cardNames, cardIcons, cardLength } = chooseApp(appName);
+  const { cardQuery, cardNames, cardIcons, cardLength } =
+    AppCardHeaderQuery[appName || 'default'];
 
   const getHeaderCardsData = async (
     startDate: string,
