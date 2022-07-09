@@ -12,6 +12,7 @@ import { InstagramSetup } from '../Components/InstagramSetup/InstagramSetup';
 import { RedditSetup } from '../Components/RedditSetup/RedditSetup';
 import { TwitterSetup } from '../Components/TwitterSetup/TwitterSetup';
 import { YoutubeSetup } from '../Components/YoutubeSetup/YoutubeSetup';
+import { YelpSetup } from '../Components/YelpSetup/YelpSetup';
 
 export interface ISettProps {}
 
@@ -95,7 +96,7 @@ const Settings: React.FunctionComponent<ISettProps> = (props) => {
           Item Six
         </TabPanel>
         <TabPanel value={value} index={6}>
-          Item Seven
+          <YelpSetup />
         </TabPanel>
       </Box>
     </>

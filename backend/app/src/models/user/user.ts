@@ -4,6 +4,7 @@ import InstagramApi from '../instagram/api';
 import RedditSubreddit from '../reddit/subreddit';
 import TwitterUser from '../twitter/user';
 import YouTubeChannel from '../youtube/channel';
+import YelpBusiness from '../yelp/business';
 
 @Table({
   timestamps: false,
@@ -12,24 +13,27 @@ import YouTubeChannel from '../youtube/channel';
 export default class User extends Model {
   @AllowNull(false)
   @Column
-  username: string
+  username: string;
 
   @AllowNull(false)
   @Column
-  password: string
+  password: string;
 
   @HasOne(() => FacebookApi)
-  facebookApi: FacebookApi
+  facebookApi: FacebookApi;
 
   @HasOne(() => InstagramApi)
-  instagramApi: InstagramApi
+  instagramApi: InstagramApi;
 
   @HasOne(() => YouTubeChannel)
-  youtubeChannel: YouTubeChannel
+  youtubeChannel: YouTubeChannel;
 
   @HasOne(() => TwitterUser)
-  twitterUser: TwitterUser
+  twitterUser: TwitterUser;
 
   @HasOne(() => RedditSubreddit)
-  subreddit: RedditSubreddit
+  subreddit: RedditSubreddit;
+
+  @HasOne(() => YelpBusiness)
+  yelpBusiness: YelpBusiness;
 }
