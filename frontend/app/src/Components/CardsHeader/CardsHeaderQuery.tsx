@@ -19,6 +19,13 @@ import {
   CardHeaderURLRequest,
 } from './CardsHeaderURLConst';
 
+/**
+ * @summary Formats the return of the card header data to match the CardDate[] type otherwise null if there is no correct response
+ * @param { { [key: string]: string }} cardNames
+ * @param {{ [key: string]: number } | null} cardData - null if response fails
+ * @param {{ [key: string]: React.ReactElement }} cardIcons
+ * @return {CardData[] | null} - null if response fails
+ */
 function formatData(
   cardNames: { [key: string]: string },
   cardData: { [key: string]: number } | null,
@@ -46,6 +53,11 @@ type chooseAppType = {
   cardLength: number;
 };
 
+/**
+ * Chooses the correct app to get the card header data
+ * @param {string} appName
+ * @return {chooseAppType}
+ */
 function chooseApp(appName: string): chooseAppType {
   switch (appName) {
     case AppNames.Facebook:
@@ -107,7 +119,18 @@ function chooseApp(appName: string): chooseAppType {
   }
 }
 
-function useCardsHeaderQuery() {
+type UseCardsHeaderQuery = {
+  data: CardData[] | undefined | null;
+  isLoading: boolean;
+  dataLength: number;
+  error: string | null;
+};
+
+/**
+ * Custom hook to get the card header data depending on the platform using useQuery()
+ * @return {UseCardsHeaderQuery} useQuery() hook types alongside other extensions
+ */
+function useCardsHeaderQuery(): UseCardsHeaderQuery {
   const appName = useAppSelector(selectAppName);
 
   const startDate = useAppSelector(selectStartDate);
@@ -127,8 +150,7 @@ function useCardsHeaderQuery() {
   const query = useQuery<
     CardHeaderResponse,
     AxiosError<ErrorResponse>,
-    CardData[] | null,
-    string[]
+    CardData[] | null
   >(
     ['headerCardsData', startDate, endDate],
     () => getHeaderCardsData(startDate, endDate),
@@ -141,7 +163,8 @@ function useCardsHeaderQuery() {
   );
 
   return {
-    ...query,
+    data: query.data,
+    isLoading: query.isLoading,
     dataLength: cardLength,
     error: extractBackendError(query.error),
   };

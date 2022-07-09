@@ -6,7 +6,7 @@ interface Props {}
 
 const CardsHeader: React.FC<Props> = () => {
   const { data, dataLength, isLoading, error } = useCardsHeaderQuery();
-
+  
   return (
     <CardGenerator
       cardData={data}

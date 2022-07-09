@@ -17,8 +17,8 @@ interface CardInfoProps {
   error: String | null;
 }
 
-const CardInfo: React.FC<CardInfoProps> = (props: CardInfoProps) => {
-  const { data, isLoading, error }: CardInfoProps = props;
+const CardInfo: React.FC<CardInfoProps> = (props) => {
+  const { data, isLoading, error } = props;
 
   let content: React.ReactElement | React.ReactNode | null = null;
   if (isLoading) content = <Loader />;
