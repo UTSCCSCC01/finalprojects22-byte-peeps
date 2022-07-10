@@ -14,30 +14,34 @@ import TwitterConversation from '../models/twitter/conversation';
  *           fetches and updates the conversation.
  */
 async function startPipeline() {
-  /* Get stored Twitter Users */
-  let twitterUsers = await TwitterUser.findAll();
-  if (twitterUsers.length == 0) return;
-
-  /* Get boundary dates */
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const today = new Date();
-  const dates: string[] = [yesterday.toISOString(), today.toISOString()];
-
-  /* Update data for each Twitter user */
-  twitterUsers.forEach(async (twitterUser) => {
-    /* Fetch and update posts */
-    updateUserTweets(twitterUser, dates);
-
-    /* Fetch and update conversations */
-    const tweets = await TwitterTweet.findAll({
-      where: { twitterUserId: twitterUser.id },
+  try {
+    /* Get stored Twitter Users */
+    let twitterUsers = await TwitterUser.findAll();
+    if (twitterUsers.length == 0) return;
+  
+    /* Get boundary dates */
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const today = new Date();
+    const dates: string[] = [yesterday.toISOString(), today.toISOString()];
+  
+    /* Update data for each Twitter user */
+    twitterUsers.forEach(async (twitterUser) => {
+      /* Fetch and update posts */
+      await updateUserTweets(twitterUser, dates);
+  
+      /* Fetch and update conversations */
+      const tweets = await TwitterTweet.findAll({
+        where: { twitterUserId: twitterUser.id },
+      });
+      if (tweets.length == 0) return;
+      tweets.forEach(async (tweet) => {
+        await updateTweetConversation(tweet);
+      });
     });
-    if (tweets.length == 0) return;
-    tweets.forEach((tweet) => {
-      updateTweetConversation(tweet);
-    });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /**

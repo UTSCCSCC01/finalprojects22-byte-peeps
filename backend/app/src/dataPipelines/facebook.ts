@@ -1,5 +1,4 @@
 import { CronJob } from 'cron';
-import fetch from 'node-fetch';
 import FacebookApi from '../models/facebook/api';
 import FacebookPost from '../models/facebook/post';
 import FacebookComment from '../models/facebook/comment';
@@ -15,37 +14,41 @@ import { getAccountPosts, getPostComments } from '../apis/facebook';
  *           fetches and updates the comments.
  */
 async function startPipeline() {
-  /* Get stored Facebook Accounts (API) */
-  let facebookApis = await FacebookApi.findAll();
-  if (facebookApis.length == 0) return;
-
-  /* Get boundary dates */
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const today = new Date();
-  const dates = [
-    Math.round(yesterday.getTime() / 1000),
-    Math.round(today.getTime() / 1000),
-  ];
-
-  /* Update data for each FB account */
-  facebookApis.forEach(async (api) => {
-    /* Get IG account data */
-    const accessToken = api.token;
-    const apiId = api.id;
-
-    /* Fetch and update posts */
-    updateAccountPost(accessToken, apiId, dates);
-
-    /* Fetch and update comments */
-    const post = await FacebookPost.findAll({
-      where: { apiId: api.id },
+  try {
+    /* Get stored Facebook Accounts (API) */
+    let facebookApis = await FacebookApi.findAll();
+    if (facebookApis.length == 0) return;
+  
+    /* Get boundary dates */
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const today = new Date();
+    const dates = [
+      Math.round(yesterday.getTime() / 1000),
+      Math.round(today.getTime() / 1000),
+    ];
+  
+    /* Update data for each FB account */
+    facebookApis.forEach(async (api) => {
+      /* Get IG account data */
+      const accessToken = api.token;
+      const apiId = api.id;
+  
+      /* Fetch and update posts */
+      await updateAccountPost(accessToken, apiId, dates);
+  
+      /* Fetch and update comments */
+      const post = await FacebookPost.findAll({
+        where: { apiId: api.id },
+      });
+      if (post.length == 0) return;
+      post.forEach(async (post) => {
+        await updatePostComments(accessToken, post);
+      });
     });
-    if (post.length == 0) return;
-    post.forEach((post) => {
-      updatePostComments(accessToken, post);
-    });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /**
