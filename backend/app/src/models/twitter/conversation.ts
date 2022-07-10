@@ -16,6 +16,10 @@ import TwitterTweet from './tweet';
 })
 export default class TwitterConversation extends Model {
   @AllowNull(false)
+  @Column
+  twitterId: string;
+
+  @AllowNull(false)
   @Column(DataType.TEXT)
   text: string;
 
