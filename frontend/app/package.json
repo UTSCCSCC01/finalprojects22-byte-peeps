@@ -35,7 +35,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write ."
   },
   "eslintConfig": {
     "extends": [
@@ -57,6 +58,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.0.14",
-    "@types/react-date-range": "^1.4.3"
+    "@types/react-date-range": "^1.4.3",
+    "prettier": "2.7.1"
   }
 }
