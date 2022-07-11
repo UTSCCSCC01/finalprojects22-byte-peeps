@@ -1,16 +1,17 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
-import connection from './db/configs';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import requestRouter from './routes/routes';
-import sessionHandler from './middlewares/sessionHandler';
-import notFoundHandler from './middlewares/notFoundHandler';
-import errorHandler from './middlewares/errorHandler';
-import corsHandler from './middlewares/corsHandler';
+import express from 'express';
 import startPipelines from './dataPipelines/startPipelines';
+import connection from './db/configs';
+import corsHandler from './middlewares/corsHandler';
+import errorHandler from './middlewares/errorHandler';
+import notFoundHandler from './middlewares/notFoundHandler';
+import sessionHandler from './middlewares/sessionHandler';
+import requestRouter from './routes/routes';
+import addFakeData from './dataPipelines/fakeData/fakeData';
 
 const app = express();
 
@@ -37,3 +38,4 @@ app.listen(PORT, () => {
 });
 
 startPipelines();
+// addFakeData();

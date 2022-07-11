@@ -1,12 +1,11 @@
 import {
-  LineChart,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from 'recharts';
 
 import CustomizedTooltip from './CustomizedTootip';
@@ -38,7 +37,7 @@ export default function Chart(data: ChartData) {
           dataKey="date"
           angle={-65}
           dy={20}
-          interval={0}
+          // interval={0}
           tick={<CustomizedTick />}
           label={{
             value: 'Date and time',

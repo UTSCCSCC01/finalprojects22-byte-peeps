@@ -16,37 +16,41 @@ const FacebookGraphApiUrl = 'https://graph.facebook.com';
  *           fetches and updates the comments.
  */
 async function startPipeline() {
-  /* Get stored Facebook Accounts (API) */
-  let facebookApis = await FacebookApi.findAll();
-  if (facebookApis.length == 0) return;
+  try {
+    /* Get stored Facebook Accounts (API) */
+    let facebookApis = await FacebookApi.findAll();
+    if (facebookApis.length == 0) return;
 
-  /* Get boundary dates */
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 5000);
-  const today = new Date();
-  const dates = [
-    Math.round(yesterday.getTime() / 1000),
-    Math.round(today.getTime() / 1000),
-  ];
+    /* Get boundary dates */
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 5000);
+    const today = new Date();
+    const dates = [
+      Math.round(yesterday.getTime() / 1000),
+      Math.round(today.getTime() / 1000),
+    ];
 
-  /* Update data for each FB account */
-  facebookApis.forEach(async (api) => {
-    /* Get IG account data */
-    const accessToken = api.token;
-    const apiId = api.id;
+    /* Update data for each FB account */
+    facebookApis.forEach(async (api) => {
+      /* Get IG account data */
+      const accessToken = api.token;
+      const apiId = api.id;
 
-    /* Fetch and update posts */
-    updateAccountPost(accessToken, apiId, dates);
+      /* Fetch and update posts */
+      updateAccountPost(accessToken, apiId, dates);
 
-    /* Fetch and update comments */
-    const post = await FacebookPost.findAll({
-      where: { apiId: api.id },
+      /* Fetch and update comments */
+      const post = await FacebookPost.findAll({
+        where: { apiId: api.id },
+      });
+      if (post.length == 0) return;
+      post.forEach((post) => {
+        updatePostComments(post.dataId, accessToken, post.id, dates);
+      });
     });
-    if (post.length == 0) return;
-    post.forEach((post) => {
-      updatePostComments(post.dataId, accessToken, post.id, dates);
-    });
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**

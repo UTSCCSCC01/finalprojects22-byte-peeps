@@ -1,7 +1,8 @@
+import { Button } from '@mui/material';
 import React from 'react';
 import { useAppDispatch } from '../../Redux/hooks';
 import { signOut } from '../../Redux/Slices/user/userSlice';
-import { Button } from '@mui/material';
+import './SignOutBtn.css';
 
 interface Props {}
 
@@ -13,7 +14,12 @@ const SignOutBtn: React.FC<Props> = () => {
   };
 
   return (
-    <Button color="inherit" variant="text" onClick={() => handleSignOut()}>
+    <Button
+      color="inherit"
+      variant="text"
+      onClick={() => handleSignOut()}
+      className="signOut"
+    >
       Sign Out
     </Button>
   );

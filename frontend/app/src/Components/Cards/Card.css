@@ -1,0 +1,32 @@
+.cardChartContent {
+  min-height: 325.5px;
+}
+
+.cardChartContainer {
+  height: 100%;
+  width: 100%;
+}
+
+.cardContent {
+  padding: 10px;
+}
+
+.cardTitle {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 500;
+
+  display: flex;
+  margin-right: auto;
+  margin-bottom: 5px;
+}
+
+.cardInfo {
+  font-size: 24px;
+  width: 100%;
+}
+
+.cardIcon {
+  margin: 0;
+  margin-left: 10px;
+}

@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
+import {
+  selectEndDate,
+  selectStartDate,
+} from '../dateSelector/dateSelectorSlice';
 import { fetchSentimentAnalysis, fetchFacebookStats } from './facebookAPI';
 
 export interface SentimentAnalysis {
@@ -8,8 +12,9 @@ export interface SentimentAnalysis {
   negative: number;
 }
 
-interface Stats {
-  totalLikes: number;
+export interface FacebookStats {
+  totalPosts: number;
+  totalReactions: number;
   totalComments: number;
 }
 
@@ -19,10 +24,10 @@ export interface FacebookState {
   isSentimentAnalysisLoading: boolean;
   isStatsLoading: boolean;
   error: string | null;
-  startDate: String;
-  endDate: String;
-  stats: Stats | null;
-  statsError: String | null;
+  startDate: string;
+  endDate: string;
+  stats: FacebookStats | null;
+  statsError: string | null;
 }
 
 // Define the initial state using that type
@@ -56,6 +61,7 @@ export const getFacebookStats = createAsyncThunk(
       .split('T')[0]
       .replaceAll('-', '');
     const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
+
     const response = await fetchFacebookStats(startDate, endDate);
     return response;
   }
@@ -116,8 +122,9 @@ export const { setStartDate, setEndDate } = facebookSlice.actions;
 
 export const selectSentimentAnalysis = (state: RootState) =>
   state.facebook.sentimentAnalysis;
-export const selectStartDate = (state: RootState) => state.facebook.startDate;
-export const selectEndDate = (state: RootState) => state.facebook.endDate;
+//todo the date component should be it's own slice
+// export const selectStartDate = (state: RootState) => state.facebook.startDate;
+// export const selectEndDate = (state: RootState) => state.facebook.endDate;
 export const selectError = (state: RootState) => state.facebook.error;
 export const selectIsSentimentAnalysisLoading = (state: RootState) =>
   state.facebook.isSentimentAnalysisLoading;
