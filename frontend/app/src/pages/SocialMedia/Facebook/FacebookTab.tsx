@@ -17,8 +17,6 @@ import {
   selectIsSentimentAnalysisLoading,
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { setAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { SentimentAnalysisColors } from '../../../utils/enums';
 
 // todo not sure if this is necessary since mui theme takes care of dark mode
@@ -34,10 +32,6 @@ interface Props {}
 
 const FacebookTab: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setAppName(AppNames.Facebook));
-  }, [dispatch]);
 
   // Sentiment Analysis (PieChart)
   const dataRetured = useAppSelector(selectSentimentAnalysis);
