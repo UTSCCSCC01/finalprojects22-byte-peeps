@@ -6,8 +6,8 @@ import {
   selectEndDate,
   selectStartDate,
 } from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../Redux/Slices/global/globalReduxConstants';
-import { selectAppName } from '../../Redux/Slices/global/globalSlice';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { selectAppName } from '../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../utils/enums';
 import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';

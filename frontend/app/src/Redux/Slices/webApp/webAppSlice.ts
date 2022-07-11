@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RouteNames } from '../../../Components/Router/RoutesConstants';
 import { RootState } from '../../store';
-import { AppNames } from './globalReduxConstants';
+import { AppNames } from './webAppConstants';
 
 interface GlobalState {
   pageName: RouteNames;

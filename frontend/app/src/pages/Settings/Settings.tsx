@@ -17,7 +17,7 @@ import ToBeImplemented from '../../Components/ToBeImplemented/ToBeImplemented';
 import { TwitterSetup } from '../../Components/TwitterSetup/TwitterSetup';
 import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
 import { useAppDispatch } from '../../Redux/hooks';
-import { setPageName } from '../../Redux/Slices/global/globalSlice';
+import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import './Settings.css';
 
 interface Props {}

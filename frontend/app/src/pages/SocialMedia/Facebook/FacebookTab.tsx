@@ -17,8 +17,8 @@ import {
   selectIsSentimentAnalysisLoading,
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
-import { AppNames } from '../../../Redux/Slices/global/globalReduxConstants';
-import { setAppName } from '../../../Redux/Slices/global/globalSlice';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { setAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { SentimentAnalysisColors } from '../../../utils/enums';
 
 // todo not sure if this is necessary since mui theme takes care of dark mode

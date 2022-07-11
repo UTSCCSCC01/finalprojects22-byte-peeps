@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import React, { useEffect } from 'react';
 import { RouteNames } from '../../Components/Router/RoutesConstants';
 import { useAppDispatch } from '../../Redux/hooks';
-import { setPageName } from '../../Redux/Slices/global/globalSlice';
+import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import RedditIcon from '@mui/icons-material/Reddit';

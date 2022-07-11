@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '../../Redux/hooks';
-import { selectPageName } from '../../Redux/Slices/global/globalSlice';
+import { selectPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import './PageName.css';
 
 interface Props {}

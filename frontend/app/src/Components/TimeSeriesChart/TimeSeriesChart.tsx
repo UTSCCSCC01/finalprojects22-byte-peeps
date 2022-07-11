@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import './styles.css';
+import './TimeSeriesChart.css';
 
 import Chart from './InnerComponents/Chart';
 import NoData from '../NoData/NoData';

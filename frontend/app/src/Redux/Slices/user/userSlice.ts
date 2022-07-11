@@ -12,7 +12,7 @@ import { ErrorResponse } from '../../../utils/enums';
 import { NotificationType } from '../../../utils/hooks/Notification';
 import { ReduxStatus } from '../../reduxConstants';
 import { AppDispatch, RootState } from '../../store';
-import { setPageName } from '../global/globalSlice';
+import { setPageName } from '../webApp/webAppSlice';
 import { signInAPI, signOutAPI, signUpAPI } from './userAPI';
 import { User } from './userSliceConstants';
 

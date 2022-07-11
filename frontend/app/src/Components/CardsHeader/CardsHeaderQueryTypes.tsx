@@ -1,4 +1,4 @@
-import { AppNames } from '../../Redux/Slices/global/globalReduxConstants';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 import { CardData } from '../Cards/CardInfo';
 
 type CardHeaderQueryType = {
