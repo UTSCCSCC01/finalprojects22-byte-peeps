@@ -19,6 +19,7 @@ import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
 import { useAppDispatch } from '../../Redux/hooks';
 import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import './Settings.css';
+import { YelpSetup } from '../../Components/YelpSetup/YelpSetup';
 
 interface Props {}
 
@@ -49,7 +50,7 @@ const tabPanels: JSX.Element[] = [
   <YoutubeSetup />,
   <RedditSetup />,
   <ToBeImplemented />,
-  <ToBeImplemented />,
+  <YelpSetup />,
 ];
 
 const Settings: React.FunctionComponent<Props> = () => {
