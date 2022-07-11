@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import React, { useEffect } from 'react';
 import { RouteNames } from '../../Components/Router/RoutesConstants';
 import { useAppDispatch } from '../../Redux/hooks';
-import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
+import { setAppName, setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import RedditIcon from '@mui/icons-material/Reddit';
@@ -14,6 +14,7 @@ import InstagramTab from './Instagram/InstagramTab';
 import RedditTab from './Reddit/RedditTab';
 import TwitterTab from './Twitter/TwitterTab';
 import YoutubeTab from './YouTube/YoutubeTab';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 
 interface Props {}
 
@@ -41,6 +42,14 @@ const tabPanels: React.ReactNode[] = [
   <RedditTab />,
 ];
 
+const tabAppNames: AppNames[] = [
+  AppNames.Facebook,
+  AppNames.Instagram,
+  AppNames.Twitter,
+  AppNames.YouTube,
+  AppNames.Reddit,
+];
+
 const SocialMedia: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
 
@@ -49,6 +58,10 @@ const SocialMedia: React.FC<Props> = () => {
   const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     setCurrTab(newTab);
   };
+
+  function dispatchAppName(appName: AppNames) {
+    dispatch(setAppName(appName));
+  }
 
   useEffect(() => {
     dispatch(setPageName(RouteNames.Socials));
@@ -65,7 +78,13 @@ const SocialMedia: React.FC<Props> = () => {
           allowScrollButtonsMobile
         >
           {tabIcons.map((icon, i) => (
-            <Tab icon={icon} label={tabLabels[i]} key={i} {...a11yProps(i)} />
+            <Tab
+              icon={icon}
+              label={tabLabels[i]}
+              key={i}
+              {...a11yProps(i)}
+              onClick={() => dispatchAppName(tabAppNames[i])}
+            />
           ))}
         </Tabs>
       </Box>

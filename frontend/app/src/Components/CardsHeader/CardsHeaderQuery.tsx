@@ -33,7 +33,7 @@ import {
 function formatData(
   cardNames: { [key: string]: string },
   cardData: { [key: string]: number } | null,
-  cardIcons: { [key: string]: React.ReactElement }
+  cardIcons: { [key: string]: React.ReactNode }
 ): CardData[] | null {
   if (!cardData) return null;
 
@@ -93,7 +93,7 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
     cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
     cardIcons: CardHeaderIcons.FacebookCardIcons,
   },
-  default: {
+  [AppNames.default]: {
     cardQuery: '',
     cardNames: {},
     cardLength: 0,
@@ -107,17 +107,13 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
  */
 function useCardsHeaderQuery(): UseCardsHeaderQuery {
   const appName = useAppSelector(selectAppName);
-
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
-  const { cardQuery, cardNames, cardIcons, cardLength } =
-    AppCardHeaderQuery[appName || 'default'];
+  const { cardQuery, cardLength, cardNames, cardIcons } =
+    AppCardHeaderQuery[appName];
 
-  const getHeaderCardsData = async (
-    startDate: string,
-    endDate: string
-  ): Promise<CardHeaderResponse> => {
+  const getHeaderCardsData = async (): Promise<CardHeaderResponse> => {
     return await HTTP.get(
       `${cardQuery}?start=${startDate}&end=${endDate}`
     ).then((res) => res.data);
@@ -128,8 +124,8 @@ function useCardsHeaderQuery(): UseCardsHeaderQuery {
     AxiosError<ErrorResponse>,
     CardData[] | null
   >(
-    ['headerCardsData', startDate, endDate],
-    () => getHeaderCardsData(startDate, endDate),
+    ['headerCardsData', appName, startDate, endDate], // the states that change the query go here
+    () => getHeaderCardsData(),
     {
       select: React.useCallback(
         (data: CardHeaderResponse) => formatData(cardNames, data, cardIcons),

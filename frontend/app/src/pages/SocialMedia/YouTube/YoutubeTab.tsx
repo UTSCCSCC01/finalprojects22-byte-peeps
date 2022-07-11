@@ -17,8 +17,6 @@ import {
   selectIsSentimentAnalysisLoading,
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { setAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { SentimentAnalysisColors } from '../../../utils/enums';
 
 interface Props {}
@@ -26,9 +24,6 @@ interface Props {}
 const YoutubeTab: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(setAppName(AppNames.Facebook));
-  }, [dispatch]);
   // Sentiment Analysis (PieChart)
   const dataRetured = useAppSelector(selectSentimentAnalysis);
   const error = useAppSelector(selectError);

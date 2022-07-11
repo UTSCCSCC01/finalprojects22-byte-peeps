@@ -17,18 +17,12 @@ import {
   selectIsSentimentAnalysisLoading,
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { setAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { SentimentAnalysisColors } from '../../../utils/enums';
 
 interface Props {}
 
 const InstagramTab: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setAppName(AppNames.Facebook));
-  }, [dispatch]);
 
   // Sentiment Analysis (PieChart)
   const dataRetured = useAppSelector(selectSentimentAnalysis);

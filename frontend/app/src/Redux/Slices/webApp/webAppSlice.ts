@@ -5,7 +5,7 @@ import { AppNames } from './webAppConstants';
 
 interface GlobalState {
   pageName: RouteNames;
-  appName: AppNames | '';
+  appName: AppNames;
 }
 
 const initialState: GlobalState = {
