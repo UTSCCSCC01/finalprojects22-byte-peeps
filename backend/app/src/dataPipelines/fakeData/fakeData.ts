@@ -1,18 +1,25 @@
-import User from '../../models/user/user';
-import bcrypt from 'bcrypt';
-import YouTubeChannel from '../../models/youtube/channel';
-import YouTubeVideo from '../../models/youtube/video';
-import YouTubeComment from '../../models/youtube/comment';
 import { faker } from '@faker-js/faker';
+import bcrypt from 'bcrypt';
 import FacebookApi from '../../models/facebook/api';
-import FacebookPost from '../../models/facebook/post';
 import FacebookComment from '../../models/facebook/comment';
+import FacebookPost from '../../models/facebook/post';
+import InstagramApi from '../../models/instagram/api';
+import InstagramComment from '../../models/instagram/comment';
+import InstagramMedia from '../../models/instagram/media';
+import RedditSubreddit from '../../models/reddit/subreddit';
+import User from '../../models/user/user';
+import YouTubeChannel from '../../models/youtube/channel';
+import YouTubeComment from '../../models/youtube/comment';
+import YouTubeVideo from '../../models/youtube/video';
+
 const fakeData = require('./fakeDataJSON.json');
 
 type RegisteredUser = {
   userId: number;
   youtubeChannelId: number;
   facebookApiId: number;
+  instagramApiId: number;
+  redditSubredditId: number;
 };
 
 const startDate: string = '2022-06-15T00:00:00.000Z';
@@ -82,6 +89,10 @@ async function deleteAllData(): Promise<void> {
   await FacebookApi.destroy({ where: {} });
   await FacebookPost.destroy({ where: {} });
   await FacebookComment.destroy({ where: {} });
+  await InstagramApi.destroy({ where: {} });
+  await InstagramMedia.destroy({ where: {} });
+  await InstagramComment.destroy({ where: {} });
+  await RedditSubreddit.destroy({ where: {} });
 }
 
 /**
@@ -107,7 +118,7 @@ async function userAndAPIs(): Promise<RegisteredUser> {
   // add youtube channel
   let youtubeChannelId: number = await YouTubeChannel.create({
     channelId: 'UC5uqd7fgT5zoFDGCrUvYdAg', // actual channel id
-    name: username,
+    name: 'Mohamed Tayeh',
     isActive: true,
     userId,
     oauth: '',
@@ -117,9 +128,10 @@ async function userAndAPIs(): Promise<RegisteredUser> {
 
   // add facebook page
   let facebookApiId = await FacebookApi.create({
-    token: faker.datatype.uuid(),
+    token:
+      'EAAKSwnYPfTEBAMyFaCCSj0ZBfqcZAZABRDVCDobCQWhNycT3NGVZB9ZAZCnzJZAxYtbjgvwtU2yGXM5KFcewmBs5m9qoy18ujoUjmzn2vABrcHeofH71W5qlEW78ovaofaOxGzjD3Xs2Ab3uO79LO0YgRHmvu3sRKNtDzUYuFijbTc5ZAFEyAgkC',
     isActive: true,
-    pageId: faker.datatype.uuid(),
+    pageId: '112533588141071',
     userId,
   }).then((api) => {
     if (api) return api.id;
@@ -127,13 +139,32 @@ async function userAndAPIs(): Promise<RegisteredUser> {
   });
 
   // add instagram api
-  // add twitter user
+  let instagramApiId = await InstagramApi.create({
+    facebookApiId,
+    userId,
+    nodeId: '17841418399853871',
+  }).then((api) => {
+    if (api) return api.id;
+    return 1;
+  });
+
   // add reddit subreddit
+  let redditSubredditId = await RedditSubreddit.create({
+    name: 'utsc',
+    userId,
+  }).then((api) => {
+    if (api) return api.id;
+    return 1;
+  });
+
+  // add twitter user
 
   return {
     userId,
     youtubeChannelId,
     facebookApiId,
+    instagramApiId,
+    redditSubredditId,
   };
 }
 
@@ -231,9 +262,39 @@ async function addFacebookData(registeredUser: RegisteredUser): Promise<void> {
  * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
  * @return {Promise<void>}
  */
-async function addInstagramData(
-  registeredUser: RegisteredUser
-): Promise<void> {}
+async function addInstagramData(registeredUser: RegisteredUser): Promise<void> {
+  Array.from({ length: numberOfPosts }).forEach(async () => {
+    let date = faker.date.betweens(startDate, endDate, 1)[0];
+
+    // Create a facebook post
+    let instagramMediaId = await InstagramMedia.create({
+      dataId: faker.datatype.uuid(),
+      caption: faker.lorem.paragraph(),
+      date,
+      likes: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+      apiId: registeredUser.instagramApiId,
+    }).then((media) => {
+      return media.id;
+    });
+
+    // create comments for each post
+    Array.from({ length: numberOfComments }).forEach(async () => {
+      let randomSentimentData = fakeData[randomIndex()];
+
+      InstagramComment.create({
+        dataId: faker.datatype.uuid(),
+        userName: faker.internet.userName(),
+        message: randomSentimentData.review,
+        date: faker.date.between(date, endDate),
+        likes: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+        sentimentAnalysis: randomSentimentData.sentiment,
+        subjectivityAnalysis: randomSubjectivity(),
+        topicClassification: randomTopicClassification(),
+        mediaId: instagramMediaId,
+      });
+    });
+  });
+}
 
 /**
  * Adds fake reddit data to the database

@@ -23,19 +23,19 @@ async function startPipeline(): Promise<void> {
   try {
     let youtubeChannels = await YouTubeChannel.findAll();
     if (youtubeChannels.length == 0) return;
-  
+
     /* Get the last day that a You dates */
     const updateVideosWorkFlow: Promise<[YouTubeVideo, boolean | null]>[] = [];
-  
+
     // for looop over youtube channel and do the same thing as below
     for (let i = 0; i < youtubeChannels.length; i++) {
       const youtubeChannel = youtubeChannels[i];
-  
+
       /* Get channel id */
       const channelIdKey = youtubeChannel.id;
       const channelId = youtubeChannel.channelId;
       const oauth = youtubeChannel.oauth;
-  
+
       /* Last day that a YouTube video was published */
       let lastDate: Date = await YouTubeVideo.findOne({
         where: { channelId: channelIdKey },
@@ -44,29 +44,29 @@ async function startPipeline(): Promise<void> {
         if (video) return video.date;
         return new Date(0);
       });
-  
+
       updateVideosWorkFlow.push(
         ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
       );
     }
-  
+    
     await Promise.all(updateVideosWorkFlow);
-  
+
     const updateVideoStatisticsWorkFlow: Promise<void>[] = [];
-  
+
     youtubeChannels.forEach(async (api) => {
       /* Get channel id */
       const channelIdKey = api.id;
       const oauth = api.oauth;
-  
+
       updateVideoStatisticsWorkFlow.push(
         updateVideoStatistics(channelIdKey, oauth)
       );
     });
-  
+
     await Promise.all(updateVideoStatisticsWorkFlow);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 

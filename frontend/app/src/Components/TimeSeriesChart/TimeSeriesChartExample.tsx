@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles.css';
+import './TimeSeriesChart.css';
 import Chart from './InnerComponents/Chart';
 
 const TimeSeriesChart = () => {

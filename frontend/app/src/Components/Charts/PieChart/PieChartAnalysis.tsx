@@ -1,7 +1,10 @@
-import React from 'react';
-import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { CircularProgress } from '@mui/material';
-import { Typography } from '@mui/material';
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { useAppSelector } from '../../../Redux/hooks';
+import { selectUserName } from '../../../Redux/Slices/user/userSlice';
+import ErrorMessage from '../../ErrorMessage/ErrorMessage';
+import Loader from '../../Loader/Loader';
+import NoData from '../../NoData/NoData';
+import './PieChartAnalysis.css';
 
 interface SeriesData {
   name: String;
@@ -20,20 +23,6 @@ interface PieChartComponentProps {
   data: SeriesData[];
   COLORS: string[];
 }
-
-interface ErrorMessageProps {
-  error: String | null;
-}
-
-export const Loader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center' }}>
-    <CircularProgress
-      style={{
-        margin: 'auto',
-      }}
-    />
-  </div>
-);
 
 const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => (
   <ResponsiveContainer width="95%" height={260}>
@@ -85,12 +74,6 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => (
   </ResponsiveContainer>
 );
 
-export const ErrorMessage = (message: ErrorMessageProps) => (
-  <Typography variant="subtitle2" align="center" paragraph>
-    {message.error}
-  </Typography>
-);
-
 const PieChartAnalysis = ({
   COLORS,
   data,
@@ -98,12 +81,14 @@ const PieChartAnalysis = ({
   error,
   isDataPresent,
 }: PieChartAnalysisProps) => {
+  const username = useAppSelector(selectUserName);
+
   return isLoading ? (
     <Loader />
-  ) : isDataPresent ? (
+  ) : isDataPresent && username === 'data' ? (
     <PieChartComponent data={data} COLORS={COLORS} />
-  ) : !isDataPresent && error === null ? (
-    <ErrorMessage error="No Data Present for Selected Date Range" />
+  ) : (!isDataPresent && error === null) || username !== 'data' ? (
+    <NoData className="noData center" />
   ) : (
     <ErrorMessage error={error} />
   );

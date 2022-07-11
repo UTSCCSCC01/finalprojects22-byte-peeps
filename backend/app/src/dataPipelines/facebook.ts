@@ -27,7 +27,7 @@ async function startPipeline() {
       Math.round(yesterday.getTime() / 1000),
       Math.round(today.getTime() / 1000),
     ];
-  
+
     /* Update data for each FB account */
     facebookApis.forEach(async (api) => {
       /* Get IG account data */
@@ -36,7 +36,7 @@ async function startPipeline() {
   
       /* Fetch and update posts */
       await updateAccountPost(accessToken, apiId, dates);
-  
+
       /* Fetch and update comments */
       const post = await FacebookPost.findAll({
         where: { apiId: api.id },

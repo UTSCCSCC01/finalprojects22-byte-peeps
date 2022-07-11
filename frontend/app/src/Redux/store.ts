@@ -7,6 +7,8 @@ import twitterSetupReducer from './Slices/twitterSetup/twitterSetupSlice';
 import redditSetupReducer from './Slices/redditSetup/redditSetupSlice';
 import youtubeSetupReducer from './Slices/youtubeSetup/youtubeSetupSlice';
 import facebookReducer from './Slices/facebook/facebookSlice';
+import globalReducer from './Slices/webApp/webAppSlice';
+import dateRangeReducer from './Slices/dateSelector/dateSelectorSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +20,8 @@ export const store = configureStore({
     redditSetup: redditSetupReducer,
     youtubeSetup: youtubeSetupReducer,
     facebook: facebookReducer,
+    global: globalReducer,
+    dateRange: dateRangeReducer,
   },
 });
 

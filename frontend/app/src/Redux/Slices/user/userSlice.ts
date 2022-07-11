@@ -1,9 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosResponse } from 'axios';
 import AuthStorage from '../../../Components/AuthStorage/AuthStorage';
 import { history } from '../../../Components/Router/RouterComponent';
-import { RoutePaths } from '../../../Components/Router/RoutesConstants';
-import { ErrorResponse, ReduxStatus } from '../../reduxConstants';
+import {
+  RouteNames,
+  RoutePaths,
+} from '../../../Components/Router/RoutesConstants';
+import { getSingInNotification } from '../../../pages/Auth/SignIn';
+import { getSignUpNotification } from '../../../pages/Auth/SignUp';
+import { ErrorResponse } from '../../../utils/enums';
+import { NotificationType } from '../../../utils/hooks/Notification';
+import { ReduxStatus } from '../../reduxConstants';
 import { AppDispatch, RootState } from '../../store';
+import { setPageName } from '../webApp/webAppSlice';
 import { signInAPI, signOutAPI, signUpAPI } from './userAPI';
 import { User } from './userSliceConstants';
 
@@ -35,6 +44,8 @@ export const signIn = createAsyncThunk<
     AuthStorage.storeSession(user.username);
     thunkAPI.dispatch(setUsername(user.username));
     history.push(RoutePaths.Dashboard);
+    thunkAPI.dispatch(setPageName(RouteNames.Dashboard));
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -68,7 +79,9 @@ export const signUp = createAsyncThunk<
   }
 >('user/signUp', async (user, thunkAPI) => {
   try {
-    const response = await signUpAPI(user);
+    const response: AxiosResponse<any, any> = await signUpAPI(user);
+    // send a notification of success
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -98,6 +111,12 @@ export const userSlice = createSlice({
       .addCase(signIn.rejected, (state, action) => {
         state.signInStatus = ReduxStatus.failed;
         state.errorMessage = String(action.payload);
+
+        const notification = getSingInNotification();
+
+        notification.setMessage(String(action.payload));
+        notification.setType(NotificationType.Error);
+        notification.setShown(true);
       })
       .addCase(signOut.pending, (state) => {
         state.signOutStatus = ReduxStatus.loading;
@@ -123,10 +142,20 @@ export const userSlice = createSlice({
       .addCase(signUp.fulfilled, (state) => {
         state.signUpStatus = ReduxStatus.success;
         state.errorMessage = '';
+
+        const notification = getSignUpNotification();
+        notification.setMessage('Signed up successfully!');
+        notification.setType(NotificationType.Success);
+        notification.setShown(true);
       })
       .addCase(signUp.rejected, (state, action) => {
         state.signUpStatus = ReduxStatus.failed;
         state.errorMessage = String(action.payload);
+
+        const notification = getSignUpNotification();
+        notification.setMessage(String(action.payload));
+        notification.setType(NotificationType.Error);
+        notification.setShown(true);
       });
   },
 });
