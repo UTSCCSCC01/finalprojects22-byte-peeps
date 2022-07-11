@@ -6,4 +6,5 @@ export enum AppNames {
   Twitter = 'Twitter',
   Reddit = 'Reddit',
   YouTube = 'YouTube',
+  default = '',
 }

@@ -8,13 +8,9 @@ type CardHeaderQueryType = {
   cardLength: number;
 };
 
-type DictCardHeaderQueryType = {
+export type DictCardHeaderQuery = {
   [key in AppNames]: CardHeaderQueryType;
 };
-
-export interface DictCardHeaderQuery extends DictCardHeaderQueryType {
-  default: CardHeaderQueryType;
-}
 
 export type UseCardsHeaderQuery = {
   data: CardData[] | undefined | null;
