@@ -4,7 +4,7 @@ import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
 import User from '../../models/user/user';
-const { sequelize, Op } = require('sequelize');
+const { Op } = require('sequelize');
 import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 
 /**

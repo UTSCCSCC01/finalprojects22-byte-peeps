@@ -47,7 +47,7 @@ const defaultColDef: CommentsTableColDef = [
 
 const redditColDef: CommentsTableColDef = [
   {
-    field: 'message',
+    field: 'text',
     headerName: 'Comment',
     flex: 1,
     ...defaultColumnStyle,
@@ -55,6 +55,12 @@ const redditColDef: CommentsTableColDef = [
   {
     field: 'score',
     headerName: 'Upvotes',
+    type: 'number',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'replies',
+    headerName: 'Replies',
     type: 'number',
     ...defaultColumnStyle,
   },
@@ -77,12 +83,7 @@ const redditColDef: CommentsTableColDef = [
 
 const twitterColDef: CommentsTableColDef = [
   {
-    field: 'userName',
-    headerName: 'Name',
-    ...defaultColumnStyle,
-  },
-  {
-    field: 'message',
+    field: 'text',
     headerName: 'Comment',
     flex: 1,
     ...defaultColumnStyle,
@@ -96,6 +97,12 @@ const twitterColDef: CommentsTableColDef = [
   {
     field: 'likes',
     headerName: 'Likes',
+    type: 'number',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'replies',
+    headerName: 'Replies',
     type: 'number',
     ...defaultColumnStyle,
   },

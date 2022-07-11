@@ -1,13 +1,13 @@
-import { RequestHandler } from 'express';
+import { RequestHandler } from "express";
+import { unknownError } from "../../globalHelpers/globalConstants";
+import RedditComment from "../../models/reddit/comment";
+import RedditListing from "../../models/reddit/listing";
+import RedditSubreddit from "../../models/reddit/subreddit";
 const { Op } = require('sequelize');
-import { unknownError } from '../../globalHelpers/globalConstants';
-import User from '../../models/user/user';
-import YouTubeChannel from '../../models/youtube/channel';
-import YoutubeComment from '../../models/youtube/comment';
-import YouTubeVideo from '../../models/youtube/video';
+import User from "../../models/user/user";
 
 /**
- * Provides the page number and size, provides comments of any IG media related to the user API
+ * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
  */
  export const getComments: RequestHandler = async (req, res, next) => {
   try {
@@ -15,7 +15,7 @@ import YouTubeVideo from '../../models/youtube/video';
       || !req.query.endDate || req.query.endDate.length !== 8)
       return res.status(400).send();
     
-    const user = await User.findOne({where: { username: req.session.username }, include: YouTubeChannel});
+    const user = await User.findOne({where: { username: req.session.username }, include: RedditSubreddit});
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -31,14 +31,14 @@ import YouTubeVideo from '../../models/youtube/video';
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.youtubeChannel)
+    if (!user?.subreddit)
       return res.send({ count: 0, data: [] });
 
-    const videos = await YouTubeVideo.findAll({ where: { channelId: user!.youtubeChannel.id }});
-    const videoIds: number[] = videos.map(v => v.id);
-    const comments = await YoutubeComment.findAll({
+    const listings = await RedditListing.findAll({ where: { apiId: user!.subreddit.id }});
+    const listingIds: number[] = listings.map(l => l.id);
+    const comments = await RedditComment.findAll({
       where: {
-        videoId: videoIds,
+        listingId: listingIds,
         date: {
           [Op.between]: [startDate, endDate],
         }
@@ -48,9 +48,9 @@ import YouTubeVideo from '../../models/youtube/video';
       ],
       attributes: [
         'id',
-        'userName',
-        'message',
-        'likes',
+        'text',
+        'score',
+        'replies',
         'sentimentAnalysis',
         'topicClassification',
         'subjectivityAnalysis'
@@ -63,10 +63,3 @@ import YouTubeVideo from '../../models/youtube/video';
     res.status(500).json({ message: unknownError });
   }
 };
-
-export const getAllComments: RequestHandler = async (req, res, next) => {
-  const allComments: YoutubeComment[] = await YoutubeComment.findAll();
-  return res.status(200).json({ data: allComments });
-};
-
-export const getCommentById: RequestHandler = async (req, res, next) => {};
