@@ -4,6 +4,11 @@ import YelpBusiness from '../../models/yelp/business';
 import YelpReview from '../../models/yelp/review';
 import User from '../../models/user/user';
 
+enum status {
+  NOT_SET = 'yelp-not-set-up',
+  ACTIVE = 'active'
+}
+
 export const getSettings: RequestHandler = async (req, res, next) => {
   try {
     const user = await User.findOne({
@@ -13,17 +18,17 @@ export const getSettings: RequestHandler = async (req, res, next) => {
 
     if (user?.yelpBusiness == undefined) {
       return res.send({
-        status: 'yelp-not-set-up',
+        status: status.NOT_SET,
         business: null,
       });
     }
 
     return res.send({
-      status: 'active',
+      status: status.ACTIVE,
       business: user.yelpBusiness.name,
     });
   } catch (err) {
-    return res.status(500).send(err);
+    next(err);
   }
 };
 
@@ -44,7 +49,7 @@ export const searchBusiness: RequestHandler = async (req, res, next) => {
 
     return res.send({ status, searchResults, message });
   } catch (err) {
-    return res.status(500).send(err);
+    next(err);
   }
 };
 
@@ -64,7 +69,7 @@ export const connectBusiness: RequestHandler = async (req, res, next) => {
       // If business is same as existing, return
       if (user.yelpBusiness.businessId == newBusinessId) {
         return res.status(200).send({
-          status: 'active',
+          status: status.ACTIVE,
           business: user.yelpBusiness.name,
           message: 'This business is already connected!',
         });
@@ -105,12 +110,11 @@ export const connectBusiness: RequestHandler = async (req, res, next) => {
     }
 
     return res.status(200).send({
-      status: 'active',
+      status: status.ACTIVE,
       business: returnBusiness,
       message: 'Yelp business has been connected successfully!',
     });
   } catch (err) {
-    console.log(err);
-    return res.status(500).send(err);
+    next(err);
   }
 };
