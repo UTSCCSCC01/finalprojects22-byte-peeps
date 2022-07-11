@@ -49,7 +49,7 @@ async function startPipeline(): Promise<void> {
         ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
       );
     }
-
+    
     await Promise.all(updateVideosWorkFlow);
 
     const updateVideoStatisticsWorkFlow: Promise<void>[] = [];
@@ -69,6 +69,7 @@ async function startPipeline(): Promise<void> {
     console.error(err);
   }
 }
+
 /**
  * Updates the each video's resource id
  * @summary If the description is long, write your summary here. Otherwise, feel free to remove this.

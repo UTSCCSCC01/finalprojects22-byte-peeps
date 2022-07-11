@@ -38,7 +38,7 @@ export function getFacebookSetupNotification(): NotificationState {
 export function FacebookSetup() {
   const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
   const facebookScopes =
-    'email,pages_show_list,instagram_basic,pages_read_engagement,pages_read_user_content,public_profile';
+    'email,pages_show_list,instagram_basic,instagram_manage_comments,pages_read_engagement,pages_read_user_content,public_profile';
 
   notification = useNotification({});
   let stage = useAppSelector(selectStage);

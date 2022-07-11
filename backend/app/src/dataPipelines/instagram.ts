@@ -1,12 +1,14 @@
 import { CronJob } from 'cron';
-import fetch from 'node-fetch';
 import FacebookApi from '../models/facebook/api';
 import InstagramApi from '../models/instagram/api';
 import InstagramMedia from '../models/instagram/media';
 import InstagramTag from '../models/instagram/tag';
 import InstagramComment from '../models/instagram/comment';
-
-const InstagramGraphApiUrl = 'https://graph.facebook.com';
+import {
+  getAccountMedia,
+  getAccountTags,
+  getMediaComments,
+} from '../apis/instagram';
 
 /**
  * Updates the database as follows:
@@ -23,7 +25,7 @@ async function startPipeline() {
     /* Get stored Instagram Accounts (API) */
     let instagramApis = await InstagramApi.findAll({ include: FacebookApi });
     if (instagramApis.length == 0) return;
-
+  
     /* Get boundary dates */
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -32,72 +34,73 @@ async function startPipeline() {
       Math.round(yesterday.getTime() / 1000),
       Math.round(today.getTime() / 1000),
     ];
-
+  
     /* Update data for each IG account */
     instagramApis.forEach(async (api) => {
       /* Get IG account data */
-      const instagramAccountId = api.nodeId;
       const accessToken = api.facebookApi.token;
-      const apiId = api.id;
-
+  
       /* Fetch and update media */
-      updateAccountMedia(instagramAccountId, accessToken, apiId, dates);
-
+      await updateAccountMedia(accessToken, api, dates);
+  
       /* Fetch and update tags */
-      updateAccountTags(instagramAccountId, accessToken, apiId, dates);
-
+      await updateAccountTags(accessToken, api);
+  
       /* Fetch and update comments */
       const media = await InstagramMedia.findAll({
         where: { apiId: api.id },
       });
       if (media.length == 0) return;
-      media.forEach((media) => {
-        updateMediaComments(media.dataId, accessToken, media.id, dates);
+      media.forEach(async (media) => {
+        await updateMediaComments(accessToken, media);
       });
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.log(err);
   }
 }
 
 /**
  * Uses the Instagram Graph API to fetch and store information related
  * to media (posts) belonging to the provided Instagram account
- * @param {string} instagramAccountId The Instagram account ID
  * @param {string} accessToken The access token of the Facebook App
- * @param {number} apiId The id of the InstagramApi object that will be linked
+ * @param {InstagramApi} api The InstagramApi object that's linked to the media
  * @param {number[]} dates The date range to fetch data from in seconds
  */
 async function updateAccountMedia(
-  instagramAccountId: string,
   accessToken: string,
-  apiId: number,
+  api: InstagramApi,
   dates: number[]
 ) {
-  /* Build URL */
-  const InstagramMediaUrl =
-    InstagramGraphApiUrl +
-    `/${instagramAccountId}/media` +
-    `?access_token=${accessToken}` +
-    '&fields=id,timestamp,caption,like_count,comments_count' +
-    `&since=${dates[0]}&until=${dates[1]}`;
-
   /* Perform request */
-  const response: any = await fetch(InstagramMediaUrl);
-  const data = await response.json();
-  if (data['data'] === undefined || data['data'].length == 0) return;
+  const data: any[] = await getAccountMedia(
+    accessToken,
+    api.nodeId,
+    dates[0],
+    dates[1]
+  );
+  if (data === null) return;
 
   /* Update data in db */
-  data['data'].forEach(async (media: { [key: string]: any }) => {
-    InstagramMedia.findOrCreate({
+  data.forEach(async (media: { [key: string]: any }) => {
+    InstagramMedia.findOne({
       where: { dataId: media['id'] },
-      defaults: {
-        date: media['timestamp'],
-        caption: media['caption'],
-        likes: Number(media['like_count']),
-        numComments: Number(media['comments_count']),
-        apiId: apiId,
-      },
+    }).then(function (obj) {
+      if (obj) {
+        obj.update({
+          likes: Number(media['like_count']),
+          numComments: Number(media['comments_count']),
+        });
+      } else {
+        InstagramMedia.create({
+          dataId: media['id'],
+          date: media['timestamp'],
+          caption: media['caption'],
+          likes: Number(media['like_count']),
+          numComments: Number(media['comments_count']),
+          apiId: api.id,
+        });
+      }
     });
   });
 }
@@ -105,41 +108,35 @@ async function updateAccountMedia(
 /**
  * Uses the Instagram Graph API to fetch and store information related
  * to tags belonging to the provided Instagram account
- * @param {string} instagramAccountId The Instagram account ID
  * @param {string} accessToken The access token of the Facebook App
- * @param {number} apiId The id of the InstagramApi object that will be linked
- * @param {number[]} dates The date range to fetch data from in seconds
+ * @param {InstagramApi} api The InstagramApi object that's linked to the media
  */
-async function updateAccountTags(
-  instagramAccountId: string,
-  accessToken: string,
-  apiId: number,
-  dates: number[]
-) {
-  /* Build URL */
-  const InstagramTagsUrl =
-    InstagramGraphApiUrl +
-    `/${instagramAccountId}/tags` +
-    `?access_token=${accessToken}` +
-    '&fields=id,timestamp,username,caption,like_count,comments_count';
-
+async function updateAccountTags(accessToken: string, api: InstagramApi) {
   /* Perform request */
-  const response: any = await fetch(InstagramTagsUrl);
-  const data = await response.json();
-  if (data['data'] === undefined || data['data'].length == 0) return;
+  const data: any[] = await getAccountTags(accessToken, api.nodeId);
+  if (data === null) return;
 
   /* Update data in db */
-  data['data'].forEach(async (tag: { [key: string]: any }) => {
-    InstagramTag.findOrCreate({
+  data.forEach(async (tag: { [key: string]: any }) => {
+    InstagramTag.findOne({
       where: { dataId: tag['id'] },
-      defaults: {
-        date: tag['timestamp'],
-        username: tag['username'],
-        caption: tag['caption'],
-        likes: Number(tag['like_count']),
-        numComments: Number(tag['comments_count']),
-        apiId: apiId,
-      },
+    }).then(function (obj) {
+      if (obj) {
+        obj.update({
+          likes: Number(tag['like_count']),
+          numComments: Number(tag['comments_count']),
+        });
+      } else {
+        InstagramTag.create({
+          dataId: tag['id'],
+          date: tag['timestamp'],
+          username: tag['username'],
+          caption: tag['caption'],
+          likes: Number(tag['like_count']),
+          numComments: Number(tag['comments_count']),
+          apiId: api.id,
+        });
+      }
     });
   });
 }
@@ -147,40 +144,31 @@ async function updateAccountTags(
 /**
  * Uses the Instagram Graph API to fetch and store information related
  * to the comments belonging to the provided media (post)
- * @param {string} mediaId The id given by Instagram to the media
  * @param {string} accessToken The access token of the Facebook App
- * @param {number} mediaObjId The id of the media object in the db
- * @param {number[]} dates The date range to fetch data from in seconds
+ * @param {InstagramMedia} media The InstagramMedia object that's linked to the comments
  */
-async function updateMediaComments(
-  mediaId: string,
-  accessToken: string,
-  mediaObjId: number,
-  dates: number[]
-) {
-  /* Build URL */
-  const InstagramCommentsUrl =
-    InstagramGraphApiUrl +
-    `/${mediaId}/comments` +
-    `?access_token=${accessToken}` +
-    '&fields=id,username,text,timestamp,like_count';
-
+async function updateMediaComments(accessToken: string, media: InstagramMedia) {
   /* Perform request */
-  const response: any = await fetch(InstagramCommentsUrl);
-  const data = await response.json();
-  if (data['data'] === undefined || data['data'].length == 0) return;
+  const data: any[] = await getMediaComments(accessToken, media.dataId);
+  if (data === null) return;
 
   /* Update data in db */
-  data['data'].forEach(async (comment: { [key: string]: any }) => {
-    InstagramComment.findOrCreate({
+  data.forEach(async (comment: { [key: string]: any }) => {
+    InstagramComment.findOne({
       where: { dataId: comment['id'] },
-      defaults: {
-        date: comment['timestamp'],
-        userName: comment['username'],
-        message: comment['text'],
-        likes: Number(comment['like_count']),
-        mediaId: mediaObjId,
-      },
+    }).then(function (obj) {
+      if (obj) {
+        obj.update({ likes: Number(comment['like_count']) });
+      } else {
+        InstagramComment.create({
+          dataId: comment['id'],
+          date: comment['timestamp'],
+          userName: comment['username'],
+          message: comment['text'],
+          likes: Number(comment['like_count']),
+          mediaId: media.id,
+        });
+      }
     });
   });
 }

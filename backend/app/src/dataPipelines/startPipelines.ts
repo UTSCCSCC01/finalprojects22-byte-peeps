@@ -2,6 +2,7 @@ import { facebookScheduledJob } from './facebook';
 import { instagramScheduledJob } from './instagram';
 import { redditScheduledJob } from './reddit';
 import { youtubeScheduledJob } from './youtube';
+import { twitterScheduledJob } from './twitter';
 
 /**
  * Begins the data pipelines
@@ -10,6 +11,7 @@ import { youtubeScheduledJob } from './youtube';
 function startPipelines(): void {
   instagramScheduledJob.start();
   facebookScheduledJob.start();
+  twitterScheduledJob.start();
   youtubeScheduledJob.start();
   redditScheduledJob.start();
 }

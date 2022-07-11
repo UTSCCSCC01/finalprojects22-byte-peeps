@@ -18,6 +18,14 @@ import TwitterUser from './user';
 })
 export default class TwitterTweet extends Model {
   @AllowNull(false)
+  @Column
+  twitterId: string;
+
+  @AllowNull(false)
+  @Column
+  conversationId: string;
+
+  @AllowNull(false)
   @Column(DataType.TEXT)
   text: string;
 

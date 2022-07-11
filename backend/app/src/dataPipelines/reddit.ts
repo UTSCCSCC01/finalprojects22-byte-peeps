@@ -24,7 +24,7 @@ async function startPipeline() {
     /* Update data for each subreddit */
     subreddits.forEach(async (subreddit) => {
       /* Fetch and update listings */
-      updateListings(subreddit);
+      await updateListings(subreddit);
     });
   } catch (err) {
     console.error(err);
@@ -37,7 +37,7 @@ async function startPipeline() {
 
     /* Update comment for each listing */
     redditListings.forEach(async (listing) => {
-      updateComment(listing);
+      await updateComment(listing);
     });
   } catch (err) {
     console.error(err);
