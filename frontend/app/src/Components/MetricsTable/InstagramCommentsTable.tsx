@@ -1,4 +1,4 @@
-import { GridColDef } from '@mui/x-data-grid';
+import { GridAlignment, GridColDef } from '@mui/x-data-grid';
 import HTTP from '../../utils/http';
 import MetricsTable from './MetricsTable';
 
@@ -22,44 +22,52 @@ const getPage = async (
   });
 };
 
+type defaultColumnStyleType = {
+  sortable: boolean;
+  filterable: boolean;
+  headerAlign: GridAlignment;
+  align: GridAlignment;
+};
+
+const defaultColumnStyle: defaultColumnStyleType = {
+  sortable: false,
+  filterable: false,
+  headerAlign: 'left',
+  align: 'left',
+};
+
 const columns: GridColDef[] = [
   {
     field: 'userName',
     headerName: 'Name',
-    sortable: false,
-    filterable: false,
+    ...defaultColumnStyle,
   },
   {
     field: 'message',
     headerName: 'Comment',
-    sortable: false,
-    filterable: false,
     flex: 1,
+    ...defaultColumnStyle,
   },
   {
     field: 'likes',
     headerName: 'Likes',
     type: 'number',
-    sortable: false,
-    filterable: false,
+    ...defaultColumnStyle,
   },
   {
     field: 'sentimentAnalysis',
     headerName: 'Sentiment',
-    sortable: false,
-    filterable: false,
+    ...defaultColumnStyle,
   },
   {
     field: 'subjectivityAnalysis',
     headerName: 'Subjectivity',
-    sortable: false,
-    filterable: false,
+    ...defaultColumnStyle,
   },
   {
     field: 'topicClassification',
     headerName: 'Topic',
-    sortable: false,
-    filterable: false,
+    ...defaultColumnStyle,
   },
 ];
 

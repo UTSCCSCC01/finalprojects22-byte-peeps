@@ -22,7 +22,11 @@ export const getStats: RequestHandler = async (req, res, next) => {
   });
 
   if (!user?.facebookApi)
-    return res.send({ totalComments: null, totalLikes: null });
+    return res.send({
+      totalPosts: null,
+      totalReactions: null,
+      totalComments: null,
+    });
 
   if (startDateParam && endDateParam) {
     if (startDateParam.length === 8 && endDateParam.length === 8) {
@@ -56,6 +60,17 @@ export const getStats: RequestHandler = async (req, res, next) => {
           },
         });
 
+        // Get Total Posts here
+        const postCount = await FacebookPost.count({
+          where: {
+            apiId: user!.facebookApi.id,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+        });
+
+        // todo should be total reactions
         // Get Total likes
         let totalAmount = await FacebookPost.findAll({
           where: {
@@ -73,8 +88,9 @@ export const getStats: RequestHandler = async (req, res, next) => {
         totalLikes = totalLikes === null ? 0 : totalLikes;
 
         res.send({
+          totalPosts: postCount,
+          totalReactions: totalLikes,
           totalComments: commentCount,
-          totalLikes,
         });
       } catch (error) {
         res.status(400).send(error);

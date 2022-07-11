@@ -1,32 +1,41 @@
 import { useEffect, useRef, useState } from 'react';
 // @ts-ignore
-import { DateRange } from 'react-date-range';
 import format from 'date-fns/format';
-import { addDays } from 'date-fns';
+import { DateRange, RangeKeyDict } from 'react-date-range';
 
-import { useAppDispatch } from '../../Redux/hooks';
-import {
-  setStartDate,
-  setEndDate,
-  getCommentsSentimentAnalysis,
-  getFacebookStats,
-} from '../../Redux/Slices/facebook/facebookSlice';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import {
+  createDate,
+  formatDate,
+  selectEndDate,
+  selectStartDate,
+  setEndDate,
+  setStartDate,
+} from '../../Redux/Slices/dateSelector/dateSelectorSlice';
 import styles from './DateSelector.module.css';
+
+type Range = {
+  startDate: Date;
+  endDate: Date;
+  key: 'selection';
+};
+
+let clicks = 0;
 
 const DateSelector = () => {
   const dispatch = useAppDispatch();
 
-  // date state
-  const [range, setRange]: any = useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 0),
-      key: 'selection',
-    },
-  ]);
+  const startDate = useAppSelector(selectStartDate);
+  const endDate = useAppSelector(selectEndDate);
+
+  const [range, setRange] = useState<Range>({
+    startDate: createDate(startDate) ?? new Date(),
+    endDate: createDate(endDate) ?? new Date(),
+    key: 'selection',
+  });
 
   // open close
   const [open, setOpen] = useState(false);
@@ -39,13 +48,6 @@ const DateSelector = () => {
     document.addEventListener('keydown', hideOnEscape, true);
     document.addEventListener('click', hideOnClickOutside, true);
   }, []);
-
-  useEffect(() => {
-    dispatch(setStartDate(range[0].startDate?.toISOString()));
-    dispatch(setEndDate(range[0].endDate?.toISOString()));
-    dispatch(getCommentsSentimentAnalysis());
-    dispatch(getFacebookStats());
-  }, [range, dispatch]);
 
   // hide dropdown on ESC press
   const hideOnEscape = (e: any) => {
@@ -61,31 +63,46 @@ const DateSelector = () => {
     }
   };
 
+  /**
+   * Handles the date range selection
+   * @param {RangeKeyDict} selectionRange - the selected range from the date range picker
+   */
+  function handleSelectionChange(selectionRange: RangeKeyDict): void {
+    setRange(selectionRange.selection as Range);
+
+    clicks += 1;
+
+    if (clicks > 2) clicks = 1;
+
+    if (clicks === 2) {
+      dispatch(setStartDate(formatDate(selectionRange.selection.startDate)));
+      dispatch(setEndDate(formatDate(selectionRange.selection.endDate)));
+    }
+  }
+
   return (
-    <div className={styles.calendarWrap}>
+    <div className={styles.calendarWrap} ref={refOne}>
       <input
-        value={`${format(range[0].startDate, 'MM/dd/yyyy')} to ${format(
-          range[0].endDate,
+        value={`${format(range.startDate, 'MM/dd/yyyy')} to ${format(
+          range.endDate,
           'MM/dd/yyyy'
         )}`}
         readOnly
         className={styles.inputBox}
-        onClick={() => setOpen((open) => !open)}
+        onClick={() => setOpen(!open)}
       />
 
-      <div ref={refOne}>
-        {open && (
-          <DateRange
-            onChange={(item: any) => setRange([item.selection])}
-            editableDateInputs={true}
-            moveRangeOnFirstSelection={false}
-            ranges={range}
-            months={1}
-            direction="horizontal"
-            className={styles.calendarElement}
-          />
-        )}
-      </div>
+      {open && (
+        <DateRange
+          onChange={handleSelectionChange}
+          editableDateInputs={true}
+          moveRangeOnFirstSelection={false}
+          ranges={[range]}
+          months={1}
+          direction="horizontal"
+          className={styles.calendarElement}
+        />
+      )}
     </div>
   );
 };
