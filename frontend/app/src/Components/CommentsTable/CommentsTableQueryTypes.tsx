@@ -15,10 +15,6 @@ type CommentsTableQueryType = {
   colDef: CommentsTableColDef;
 };
 
-type AppCommentTables = {
+export type CommentTables = {
   [key in AppNames]: CommentsTableQueryType;
 };
-
-export interface CommentTables extends AppCommentTables {
-  default: CommentsTableQueryType;
-}

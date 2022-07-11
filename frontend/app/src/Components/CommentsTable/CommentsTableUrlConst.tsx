@@ -14,5 +14,9 @@ interface InstagramCommentsTableResponse {
 export type CommentsTableResponse = InstagramCommentsTableResponse;
 
 export enum CommentsTableUrlRequest {
+  Facebook = '/facebook/comments',
   Instagram = '/instagram/comments',
+  Twitter = '/twitter/comments',
+  YouTube = '/youtube/comments',
+  Reddit = '/reddit/comments'
 }

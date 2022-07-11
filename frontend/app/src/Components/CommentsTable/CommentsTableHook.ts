@@ -22,25 +22,25 @@ import {
 } from './CommentsTableUrlConst';
 
 const commentsTables: CommentTables = {
+  [AppNames.Facebook]: {
+    url: CommentsTableUrlRequest.Facebook,
+    colDef: CommentsTableColDefConst.Facebook,
+  },
   [AppNames.Instagram]: {
     url: CommentsTableUrlRequest.Instagram,
     colDef: CommentsTableColDefConst.Instagram,
   },
-  [AppNames.Facebook]: {
-    url: CommentsTableUrlRequest.Instagram,
-    colDef: CommentsTableColDefConst.Default,
-  },
   [AppNames.Twitter]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.Twitter,
+    colDef: CommentsTableColDefConst.Twitter,
   },
   [AppNames.Reddit]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.Reddit,
+    colDef: CommentsTableColDefConst.Reddit,
   },
   [AppNames.YouTube]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.YouTube,
+    colDef: CommentsTableColDefConst.YouTube,
   },
   [AppNames.GoogleReviews]: {
     url: '',
@@ -50,7 +50,7 @@ const commentsTables: CommentTables = {
     url: '',
     colDef: CommentsTableColDefConst.Default,
   },
-  default: {
+  [AppNames.default]: {
     url: '',
     colDef: CommentsTableColDefConst.Default,
   },
@@ -75,14 +75,14 @@ function useCommentsTable(): UseCommentsTable {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
 
-  const appData = commentsTables[appName || 'default'];
-  
+  const appData = commentsTables[appName];
   const getCommentsData = async (
     startDate: String,
     endDate: String,
     page: number,
     pageSize: number
   ): Promise<CommentsTableResponse> => {
+    console.log(appName);
     return await HTTP.get(appData.url, {
       params: { startDate, endDate, page, pageSize },
     }).then((res) => res.data);
@@ -92,8 +92,8 @@ function useCommentsTable(): UseCommentsTable {
     CommentsTableResponse,
     AxiosError<ErrorResponse>,
     CommentsTableResponse | null
-  >(['commentsTableData', startDate, endDate, page, pageSize], () =>
-    getCommentsData(startDate, endDate, page, pageSize)
+  >(['commentsTableData', startDate, endDate, page, pageSize],
+    () => getCommentsData(startDate, endDate, page, pageSize)
   );
 
   return {
