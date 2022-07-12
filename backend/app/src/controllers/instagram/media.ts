@@ -1,6 +1,10 @@
+import { unknownError } from './../../globalHelpers/globalConstants';
 import { RequestHandler } from 'express';
 import InstagramMedia from '../../models/instagram/media';
 import InstagramComment from '../../models/instagram/comment';
+import InstagramApi from "../../models/instagram/api"
+import User from '../../models/user/user';
+import { resourceNotFound } from '../../globalHelpers/globalConstants';
 const { sequelize, Op } = require("sequelize");
 
 /**
@@ -23,6 +27,19 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res
   const endDateParam = req.query.end;
   let startDate: Date;
   let endDate: Date;
+  try {
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: InstagramApi,
+    })
+    if (!user?.instagramApi) return res.send({
+      data: []
+
+    })
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError })
+  }
   if (startDateParam && endDateParam) {
     if (startDateParam.length === 8 && endDateParam.length === 8) {
       // parse
@@ -33,10 +50,10 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res
       const year_end = parseInt((endDateParam.toString()).substring(0, 4));
       const month_end = parseInt((endDateParam.toString()).substring(4, 6));
       const day_end = parseInt((endDateParam.toString()).substring(6, 8));
-      try {
-        startDate = new Date(year, month - 1, day);
-        endDate = new Date(year_end, month_end - 1, day_end + 1);
 
+      startDate = new Date(year, month - 1, day);
+      endDate = new Date(year_end, month_end - 1, day_end + 1);
+      try {
         const mediaArray = await InstagramMedia.findAll({
           where: {
             date: {
@@ -87,12 +104,13 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res
         res.send({ data: data })
       } catch (error) {
         console.log(error)
-        res.status(404).send("Invalid Data Input");
+        res.status(404).json({ message: resourceNotFound });
       }
     } else {
-      res.status(404).send("Invalid Date Input");
+      res.status(404).json({ message: resourceNotFound });
     }
-
-
   }
+
+
 }
+
