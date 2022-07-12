@@ -11,6 +11,7 @@ import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/Int
 import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
 import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
+import { selectEndDate, selectStartDate } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
 import {
   getCommentsSentimentAnalysis,
   selectError,
@@ -64,11 +65,14 @@ const YoutubeTab: React.FC<Props> = () => {
     isDataPresent,
     COLORS,
   };
+  
+  const startDate = useAppSelector(selectStartDate);
+  const endDate = useAppSelector(selectEndDate);
 
   useEffect(() => {
     // Sentiment Analysis (PieChart)
-    dispatch(getCommentsSentimentAnalysis());
-  }, [dispatch]);
+    dispatch(getCommentsSentimentAnalysis({startDate, endDate}));
+  }, [dispatch, startDate, endDate]);
 
   return (
     <Grid

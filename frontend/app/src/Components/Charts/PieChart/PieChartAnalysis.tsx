@@ -1,6 +1,4 @@
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
-import { useAppSelector } from '../../../Redux/hooks';
-import { selectUserName } from '../../../Redux/Slices/user/userSlice';
 import ErrorMessage from '../../ErrorMessage/ErrorMessage';
 import Loader from '../../Loader/Loader';
 import NoData from '../../NoData/NoData';
@@ -81,13 +79,11 @@ const PieChartAnalysis = ({
   error,
   isDataPresent,
 }: PieChartAnalysisProps) => {
-  const username = useAppSelector(selectUserName);
-
   return isLoading ? (
     <Loader />
-  ) : isDataPresent && username === 'data' ? (
+  ) : isDataPresent ? (
     <PieChartComponent data={data} COLORS={COLORS} />
-  ) : (!isDataPresent && error === null) || username !== 'data' ? (
+  ) : !isDataPresent && error === null ? (
     <NoData className="noData center" />
   ) : (
     <ErrorMessage error={error} />

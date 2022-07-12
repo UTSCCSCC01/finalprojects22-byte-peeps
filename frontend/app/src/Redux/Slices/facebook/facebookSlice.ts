@@ -5,6 +5,7 @@ import {
   selectStartDate,
 } from '../dateSelector/dateSelectorSlice';
 import { fetchSentimentAnalysis, fetchFacebookStats } from './facebookAPI';
+import { DateRangeState } from '../dateSelector/dateSelectorSlice';
 
 export interface SentimentAnalysis {
   positive: number;
@@ -42,14 +43,31 @@ const initialState: FacebookState = {
   statsError: null,
 };
 
+// export const getCommentsSentimentAnalysis = createAsyncThunk(
+//   'facebook/sentiment_analysis',
+//   async (startDate, endDate, { dispatch, getState, rejectWithValue }: any) => {
+//     // const startDate = useAppSelector(selectStartDate);
+//     // const endDate = useAppSelector(selectEndDate);
+
+//     // const startDate = selectStartDate(getState())
+//     //   .split('T')[0]
+//     //   .replaceAll('-', '');
+
+//     // const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
+//     const response = await fetchSentimentAnalysis(startDate, endDate);
+//     return response;
+//   }
+// );
+
 export const getCommentsSentimentAnalysis = createAsyncThunk(
   'facebook/sentiment_analysis',
-  async (_, { dispatch, getState, rejectWithValue }: any) => {
-    const startDate = selectStartDate(getState())
-      .split('T')[0]
-      .replaceAll('-', '');
-    const endDate = selectEndDate(getState()).split('T')[0].replaceAll('-', '');
-    const response = await fetchSentimentAnalysis(startDate, endDate);
+  async (dates: DateRangeState) => {
+    console.log(dates);
+    const response = await fetchSentimentAnalysis(
+      dates.startDate,
+      dates.endDate
+    );
+    console.log(response);
     return response;
   }
 );

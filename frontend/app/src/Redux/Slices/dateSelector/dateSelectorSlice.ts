@@ -25,7 +25,7 @@ export function createDate(date: string): Date | null {
   return new Date(year, month - 1, day);
 }
 
-interface DateRangeState {
+export interface DateRangeState {
   startDate: string;
   endDate: string;
 }

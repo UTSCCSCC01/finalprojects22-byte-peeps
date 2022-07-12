@@ -18,6 +18,12 @@ import {
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
 import { SentimentAnalysisColors } from '../../../utils/enums';
+import PieChartWrapper from '../../../Components/Charts/PieChart/PieChartWrapper';
+import {
+  selectStartDate,
+  selectEndDate,
+} from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+// import {DateRangeState} from '../../'
 
 // todo not sure if this is necessary since mui theme takes care of dark mode
 // const Item = styled(Paper)(({ theme }) => ({
@@ -32,52 +38,13 @@ interface Props {}
 
 const FacebookTab: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
-
-  // Sentiment Analysis (PieChart)
-  const dataRetured = useAppSelector(selectSentimentAnalysis);
-  const error = useAppSelector(selectError);
-  const isSentimentAnalysisLoading = useAppSelector(
-    selectIsSentimentAnalysisLoading
-  );
-
-  const data = [
-    { name: 'Positve', value: 0 },
-    { name: 'Negative', value: 0 },
-    { name: 'Neutral', value: 0 },
-  ];
-
-  let isDataPresent: Boolean | null = null;
-
-  if (dataRetured) {
-    data[0].value = dataRetured.positive;
-    data[1].value = dataRetured.negative;
-    data[2].value = dataRetured.neutral;
-    isDataPresent =
-      data[0].value > 0 || data[1].value > 0 || data[2].value > 0
-        ? true
-        : data[0].value === 0 || data[1].value === 0 || data[2].value === 0
-        ? false
-        : null;
-  }
-
-  const COLORS = [
-    SentimentAnalysisColors.Positive,
-    SentimentAnalysisColors.Neutral,
-    SentimentAnalysisColors.Negative,
-  ];
-
-  const facebookSentimentAnalysis: PieChartAnalysisProps = {
-    data,
-    isLoading: isSentimentAnalysisLoading,
-    error,
-    isDataPresent,
-    COLORS,
-  };
+  const startDate = useAppSelector(selectStartDate);
+  const endDate = useAppSelector(selectEndDate);
 
   useEffect(() => {
     // Sentiment Analysis (PieChart)
-    dispatch(getCommentsSentimentAnalysis());
-  }, [dispatch]);
+    dispatch(getCommentsSentimentAnalysis({startDate, endDate}));
+  }, [dispatch, startDate, endDate]);
 
   return (
     <Grid
@@ -98,7 +65,8 @@ const FacebookTab: React.FC<Props> = () => {
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Sentiment Analysis'}>
-          <PieChart {...facebookSentimentAnalysis} />
+          {/* <PieChart {...facebookSentimentAnalysis} /> */}
+          <PieChartWrapper />
         </CardCharts>
       </Grid>
 
