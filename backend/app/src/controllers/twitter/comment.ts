@@ -1,13 +1,13 @@
-import { RequestHandler } from 'express';
+import { RequestHandler } from "express";
+import { unknownError } from "../../globalHelpers/globalConstants";
 const { Op } = require('sequelize');
-import { unknownError } from '../../globalHelpers/globalConstants';
-import User from '../../models/user/user';
-import YouTubeChannel from '../../models/youtube/channel';
-import YoutubeComment from '../../models/youtube/comment';
-import YouTubeVideo from '../../models/youtube/video';
+import TwitterConversation from "../../models/twitter/conversation";
+import TwitterTweet from "../../models/twitter/tweet";
+import TwitterUser from "../../models/twitter/user";
+import User from "../../models/user/user";
 
 /**
- * Provides the page number and size, provides comments of any IG media related to the user API
+ * Provides the page number and size, provides comments of any Twitter tweet related to the user API
  */
  export const getComments: RequestHandler = async (req, res, next) => {
   try {
@@ -15,7 +15,7 @@ import YouTubeVideo from '../../models/youtube/video';
       || !req.query.endDate || req.query.endDate.length !== 8)
       return res.status(400).send();
     
-    const user = await User.findOne({where: { username: req.session.username }, include: YouTubeChannel});
+    const user = await User.findOne({where: { username: req.session.username }, include: TwitterUser});
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -31,14 +31,14 @@ import YouTubeVideo from '../../models/youtube/video';
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.youtubeChannel)
+    if (!user?.twitterUser)
       return res.send({ count: 0, data: [] });
 
-    const videos = await YouTubeVideo.findAll({ where: { channelId: user!.youtubeChannel.id }});
-    const videoIds: number[] = videos.map(v => v.id);
-    const comments = await YoutubeComment.findAll({
+    const tweets = await TwitterTweet.findAll({ where: { apiId: user!.twitterUser.id }});
+    const tweetIds: number[] = tweets.map(p => p.id);
+    const comments = await TwitterConversation.findAll({
       where: {
-        videoId: videoIds,
+        tweetId: tweetIds,
         date: {
           [Op.between]: [startDate, endDate],
         }
@@ -48,8 +48,9 @@ import YouTubeVideo from '../../models/youtube/video';
       ],
       attributes: [
         'id',
-        'userName',
-        'message',
+        'text',
+        'retweets',
+        'replies',
         'likes',
         'sentimentAnalysis',
         'topicClassification',
@@ -63,10 +64,3 @@ import YouTubeVideo from '../../models/youtube/video';
     res.status(500).json({ message: unknownError });
   }
 };
-
-export const getAllComments: RequestHandler = async (req, res, next) => {
-  const allComments: YoutubeComment[] = await YoutubeComment.findAll();
-  return res.status(200).json({ data: allComments });
-};
-
-export const getCommentById: RequestHandler = async (req, res, next) => {};
