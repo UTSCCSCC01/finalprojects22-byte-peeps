@@ -116,12 +116,6 @@ const FacebookTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comments Sentiment Analysis By Post'}>
-          {/* <TimeSeriesChart /> */}
-          <InstagramCommentsTimeSeries />
-        </CardCharts>
-      </Grid>
-      <Grid item xs={12}>
         <CardCharts name={'Comments Subjectivity Analysis By Post'}>
           <GeneralTimeSeriesChart />
         </CardCharts>
