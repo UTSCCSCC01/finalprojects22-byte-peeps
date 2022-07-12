@@ -6,7 +6,7 @@ import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../../../Components/Charts/PieChart/PieChartAnalysis';
-import InstagramCommentsTable from '../../../Components/MetricsTable/InstagramCommentsTable';
+import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
 import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
@@ -78,7 +78,7 @@ const FacebookTab: React.FC<Props> = () => {
 
       <Grid item xs={12}>
         <CardCharts name={'Comments'}>
-          <InstagramCommentsTable />
+          <CommentsTable />
         </CardCharts>
       </Grid>
 

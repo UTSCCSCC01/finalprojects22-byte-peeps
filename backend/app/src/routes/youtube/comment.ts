@@ -1,19 +1,14 @@
 import { Router } from 'express';
 import {
-  createComment,
-  deleteComment,
   getAllComments,
   getCommentById,
+  getComments,
 } from '../../controllers/youtube/comment';
 
 const commentRouter = Router();
 
-commentRouter.post('/create', createComment);
-
+commentRouter.get('/', getComments);
 commentRouter.get('/', getAllComments);
-
 commentRouter.get('/:id', getCommentById);
-
-commentRouter.delete('/:id', deleteComment);
 
 export default commentRouter;
