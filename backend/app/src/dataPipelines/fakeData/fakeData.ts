@@ -93,14 +93,14 @@ async function deleteAllData(): Promise<void> {
   await YouTubeVideo.destroy({ where: {} });
   await YouTubeChannel.destroy({ where: {} });
 
-  await FacebookComment.destroy({ where: {} });
-  await FacebookPost.destroy({ where: {} });
-  await FacebookApi.destroy({ where: {} });
-
   await InstagramTag.destroy({ where: {} });
   await InstagramComment.destroy({ where: {} });
   await InstagramMedia.destroy({ where: {} });
   await InstagramApi.destroy({ where: {} });
+
+  await FacebookComment.destroy({ where: {} });
+  await FacebookPost.destroy({ where: {} });
+  await FacebookApi.destroy({ where: {} });
 
   await TwitterConversation.destroy({ where: {} });
   await TwitterTweet.destroy({ where: {} });
