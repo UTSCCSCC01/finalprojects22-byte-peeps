@@ -8,7 +8,25 @@ import axios from 'axios';
     - https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews#Review
 */
 
+type GoogleReview = {
+  id: string;
+  title: string;
+  review: string;
+  reviewer: string | null;
+  rating: number | null;
+  date: Date;
+  reply: string | null;
+};
+
 const BASE_URL = 'https://mybusiness.googleapis.com/v4';
+
+const RATING_ENUMS: Record<string, number | null> = {};
+RATING_ENUMS.STAR_RATING_UNSPECIFIED = null;
+RATING_ENUMS.ONE = 1;
+RATING_ENUMS.TWO = 2;
+RATING_ENUMS.THREE = 3;
+RATING_ENUMS.FOUR = 4;
+RATING_ENUMS.FIVE = 5;
 
 export const getAllReviews = async (
   bearerToken: string,
@@ -17,17 +35,9 @@ export const getAllReviews = async (
 ): Promise<{
   totalReviewCount: number;
   averageRating: number;
-  reviews: {
-    id: string;
-    title: string;
-    review: string;
-    reviewer: string | null;
-    rating: number;
-    date: Date;
-    reply: string | null;
-  }[];
+  reviews: GoogleReview[];
 }> => {
-  const reviews: any[] = [];
+  const reviews: GoogleReview[] = [];
   let averageRating = 0;
   let totalReviewCount = 0;
 
@@ -47,7 +57,17 @@ export const getAllReviews = async (
 
     if (!result) break;
 
-    reviews.push(...result!.data.reviews);
+    reviews.push(
+      ...result!.data.reviews.map((r: any) => {
+        r.reviewId;
+        r.name;
+        r.comment;
+        r.reviewer.displayName == '' ? null : r.reviewer.displayName;
+        RATING_ENUMS[r.starRating];
+        new Date(r.reviewer.updateTime);
+        r.reviewReply?.comment ?? null;
+      })
+    );
     if (!pageToken) {
       // add these values only in first iteration
       totalReviewCount = result!.data.totalReviewCount;
