@@ -16,3 +16,9 @@ export enum SentimentAnalysisColors {
   Negative = '#71a6de',
   Neutral = '#09213b',
 }
+
+export enum MUITheme {
+  main = '#1976d2',
+  light = '#42a5f5',
+  dark = '#1565c0',
+}
