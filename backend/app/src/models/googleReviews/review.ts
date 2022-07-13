@@ -39,7 +39,7 @@ export default class GoogleReviewsReview extends Model {
   @Column
   rating: number;
 
-  @Column
+  @Column(DataType.TEXT)
   response: string;
 
   @AllowNull(false)
