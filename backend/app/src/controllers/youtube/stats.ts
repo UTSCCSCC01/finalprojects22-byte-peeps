@@ -2,15 +2,15 @@ import { RequestHandler } from 'express';
 import { Op, Sequelize } from 'sequelize';
 import { invalidDateRangeResponse } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
-import FacebookApi from '../../models/facebook/api';
-import FacebookComment from '../../models/facebook/comment';
-import FacebookPost from '../../models/facebook/post';
 import User from '../../models/user/user';
+import YouTubeChannel from '../../models/youtube/channel';
+import YouTubeComment from '../../models/youtube/comment';
+import YouTubeVideo from '../../models/youtube/video';
 
 /**
  * Provides the stats for ui cards
  */
-export const getFacebookStats: RequestHandler = async (req, res, next) => {
+export const getYoutubeStats: RequestHandler = async (req, res, next) => {
   const startDateParam = req.query.startDate?.toString();
   const endDateParam = req.query.endDate?.toString();
 
@@ -21,20 +21,21 @@ export const getFacebookStats: RequestHandler = async (req, res, next) => {
 
   const user = await User.findOne({
     where: { username: req.session.username },
-    include: FacebookApi,
+    include: YouTubeChannel,
   });
 
-  if (!user?.facebookApi)
+  if (!user?.youtubeChannel)
     return res.send({
-      totalPosts: null,
-      totalReactions: null,
+      totalVideos: null,
+      totalViews: null,
+      totalLikes: null,
       totalComments: null,
     });
 
   // Get Total Posts here
-  const totalPosts = await FacebookPost.count({
+  const totalVideos = await YouTubeVideo.count({
     where: {
-      apiId: user!.facebookApi.id,
+      channelId: user!.youtubeChannel.id,
       date: {
         [Op.between]: [startDate, endDate],
       },
@@ -42,7 +43,7 @@ export const getFacebookStats: RequestHandler = async (req, res, next) => {
   });
 
   // Get Total comments
-  const totalComments = await FacebookComment.count({
+  const totalComments = await YouTubeComment.count({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
@@ -50,43 +51,39 @@ export const getFacebookStats: RequestHandler = async (req, res, next) => {
     },
     include: [
       {
-        model: FacebookPost,
+        model: YouTubeVideo,
         where: {
-          apiId: user!.facebookApi.id,
+          channelId: user!.youtubeChannel.id,
         },
       },
     ],
   });
 
-  // Get Total Reactions
-  let queryResult = await FacebookPost.findAll({
+  // Get Total Likes and views
+  const queryResult = (await YouTubeVideo.findAll({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
-      apiId: user!.facebookApi.id,
+      channelId: user!.youtubeChannel.id,
     },
     attributes: [
       [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
-      [Sequelize.fn('sum', Sequelize.col('loves')), 'totalLoves'],
-      [Sequelize.fn('sum', Sequelize.col('cares')), 'totalCares'],
-      [Sequelize.fn('sum', Sequelize.col('hahas')), 'totalHahas'],
-      [Sequelize.fn('sum', Sequelize.col('wows')), 'totalWows'],
-      [Sequelize.fn('sum', Sequelize.col('sads')), 'totalSads'],
-      [Sequelize.fn('sum', Sequelize.col('angrys')), 'totalAngrys'],
+      [Sequelize.fn('sum', Sequelize.col('views')), 'totalViews'],
     ],
     raw: true,
-  }).then((data) => data[0]);
+  }).then((data) => data[0])) as unknown as {
+    totalLikes: string;
+    totalViews: string;
+  };
 
-  let totalReactions = 0;
-
-  Object.values(queryResult).forEach((value) => {
-    totalReactions += parseInt(value || '0');
-  });
+  const totalLikes = parseInt(queryResult.totalLikes || '0');
+  const totalViews = parseInt(queryResult.totalViews || '0');
 
   return res.send({
-    totalPosts,
-    totalReactions: totalReactions,
+    totalVideos,
+    totalViews,
+    totalLikes,
     totalComments,
   });
 };
