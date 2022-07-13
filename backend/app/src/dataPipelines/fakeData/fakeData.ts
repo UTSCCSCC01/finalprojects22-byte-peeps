@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
+import GoogleReviewsLocation from '../../models/googleReviews/location';
+import GoogleReviewsReview from '../../models/googleReviews/review';
 import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
@@ -27,12 +29,14 @@ type RegisteredUser = {
   instagramApiId: number;
   redditSubredditId: number;
   twitterUserId: number;
+  googleReviewsLocationId: number;
 };
 
 const startDate: string = '2022-06-15T00:00:00.000Z';
 const endDate: string = '2022-07-15T23:59:59.999Z';
 const numberOfPosts = 30;
 const numberOfComments = 50;
+const numberOfReviews = 30;
 
 /**
  * Random index between 0 to number
@@ -40,6 +44,12 @@ const numberOfComments = 50;
  */
 function randomIndex(number: number = fakeData.length): number {
   return Math.floor(Math.random() * number);
+}
+
+function randomRating(): number | null {
+  const i = randomIndex(6);
+  if (i == 0) return null;
+  return i;
 }
 
 /**
@@ -109,6 +119,9 @@ async function deleteAllData(): Promise<void> {
   await RedditComment.destroy({ where: {} });
   await RedditListing.destroy({ where: {} });
   await RedditSubreddit.destroy({ where: {} });
+
+  await GoogleReviewsReview.destroy({ where: {} });
+  await GoogleReviewsLocation.destroy({ where: {} });
 
   await User.destroy({ where: {} });
 }
@@ -185,6 +198,20 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     return 1;
   });
 
+  // Add Google Reviews location
+  const googleReviewsLocationId = await GoogleReviewsLocation.create({
+    token: 'xxxxxx',
+    isActive: true,
+    accountId: 'xxxxxx',
+    locationId: 'xxxxxx',
+    averageRating: randomRating(),
+    numReviews: numberOfReviews,
+    userId,
+  }).then((location) => {
+    if (location) return location.id;
+    return 1;
+  });
+
   return {
     userId,
     youtubeChannelId,
@@ -192,6 +219,7 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     instagramApiId,
     twitterUserId,
     redditSubredditId,
+    googleReviewsLocationId,
   };
 }
 
@@ -428,6 +456,37 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
 }
 
 /**
+ * Adds fake Google Reviews data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
+async function addGoogleReviewsData(
+  registeredUser: RegisteredUser
+): Promise<void> {
+  Array.from({ length: numberOfReviews }).forEach(async () => {
+    const date = faker.date.betweens(startDate, endDate, 1)[0];
+    let randomSentimentData = fakeData[randomIndex()];
+
+    // Create a Google Review
+    await GoogleReviewsReview.create({
+      title: faker.lorem.text(),
+      review: faker.lorem.paragraph(),
+      reviewer: faker.internet.userName(),
+      rating: randomRating(),
+      response: faker.lorem.paragraph(),
+      date: faker.date.between(date, endDate),
+      reviewId: faker.datatype.uuid(),
+      locationId: registeredUser.googleReviewsLocationId,
+      sentimentAnalysis: randomSentimentData.sentiment,
+      subjectivityAnalysis: randomSubjectivity(),
+      topicClassification: randomTopicClassification(),
+    }).then((review) => {
+      return review.id;
+    });
+  });
+}
+
+/**
  * Wrapper to add the data in order
  * @summary deletes all the data in the database and adds new data
  * @return {Promise<void>}
@@ -441,6 +500,7 @@ async function addFakeData(): Promise<void> {
   await addInstagramData(registeredUser);
   await addTwitterData(registeredUser);
   await addRedditData(registeredUser);
+  await addGoogleReviewsData(registeredUser);
   console.log('Fake data added.');
 }
 
