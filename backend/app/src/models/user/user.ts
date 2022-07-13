@@ -1,4 +1,11 @@
-import { Table, Model, Column, AllowNull, HasOne } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  AllowNull,
+  HasOne,
+  DeletedAt,
+} from 'sequelize-typescript';
 import FacebookApi from '../facebook/api';
 import InstagramApi from '../instagram/api';
 import RedditSubreddit from '../reddit/subreddit';
@@ -7,7 +14,6 @@ import YouTubeChannel from '../youtube/channel';
 import YelpBusiness from '../yelp/business';
 
 @Table({
-  timestamps: false,
   tableName: 'users',
 })
 export default class User extends Model {
@@ -18,6 +24,9 @@ export default class User extends Model {
   @AllowNull(false)
   @Column
   password: string;
+
+  @DeletedAt
+  deletedAt: Date;
 
   @HasOne(() => FacebookApi)
   facebookApi: FacebookApi;
