@@ -1,5 +1,4 @@
 import { DataGrid, GridColumns } from '@mui/x-data-grid';
-import { useState } from 'react';
 
 export interface MetricsTableProps {
   rowsPerPageOptions?: number[];
