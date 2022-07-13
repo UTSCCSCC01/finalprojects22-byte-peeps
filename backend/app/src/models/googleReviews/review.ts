@@ -9,7 +9,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import GoogleReviewsApi from './api';
+import GoogleReviewsLocation from './location';
 
 const RATING_REGEX = /^[1-5]$/;
 
@@ -53,11 +53,11 @@ export default class GoogleReviewsReview extends Model {
   @DeletedAt
   deletedAt: Date;
 
-  @ForeignKey(() => GoogleReviewsApi)
+  @ForeignKey(() => GoogleReviewsLocation)
   @AllowNull(false)
   @Column
   apiId: number;
 
-  @BelongsTo(() => GoogleReviewsApi)
-  api: GoogleReviewsApi;
+  @BelongsTo(() => GoogleReviewsLocation)
+  api: GoogleReviewsLocation;
 }
