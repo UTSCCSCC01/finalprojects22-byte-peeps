@@ -9,28 +9,28 @@ import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import { selectAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
-import { SentimentUrlRequest } from './SentimentUrlConst';
+import { SubjectivityUrlRequest } from './SubjectivityUrlConst';
 import { DictPieChartQuery } from './PieChartQueryTypes';
-import { UsePieChartQuery } from './SentimentPieChartQueryTypes';
-import { SentimentAnalysisResponse } from './SentimentUrlConst';
-import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
+import { UseSubjectivityPieChartQuery } from './SubjectivityPieChartQueryTypes';
+import { SubjectivityAnalysisResponse } from './SubjectivityUrlConst';
+import { SubjectivityAnalysis } from './SubjectivityUrlConst';
 import { extractBackendError } from '../../../utils/httpHelpers';
 
-const SentimentPieChartQuery: DictPieChartQuery = {
+const SubjectivityPieChartQuery: DictPieChartQuery = {
   [AppNames.Facebook]: {
-    pieChartQuery: SentimentUrlRequest.Facebook,
+    pieChartQuery: SubjectivityUrlRequest.Facebook,
   },
   [AppNames.Instagram]: {
-    pieChartQuery: SentimentUrlRequest.Instagram,
+    pieChartQuery: SubjectivityUrlRequest.Instagram,
   },
   [AppNames.Twitter]: {
-    pieChartQuery: SentimentUrlRequest.Twitter,
+    pieChartQuery: SubjectivityUrlRequest.Twitter,
   },
   [AppNames.YouTube]: {
-    pieChartQuery: SentimentUrlRequest.YouTube,
+    pieChartQuery: SubjectivityUrlRequest.YouTube,
   },
   [AppNames.Reddit]: {
-    pieChartQuery: SentimentUrlRequest.Reddit,
+    pieChartQuery: SubjectivityUrlRequest.Reddit,
   },
   [AppNames.GoogleReviews]: {
     pieChartQuery: '',
@@ -43,15 +43,14 @@ const SentimentPieChartQuery: DictPieChartQuery = {
   },
 };
 
-const useSentimentPieChart = (): UsePieChartQuery => {
+const useSubjectivityPieChart = (): UseSubjectivityPieChartQuery => {
   const appName = useAppSelector(selectAppName);
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
-  const { pieChartQuery } = SentimentPieChartQuery[appName];
-
-  const getCommentsSentimentAnalysis =
-    async (): Promise<SentimentAnalysisResponse> => {
+  const { pieChartQuery } = SubjectivityPieChartQuery[appName];
+  const getCommentsSubjectivityAnalysis =
+    async (): Promise<SubjectivityAnalysisResponse> => {
       return await HTTP.get(
         `${pieChartQuery}?start=${startDate}&end=${endDate}`
       ).then((res) => {
@@ -60,17 +59,17 @@ const useSentimentPieChart = (): UsePieChartQuery => {
     };
 
   const query = useQuery<
-    SentimentAnalysisResponse,
+    SubjectivityAnalysisResponse,
     AxiosError<ErrorResponse>,
-    SentimentAnalysis | null
-  >(['SentimentAnalysisData', appName, startDate, endDate], () =>
-    getCommentsSentimentAnalysis()
+    SubjectivityAnalysis | null
+  >(['SubjectivityAnalysisData', appName, startDate, endDate], () =>
+    getCommentsSubjectivityAnalysis()
   );
   return {
-    pieChartdata: query.data,
+    pieChartData: query.data,
     isLoading: query.isLoading,
     error: extractBackendError(query.error),
   };
 };
 
-export default useSentimentPieChart;
+export default useSubjectivityPieChart;

@@ -62,12 +62,10 @@ const initialState: FacebookState = {
 export const getCommentsSentimentAnalysis = createAsyncThunk(
   'facebook/sentiment_analysis',
   async (dates: DateRangeState) => {
-    console.log(dates);
     const response = await fetchSentimentAnalysis(
       dates.startDate,
       dates.endDate
     );
-    console.log(response);
     return response;
   }
 );

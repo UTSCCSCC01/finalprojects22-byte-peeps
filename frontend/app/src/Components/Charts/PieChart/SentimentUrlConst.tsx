@@ -1,9 +1,4 @@
 import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
-// interface SentimentAnalysisResponse {
-//   positive: number;
-//   neutral: number;
-//   negative: number;
-// }
 
 export type SentimentAnalysisResponse = SentimentAnalysis;
 

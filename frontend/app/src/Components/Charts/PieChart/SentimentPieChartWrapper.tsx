@@ -1,24 +1,12 @@
 import React from 'react';
 import PieChart, { PieChartAnalysisProps } from './PieChartAnalysis';
 import { SentimentAnalysisColors } from '../../../utils/enums';
-import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
-import {
-  selectError,
-  selectIsSentimentAnalysisLoading,
-  selectSentimentAnalysis,
-} from '../../../Redux/Slices/facebook/facebookSlice';
 import useSentimentPieChart from './SentimentPieChartHook';
 
 interface Props {}
 
 const PieChartWrapper: React.FC<Props> = () => {
-  // Sentiment Analysis (PieChart)
   const { pieChartdata, isLoading, error } = useSentimentPieChart();
-//   const dataRetured = data;
-//   const error = useAppSelector(selectError);
-//   const isSentimentAnalysisLoading = useAppSelector(
-//     selectIsSentimentAnalysisLoading
-//   );
 
   const data = [
     { name: 'Positve', value: 0 },
@@ -46,7 +34,7 @@ const PieChartWrapper: React.FC<Props> = () => {
     SentimentAnalysisColors.Negative,
   ];
 
-  const facebookSentimentAnalysis: PieChartAnalysisProps = {
+  const sentimentAnalysis: PieChartAnalysisProps = {
     data,
     isLoading,
     error,
@@ -55,7 +43,7 @@ const PieChartWrapper: React.FC<Props> = () => {
   };
   return (
     <>
-      <PieChart {...facebookSentimentAnalysis} />
+      <PieChart {...sentimentAnalysis} />
     </>
   );
 };

@@ -18,11 +18,12 @@ import {
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
 import { SentimentAnalysisColors } from '../../../utils/enums';
-import PieChartWrapper from '../../../Components/Charts/PieChart/PieChartWrapper';
+import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import {
   selectStartDate,
   selectEndDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 // import {DateRangeState} from '../../'
 
 // todo not sure if this is necessary since mui theme takes care of dark mode
@@ -66,13 +67,14 @@ const FacebookTab: React.FC<Props> = () => {
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Sentiment Analysis'}>
           {/* <PieChart {...facebookSentimentAnalysis} /> */}
-          <PieChartWrapper />
+          <SentimentPieChartWrapper />
         </CardCharts>
       </Grid>
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Subjectivity Analysis'}>
-          <ToBeImplemented className="exampleChart center" />
+          {/* <ToBeImplemented className="exampleChart center" /> */}
+          <SubjectivityPieChartWrapper />
         </CardCharts>
       </Grid>
 

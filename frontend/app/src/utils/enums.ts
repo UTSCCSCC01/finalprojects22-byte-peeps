@@ -16,3 +16,8 @@ export enum SentimentAnalysisColors {
   Negative = '#71a6de',
   Neutral = '#09213b',
 }
+
+export enum SubjectivityAnalysisColors {
+  Subjective = '#104fb5',
+  Objective = '#5aa0cc',
+}
