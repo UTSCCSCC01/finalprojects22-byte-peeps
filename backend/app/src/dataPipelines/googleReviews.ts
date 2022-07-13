@@ -4,6 +4,8 @@ import {
   GoogleReviewViewModel,
   GoogleReviewWrapperViewModel,
 } from '../apis/googleReviews';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
+import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
 import GoogleReviewsLocation from '../models/googleReviews/location';
 import GoogleReviewsReview from '../models/googleReviews/review';
 
@@ -60,7 +62,12 @@ async function updateLocationReviews(
   await location.save();
 
   /* Update reviews */
-  data.reviews.forEach(async (review: GoogleReviewViewModel) => {
+  for (let i = 0; i < data.reviews.length; i++) {
+    const review = data.reviews[i];
+    const textAnalysis: DatumAPICallResult = await DatumBoxAPICall(
+      review.review
+    );
+
     GoogleReviewsReview.findOne({
       where: { reviewId: review.id },
     }).then(function (obj) {
@@ -71,6 +78,9 @@ async function updateLocationReviews(
           rating: review.rating,
           response: review.response,
           date: review.date,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       } else {
         GoogleReviewsReview.create({
@@ -82,10 +92,13 @@ async function updateLocationReviews(
           date: review.date,
           reviewId: review.id,
           location: location.id,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       }
     });
-  });
+  }
 }
 
 /**

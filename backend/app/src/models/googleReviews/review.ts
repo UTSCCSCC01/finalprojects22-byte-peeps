@@ -50,6 +50,15 @@ export default class GoogleReviewsReview extends Model {
   @Column
   reviewId: string;
 
+  @Column
+  sentimentAnalysis: string;
+
+  @Column
+  topicClassification: string;
+
+  @Column
+  subjectivityAnalysis: string;
+
   @DeletedAt
   deletedAt: Date;
 
