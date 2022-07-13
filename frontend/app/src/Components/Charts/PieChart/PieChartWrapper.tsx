@@ -7,16 +7,18 @@ import {
   selectIsSentimentAnalysisLoading,
   selectSentimentAnalysis,
 } from '../../../Redux/Slices/facebook/facebookSlice';
+import useSentimentPieChart from './SentimentPieChartHook';
 
 interface Props {}
 
 const PieChartWrapper: React.FC<Props> = () => {
   // Sentiment Analysis (PieChart)
-  const dataRetured = useAppSelector(selectSentimentAnalysis);
-  const error = useAppSelector(selectError);
-  const isSentimentAnalysisLoading = useAppSelector(
-    selectIsSentimentAnalysisLoading
-  );
+  const { pieChartdata, isLoading, error } = useSentimentPieChart();
+//   const dataRetured = data;
+//   const error = useAppSelector(selectError);
+//   const isSentimentAnalysisLoading = useAppSelector(
+//     selectIsSentimentAnalysisLoading
+//   );
 
   const data = [
     { name: 'Positve', value: 0 },
@@ -26,10 +28,10 @@ const PieChartWrapper: React.FC<Props> = () => {
 
   let isDataPresent: Boolean | null = null;
 
-  if (dataRetured) {
-    data[0].value = dataRetured.positive;
-    data[1].value = dataRetured.negative;
-    data[2].value = dataRetured.neutral;
+  if (pieChartdata) {
+    data[0].value = pieChartdata.positive;
+    data[1].value = pieChartdata.negative;
+    data[2].value = pieChartdata.neutral;
     isDataPresent =
       data[0].value > 0 || data[1].value > 0 || data[2].value > 0
         ? true
@@ -46,7 +48,7 @@ const PieChartWrapper: React.FC<Props> = () => {
 
   const facebookSentimentAnalysis: PieChartAnalysisProps = {
     data,
-    isLoading: isSentimentAnalysisLoading,
+    isLoading,
     error,
     isDataPresent,
     COLORS,
