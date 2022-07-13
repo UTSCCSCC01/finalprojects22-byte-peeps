@@ -10,9 +10,15 @@ export default class GoogleReviewsApi extends Model {
   @Column
   token: string
 
+  @AllowNull(false)
   @Column
   isActive: boolean
 
+  @AllowNull(false)
+  @Column
+  accountId: string
+
+  @AllowNull(false)
   @Column
   locationId: string
 
