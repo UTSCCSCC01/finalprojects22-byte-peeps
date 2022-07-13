@@ -1,6 +1,6 @@
-import GoogleReviewsApi from "./api";
-import GoogleReviewsReview from "./review";
+import GoogleReviewsLocation from './location';
+import GoogleReviewsReview from './review';
 
-const facebookModels = [GoogleReviewsApi, GoogleReviewsReview];
+const facebookModels = [GoogleReviewsLocation, GoogleReviewsReview];
 
 export default facebookModels;

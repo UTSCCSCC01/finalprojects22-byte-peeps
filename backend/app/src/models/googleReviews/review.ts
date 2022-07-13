@@ -23,7 +23,7 @@ export default class GoogleReviewsReview extends Model {
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  message: string;
+  review: string;
 
   // Can be null if reviewer is anonymous
   @Column
@@ -56,8 +56,8 @@ export default class GoogleReviewsReview extends Model {
   @ForeignKey(() => GoogleReviewsLocation)
   @AllowNull(false)
   @Column
-  apiId: number;
+  locationId: number;
 
   @BelongsTo(() => GoogleReviewsLocation)
-  api: GoogleReviewsLocation;
+  location: GoogleReviewsLocation;
 }
