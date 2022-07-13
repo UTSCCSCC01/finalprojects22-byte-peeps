@@ -80,15 +80,8 @@ export const getInstagramStats: RequestHandler = async (req, res, next) => {
       date: {
         [Op.between]: [startDate, endDate],
       },
+      apiId: user!.instagramApi.id,
     },
-    include: [
-      {
-        model: InstagramApi,
-        where: {
-          id: user!.instagramApi.id,
-        },
-      },
-    ],
   });
 
   return res.send({

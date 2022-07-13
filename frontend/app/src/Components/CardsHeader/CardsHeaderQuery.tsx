@@ -114,9 +114,12 @@ function useCardsHeaderQuery(): UseCardsHeaderQuery {
     AppCardHeaderQuery[appName];
 
   const getHeaderCardsData = async (): Promise<CardHeaderResponse> => {
-    return await HTTP.get(
-      `${cardQuery}?startDate=${startDate}&endDate=${endDate}`
-    ).then((res) => res.data);
+    return await HTTP.get(cardQuery, {
+      params: {
+        startDate,
+        endDate,
+      }
+    }).then((res) => res.data);
   };
 
   const query = useQuery<
