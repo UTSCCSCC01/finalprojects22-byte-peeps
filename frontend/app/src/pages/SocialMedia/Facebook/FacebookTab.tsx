@@ -1,30 +1,13 @@
 import { Grid } from '@mui/material';
-import React, { useEffect } from 'react';
-
+import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
-import PieChart, {
-  PieChartAnalysisProps,
-} from '../../../Components/Charts/PieChart/PieChartAnalysis';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
 import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
-import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
-import {
-  getCommentsSentimentAnalysis,
-  selectError,
-  selectIsSentimentAnalysisLoading,
-  selectSentimentAnalysis,
-} from '../../../Redux/Slices/facebook/facebookSlice';
-import { SentimentAnalysisColors } from '../../../utils/enums';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
-import {
-  selectStartDate,
-  selectEndDate,
-} from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
-// import {DateRangeState} from '../../'
 
 // todo not sure if this is necessary since mui theme takes care of dark mode
 // const Item = styled(Paper)(({ theme }) => ({
@@ -38,15 +21,6 @@ import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/Sub
 interface Props {}
 
 const FacebookTab: React.FC<Props> = () => {
-  const dispatch = useAppDispatch();
-  const startDate = useAppSelector(selectStartDate);
-  const endDate = useAppSelector(selectEndDate);
-
-  useEffect(() => {
-    // Sentiment Analysis (PieChart)
-    dispatch(getCommentsSentimentAnalysis({startDate, endDate}));
-  }, [dispatch, startDate, endDate]);
-
   return (
     <Grid
       container
@@ -66,14 +40,12 @@ const FacebookTab: React.FC<Props> = () => {
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Sentiment Analysis'}>
-          {/* <PieChart {...facebookSentimentAnalysis} /> */}
           <SentimentPieChartWrapper />
         </CardCharts>
       </Grid>
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Subjectivity Analysis'}>
-          {/* <ToBeImplemented className="exampleChart center" /> */}
           <SubjectivityPieChartWrapper />
         </CardCharts>
       </Grid>
