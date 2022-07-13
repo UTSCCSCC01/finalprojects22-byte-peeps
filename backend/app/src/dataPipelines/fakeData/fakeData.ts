@@ -463,26 +463,22 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
 async function addGoogleReviewsData(
   registeredUser: RegisteredUser
 ): Promise<void> {
-  Array.from({ length: numberOfReviews }).forEach(async () => {
-    const date = faker.date.betweens(startDate, endDate, 1)[0];
-    let randomSentimentData = fakeData[randomIndex()];
+  const date = faker.date.betweens(startDate, endDate, 1)[0];
+  let randomSentimentData = fakeData[randomIndex()];
 
-    // Create a Google Review
-    await GoogleReviewsReview.create({
-      title: faker.lorem.text(),
-      review: faker.lorem.paragraph(),
-      reviewer: faker.internet.userName(),
-      rating: randomRating(),
-      response: faker.lorem.paragraph(),
-      date: faker.date.between(date, endDate),
-      reviewId: faker.datatype.uuid(),
-      locationId: registeredUser.googleReviewsLocationId,
-      sentimentAnalysis: randomSentimentData.sentiment,
-      subjectivityAnalysis: randomSubjectivity(),
-      topicClassification: randomTopicClassification(),
-    }).then((review) => {
-      return review.id;
-    });
+  // Create a Google Review
+  await GoogleReviewsReview.create({
+    title: faker.lorem.sentence(),
+    review: faker.lorem.paragraph(),
+    reviewer: faker.internet.userName(),
+    rating: randomRating(),
+    response: faker.lorem.paragraph(),
+    date: faker.date.between(date, endDate),
+    reviewId: faker.datatype.uuid(),
+    locationId: registeredUser.googleReviewsLocationId,
+    sentimentAnalysis: randomSentimentData.sentiment,
+    subjectivityAnalysis: randomSubjectivity(),
+    topicClassification: randomTopicClassification(),
   });
 }
 
