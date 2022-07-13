@@ -45,14 +45,15 @@ export const getAllReviews = async (
       })
       .catch(() => null);
 
-    if (result) {
-      reviews.push(...result!.data.reviews);
-      if (!pageToken) {
-        // add these values only in first iteration
-        totalReviewCount = result!.data.totalReviewCount;
-        averageRating = result!.data.averageRating;
-      }
+    if (!result) break;
+
+    reviews.push(...result!.data.reviews);
+    if (!pageToken) {
+      // add these values only in first iteration
+      totalReviewCount = result!.data.totalReviewCount;
+      averageRating = result!.data.averageRating;
     }
+    pageToken = result!.data.nextPageToken;
   }
   return { totalReviewCount, averageRating, reviews };
 };
