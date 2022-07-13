@@ -27,7 +27,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
     content = (
       <div className="center">
         <div className="cardTitle">{data.name}</div>
-        <div className="rowCenter cardInfo">
+        <div className="rowCenter cardInfo fullDimension">
           {data.value ? data.value : <NoData />}
           <div className="center cardIcon">{data.icon}</div>
         </div>

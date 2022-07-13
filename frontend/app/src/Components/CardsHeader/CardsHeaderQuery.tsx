@@ -58,40 +58,40 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
     cardIcons: CardHeaderIcons.FacebookCardIcons,
   },
   [AppNames.Instagram]: {
-    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-    cardNames: CardHeaderNames.FacebookCardNames,
-    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-    cardIcons: CardHeaderIcons.FacebookCardIcons,
+    cardQuery: CardHeaderURLRequest.InstagramCardHeader,
+    cardNames: CardHeaderNames.InstagramCardNames,
+    cardLength: Object.keys(CardHeaderNames.InstagramCardNames).length,
+    cardIcons: CardHeaderIcons.InstagramCardIcons,
   },
   [AppNames.Twitter]: {
-    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-    cardNames: CardHeaderNames.FacebookCardNames,
-    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-    cardIcons: CardHeaderIcons.FacebookCardIcons,
+    cardQuery: CardHeaderURLRequest.TwitterCardHeader,
+    cardNames: CardHeaderNames.TwitterCardNames,
+    cardLength: Object.keys(CardHeaderNames.TwitterCardNames).length,
+    cardIcons: CardHeaderIcons.TwitterCardIcons,
   },
   [AppNames.YouTube]: {
-    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-    cardNames: CardHeaderNames.FacebookCardNames,
-    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-    cardIcons: CardHeaderIcons.FacebookCardIcons,
+    cardQuery: CardHeaderURLRequest.YouTubeCardHeader,
+    cardNames: CardHeaderNames.YouTubeCardNames,
+    cardLength: Object.keys(CardHeaderNames.YouTubeCardNames).length,
+    cardIcons: CardHeaderIcons.YouTubeCardIcons,
   },
   [AppNames.Reddit]: {
-    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-    cardNames: CardHeaderNames.FacebookCardNames,
-    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-    cardIcons: CardHeaderIcons.FacebookCardIcons,
+    cardQuery: CardHeaderURLRequest.RedditCardHeader,
+    cardNames: CardHeaderNames.RedditCardNames,
+    cardLength: Object.keys(CardHeaderNames.RedditCardNames).length,
+    cardIcons: CardHeaderIcons.RedditCardIcons,
   },
   [AppNames.GoogleReviews]: {
-    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-    cardNames: CardHeaderNames.FacebookCardNames,
-    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-    cardIcons: CardHeaderIcons.FacebookCardIcons,
+    cardQuery: '',
+    cardNames: {},
+    cardLength: 0,
+    cardIcons: {},
   },
   [AppNames.Yelp]: {
-    cardQuery: CardHeaderURLRequest.FacebookCardHeader,
-    cardNames: CardHeaderNames.FacebookCardNames,
-    cardLength: Object.keys(CardHeaderNames.FacebookCardNames).length,
-    cardIcons: CardHeaderIcons.FacebookCardIcons,
+    cardQuery: '',
+    cardNames: {},
+    cardLength: 0,
+    cardIcons: {},
   },
   [AppNames.default]: {
     cardQuery: '',
@@ -115,7 +115,7 @@ function useCardsHeaderQuery(): UseCardsHeaderQuery {
 
   const getHeaderCardsData = async (): Promise<CardHeaderResponse> => {
     return await HTTP.get(
-      `${cardQuery}?start=${startDate}&end=${endDate}`
+      `${cardQuery}?startDate=${startDate}&endDate=${endDate}`
     ).then((res) => res.data);
   };
 
