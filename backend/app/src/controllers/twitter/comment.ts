@@ -45,7 +45,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     if (!user?.twitterUser) return res.send({ count: 0, data: [] });
 
     const tweets = await TwitterTweet.findAll({
-      where: { apiId: user!.twitterUser.id },
+      where: { twitterUserId: user!.twitterUser.id },
     });
     const tweetIds: number[] = tweets.map((p) => p.id);
     const comments = await TwitterConversation.findAll({

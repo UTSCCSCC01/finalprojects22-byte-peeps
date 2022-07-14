@@ -12,10 +12,7 @@ import { ErrorResponse } from '../../utils/enums';
 import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
 import { CommentsTableColDefConst } from './CommentsTableColDefConst';
-import {
-  CommentsTableColDef,
-  CommentTables
-} from './CommentsTableQueryTypes';
+import { CommentsTableColDef, CommentTables } from './CommentsTableQueryTypes';
 import {
   CommentsTableResponse,
   CommentsTableUrlRequest,
@@ -82,7 +79,6 @@ function useCommentsTable(): UseCommentsTable {
     page: number,
     pageSize: number
   ): Promise<CommentsTableResponse> => {
-    console.log(appName);
     return await HTTP.get(appData.url, {
       params: { startDate, endDate, page, pageSize },
     }).then((res) => res.data);
@@ -92,8 +88,8 @@ function useCommentsTable(): UseCommentsTable {
     CommentsTableResponse,
     AxiosError<ErrorResponse>,
     CommentsTableResponse | null
-  >(['commentsTableData', startDate, endDate, page, pageSize],
-    () => getCommentsData(startDate, endDate, page, pageSize)
+  >(['commentsTableData', startDate, endDate, page, pageSize], () =>
+    getCommentsData(startDate, endDate, page, pageSize)
   );
 
   return {

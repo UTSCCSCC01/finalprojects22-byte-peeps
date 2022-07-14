@@ -2,9 +2,13 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
+import PieChart, {
+  PieChartAnalysisProps,
+} from '../../../Components/Charts/PieChart/PieChartAnalysis';
+
+import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
-import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
-import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
+
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
@@ -57,14 +61,8 @@ const FacebookTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comments Sentiment Analysis By Post'}>
-          {/* <TimeSeriesChart /> */}
-          <InstagramCommentsTimeSeries />
-        </CardCharts>
-      </Grid>
-      <Grid item xs={12}>
         <CardCharts name={'Comments Subjectivity Analysis By Post'}>
-          <TimeSeriesChart />
+          <GeneralTimeSeriesChart />
         </CardCharts>
       </Grid>
     </Grid>

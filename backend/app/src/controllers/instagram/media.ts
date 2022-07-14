@@ -1,6 +1,11 @@
+import { unknownError } from './../../globalHelpers/globalConstants';
 import { RequestHandler } from 'express';
 import InstagramMedia from '../../models/instagram/media';
 import InstagramComment from '../../models/instagram/comment';
+import InstagramApi from "../../models/instagram/api"
+import User from '../../models/user/user';
+import { resourceNotFound } from '../../globalHelpers/globalConstants';
+import getStartEndDate from '../helpers/helpers'
 const { sequelize, Op } = require("sequelize");
 
 /**
@@ -19,26 +24,28 @@ export const getMedia: RequestHandler = async (req, res, next) => {
  */
 
 export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res, next) => {
-  const startDateParam = req.query.start;
-  const endDateParam = req.query.end;
-  let startDate: Date;
-  let endDate: Date;
-  if (startDateParam && endDateParam) {
-    if (startDateParam.length === 8 && endDateParam.length === 8) {
-      // parse
-      const year = parseInt((startDateParam.toString()).substring(0, 4));
-      const month = parseInt((startDateParam.toString()).substring(4, 6));
-      const day = parseInt((startDateParam.toString()).substring(6, 8));
+  console.log('reached instagram sentiment analysis')
+  try {
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: InstagramApi,
+    })
+    if (!user?.instagramApi) return res.send({
+      data: []
 
-      const year_end = parseInt((endDateParam.toString()).substring(0, 4));
-      const month_end = parseInt((endDateParam.toString()).substring(4, 6));
-      const day_end = parseInt((endDateParam.toString()).substring(6, 8));
-      try {
-        startDate = new Date(year, month - 1, day);
-        endDate = new Date(year_end, month_end - 1, day_end + 1);
+    })
+    const startDateParam = req.query.start;
+    const endDateParam = req.query.end;
+    let startDate: Date;
+    let endDate: Date;
+    if (startDateParam && endDateParam) {
+      if (startDateParam.length === 8 && endDateParam.length === 8) {
+        // parse
+        [startDate, endDate] = getStartEndDate(startDateParam.toString(), endDateParam.toString())
 
         const mediaArray = await InstagramMedia.findAll({
           where: {
+            apiId: user?.instagramApi.id,
             date: {
               [Op.between]: [startDate, endDate]
             }
@@ -85,14 +92,16 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res
 
 
         res.send({ data: data })
-      } catch (error) {
-        console.log(error)
-        res.status(404).send("Invalid Data Input");
+
+      } else {
+        res.status(404).json({ message: resourceNotFound });
       }
-    } else {
-      res.status(404).send("Invalid Date Input");
     }
 
 
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError })
   }
 }
+

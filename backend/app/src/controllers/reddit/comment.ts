@@ -44,7 +44,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     if (!user?.subreddit) return res.send({ count: 0, data: [] });
 
     const listings = await RedditListing.findAll({
-      where: { apiId: user!.subreddit.id },
+      where: { subredditId: user!.subreddit.id },
     });
     const listingIds: number[] = listings.map((l) => l.id);
     const comments = await RedditComment.findAll({
