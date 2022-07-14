@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
+import GoogleReviewsAccount from '../../models/googleReviews/account';
 import GoogleReviewsLocation from '../../models/googleReviews/location';
 import GoogleReviewsReview from '../../models/googleReviews/review';
 import InstagramApi from '../../models/instagram/api';
@@ -29,13 +30,14 @@ type RegisteredUser = {
   instagramApiId: number;
   redditSubredditId: number;
   twitterUserId: number;
-  googleReviewsLocationId: number;
+  googleReviewsAccountId: number;
 };
 
 const startDate: string = '2022-06-15T00:00:00.000Z';
 const endDate: string = '2022-07-15T23:59:59.999Z';
 const numberOfPosts = 30;
 const numberOfComments = 50;
+const numberOfLocations = 10;
 const numberOfReviews = 30;
 
 /**
@@ -122,6 +124,7 @@ async function deleteAllData(): Promise<void> {
 
   await GoogleReviewsReview.destroy({ where: {} });
   await GoogleReviewsLocation.destroy({ where: {} });
+  await GoogleReviewsAccount.destroy({ where: {} });
 
   await User.destroy({ where: {} });
 }
@@ -198,17 +201,14 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     return 1;
   });
 
-  // Add Google Reviews location
-  const googleReviewsLocationId = await GoogleReviewsLocation.create({
+  // Add Google Reviews user
+  const googleReviewsAccountId = await GoogleReviewsAccount.create({
     token: 'xxxxxx',
-    isActive: true,
     accountId: 'xxxxxx',
-    locationId: 'xxxxxx',
-    averageRating: randomRating(),
-    numReviews: numberOfReviews,
+    isActive: true,
     userId,
-  }).then((location) => {
-    if (location) return location.id;
+  }).then((account) => {
+    if (account) return account.id;
     return 1;
   });
 
@@ -219,7 +219,7 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     instagramApiId,
     twitterUserId,
     redditSubredditId,
-    googleReviewsLocationId,
+    googleReviewsAccountId,
   };
 }
 
@@ -463,22 +463,32 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
 async function addGoogleReviewsData(
   registeredUser: RegisteredUser
 ): Promise<void> {
-  const date = faker.date.betweens(startDate, endDate, 1)[0];
-  let randomSentimentData = fakeData[randomIndex()];
+  Array.from({ length: numberOfLocations }).forEach(async () => {
+    // Create a location
+    const googleReviewsLocation = await GoogleReviewsLocation.create({
+      locationId: faker.company.companyName(),
+      accountId: registeredUser.googleReviewsAccountId,
+    });
 
-  // Create a Google Review
-  await GoogleReviewsReview.create({
-    title: faker.lorem.sentence(),
-    review: faker.lorem.paragraph(),
-    reviewer: faker.internet.userName(),
-    rating: randomRating(),
-    response: faker.lorem.paragraph(),
-    date: faker.date.between(date, endDate),
-    reviewId: faker.datatype.uuid(),
-    locationId: registeredUser.googleReviewsLocationId,
-    sentimentAnalysis: randomSentimentData.sentiment,
-    subjectivityAnalysis: randomSubjectivity(),
-    topicClassification: randomTopicClassification(),
+    // create comments on the listing
+    Array.from({ length: numberOfReviews }).forEach(async () => {
+      const date = faker.date.betweens(startDate, endDate, 1)[0];
+      const randomSentimentData = fakeData[randomIndex()];
+
+      await GoogleReviewsReview.create({
+        title: faker.lorem.sentence(),
+        review: faker.lorem.paragraph(),
+        reviewer: faker.internet.userName(),
+        rating: randomRating(),
+        response: faker.lorem.paragraph(),
+        date: faker.date.between(date, endDate),
+        reviewId: faker.datatype.uuid(),
+        sentimentAnalysis: randomSentimentData.sentiment,
+        subjectivityAnalysis: randomSubjectivity(),
+        topicClassification: randomTopicClassification(),
+        locationId: googleReviewsLocation.id,
+      });
+    });
   });
 }
 
