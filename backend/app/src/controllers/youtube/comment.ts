@@ -80,6 +80,81 @@ export const getAllComments: RequestHandler = async (req, res, next) => {
 
 export const getCommentById: RequestHandler = async (req, res, next) => {};
 
+/**
+ * Provides the % of comments that are labeled as subjective
+ */
+export const getCommentsSubjectivityAnalysis: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
+      return res.status(400).send();
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: YouTubeChannel,
+    });
+
+    const startDateParam = req.query.startDate!.toString();
+    const startYear = parseInt(startDateParam.toString().substring(0, 4));
+    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
+    const startDay = parseInt(startDateParam.toString().substring(6, 8));
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+
+    const endDateParam = req.query.endDate!.toString();
+    const endYear = parseInt(endDateParam.toString().substring(0, 4));
+    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
+    const endDay = parseInt(endDateParam.toString().substring(6, 8));
+    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+
+    if (!user?.youtubeChannel)
+      return res.send({
+        positive: 0,
+        neutral: 0,
+        negative: 0,
+      });
+
+    const videos = await YouTubeVideo.findAll({
+      where: { channelId: user!.youtubeChannel.id },
+    });
+    const videoIds: number[] = videos.map((v) => v.id);
+
+    const subjective = await YoutubeComment.count({
+      where: {
+        videoId: videoIds,
+        subjectivityAnalysis: 'subjective',
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    const objective = await YoutubeComment.count({
+      where: {
+        videoId: videoIds,
+        subjectivityAnalysis: 'objective',
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    res.send({
+      subjective: subjective,
+      objective: objective,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getCommentsSentimentAnalysis: RequestHandler = async (
   req,
   res,
@@ -111,7 +186,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.twitterUser)
+    if (!user?.youtubeChannel)
       return res.send({
         positive: 0,
         neutral: 0,
@@ -123,7 +198,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     });
     const videoIds: number[] = videos.map((v) => v.id);
 
-    const positive = await YoutubeComment.findAll({
+    const positive = await YoutubeComment.count({
       where: {
         videoId: videoIds,
         sentimentAnalysis: 'positive',
@@ -133,7 +208,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       },
     });
 
-    const neutral = await YoutubeComment.findAll({
+    const neutral = await YoutubeComment.count({
       where: {
         videoId: videoIds,
         sentimentAnalysis: 'neutral',
@@ -143,7 +218,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       },
     });
 
-    const negative = await YoutubeComment.findAll({
+    const negative = await YoutubeComment.count({
       where: {
         videoId: videoIds,
         sentimentAnalysis: 'negative',
