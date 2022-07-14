@@ -7,6 +7,7 @@ import PieChart, {
   PieChartAnalysisProps,
 } from '../../../Components/Charts/PieChart/PieChartAnalysis';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
+import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
 import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
@@ -108,12 +109,7 @@ const RedditTab: React.FC<Props> = () => {
       <Grid item xs={12}>
         <CardCharts name={'Comments Sentiment Analysis By Post'}>
           {/* <TimeSeriesChart /> */}
-          <InstagramCommentsTimeSeries />
-        </CardCharts>
-      </Grid>
-      <Grid item xs={12}>
-        <CardCharts name={'Comments Subjectivity Analysis By Post'}>
-          <TimeSeriesChart />
+          <GeneralTimeSeriesChart />
         </CardCharts>
       </Grid>
     </Grid>

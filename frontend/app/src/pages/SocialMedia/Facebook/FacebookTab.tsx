@@ -6,9 +6,10 @@ import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../../../Components/Charts/PieChart/PieChartAnalysis';
+
+import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
-import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
-import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
+
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
 import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
 import {
@@ -115,14 +116,8 @@ const FacebookTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comments Sentiment Analysis By Post'}>
-          {/* <TimeSeriesChart /> */}
-          <InstagramCommentsTimeSeries />
-        </CardCharts>
-      </Grid>
-      <Grid item xs={12}>
         <CardCharts name={'Comments Subjectivity Analysis By Post'}>
-          <TimeSeriesChart />
+          <GeneralTimeSeriesChart />
         </CardCharts>
       </Grid>
     </Grid>

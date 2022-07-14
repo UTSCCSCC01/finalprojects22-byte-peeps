@@ -9,13 +9,13 @@ import User from "../../models/user/user";
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
  */
- export const getComments: RequestHandler = async (req, res, next) => {
+export const getComments: RequestHandler = async (req, res, next) => {
   try {
-    if (!req.query.startDate || req.query.startDate.length !== 8 
+    if (!req.query.startDate || req.query.startDate.length !== 8
       || !req.query.endDate || req.query.endDate.length !== 8)
       return res.status(400).send();
-    
-    const user = await User.findOne({where: { username: req.session.username }, include: RedditSubreddit});
+
+    const user = await User.findOne({ where: { username: req.session.username }, include: RedditSubreddit });
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -34,7 +34,7 @@ import User from "../../models/user/user";
     if (!user?.subreddit)
       return res.send({ count: 0, data: [] });
 
-    const listings = await RedditListing.findAll({ where: { apiId: user!.subreddit.id }});
+    const listings = await RedditListing.findAll({ where: { listingId: user!.subreddit.id } });
     const listingIds: number[] = listings.map(l => l.id);
     const comments = await RedditComment.findAll({
       where: {
@@ -58,7 +58,7 @@ import User from "../../models/user/user";
     });
     const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
     res.send({ count: comments.length, data: filteredComments });
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     res.status(500).json({ message: unknownError });
   }
