@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { getStats } from '../../controllers/facebook/stats';
+import { getFacebookStats } from '../../controllers/facebook/stats';
 
-const statsRouter = Router();
+const facebookStatsRoutes = Router();
 
-statsRouter.get('/', getStats);
+facebookStatsRoutes.get('/cards', getFacebookStats);
 
-export default statsRouter;
+export default facebookStatsRoutes;
