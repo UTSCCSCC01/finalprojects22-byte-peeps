@@ -1,11 +1,9 @@
 import { CronJob } from 'cron';
-import {
-  getReviews,
-  GoogleReviewViewModel,
-  GoogleReviewWrapperViewModel,
-} from '../apis/googleReviews';
+import { getLocations, getLocationReviews } from '../apis/googleReviews';
+import { GoogleReviewViewModel } from '../apis/viewModels/googleReviews/review';
 import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
+import GoogleReviewsAccount from '../models/googleReviews/account';
 import GoogleReviewsLocation from '../models/googleReviews/location';
 import GoogleReviewsReview from '../models/googleReviews/review';
 
@@ -18,17 +16,20 @@ import GoogleReviewsReview from '../models/googleReviews/review';
 async function startPipeline() {
   try {
     /* Get stored Google Review locations */
-    let locations = await GoogleReviewsLocation.findAll();
-    if (locations.length == 0) return;
+    const accounts = await GoogleReviewsAccount.findAll({
+      include: GoogleReviewsLocation,
+    });
 
     /* Get boundary dates */
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const today = new Date();
 
-    /* Update data for each location */
-    locations.forEach(async (location) => {
-      await updateLocationReviews(location, today, yesterday);
+    /* Update data for each account */
+    accounts.forEach(async (account) => {
+      /* Update reviews */
+      const locationIds = await getLocations(account.token, account.accountId);
+      await updateLocationReviews(account.id, locationIds, today, yesterday);
     });
   } catch (err) {
     console.log(err);
@@ -43,31 +44,44 @@ async function startPipeline() {
  * @param endDate right bound of reviews' last updated date
  */
 async function updateLocationReviews(
-  location: GoogleReviewsLocation,
+  accountId: string,
+  locationIds: string[],
   startDate: Date,
   endDate: Date
 ) {
+  const account = await GoogleReviewsAccount.findOne({
+    where: { id: accountId },
+    include: GoogleReviewsLocation,
+  });
+
   /* Perform request */
-  const data: GoogleReviewWrapperViewModel = await getReviews(
-    location.token,
-    location.accountId,
-    location.locationId,
+  const data = await getLocationReviews(
+    account!.token,
+    account!.id,
+    locationIds,
     startDate,
     endDate
   );
 
-  /* Update aggregated data */
-  location.averageRating = data.averageRating;
-  location.numReviews = data.totalReviewCount;
-  await location.save();
-
-  /* Update reviews */
-  for (let i = 0; i < data.reviews.length; i++) {
-    const review = data.reviews[i];
+  /* Iterate through all location reviews retrieved */
+  for (let i = 0; i < data.length; i++) {
+    const review = data[i];
     const textAnalysis: DatumAPICallResult = await DatumBoxAPICall(
       review.review
     );
 
+    /* Add location if doesnt exist */
+    let location = await GoogleReviewsLocation.findOne({
+      where: { locationId: review.locationName },
+    });
+    if (!location) {
+      location = await GoogleReviewsLocation.create({
+        locationId: review.locationName,
+        accountId: accountId,
+      });
+    }
+
+    /* Add review or update */
     GoogleReviewsReview.findOne({
       where: { reviewId: review.id },
     }).then(function (obj) {
@@ -91,7 +105,7 @@ async function updateLocationReviews(
           response: review.response,
           date: review.date,
           reviewId: review.id,
-          location: location.id,
+          location: location!.id,
           sentimentAnalysis: textAnalysis.SentimentAnalysis,
           subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
           topicClassification: textAnalysis.TopicClassification,

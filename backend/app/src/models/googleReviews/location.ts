@@ -8,7 +8,6 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import User from '../user/user';
 import GoogleReviewsAccount from './account';
 import GoogleReviewsReview from './review';
 
@@ -20,11 +19,14 @@ export default class GoogleReviewsLocation extends Model {
   @Column
   locationId: string;
 
-  @Column
-  averageRating: number;
+  averageRating() {
+    const ratings = this.reviews.map((r) => r.rating);
+    return ratings.reduce((a, b) => a + b, 0) / ratings.length;
+  }
 
-  @Column
-  numReviews: number;
+  numReviews() {
+    return this.reviews.length;
+  }
 
   @DeletedAt
   deletedAt: Date;

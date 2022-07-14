@@ -1,64 +1,32 @@
 import axios from 'axios';
+import {
+  GoogleReviewViewModel,
+  GOOGLE_REVIEW_RATING_ENUMS,
+} from './viewModels/googleReviews/review';
 
 /*
   This API has been implemented without testing due to Google Reviews account verification
   limitations, endpoints have been implemented based on the following documentations:
-    - https://developers.google.com/my-business/content/review-data#list_all_reviews
-    - https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews/list
-    - https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews#Review
+    - https://developers.google.com/my-business/content/location-data#list_locations
+    - https://developers.google.com/my-business/reference/businessinformation/rest/v1/accounts.locations/list
+    - https://developers.google.com/my-business/content/review-data#get_reviews_from_multiple_locations
+    - https://developers.google.com/my-business/reference/rest/v4/accounts.locations/batchGetReviews
 */
 
-export type GoogleReviewWrapperViewModel = {
-  totalReviewCount: number;
-  averageRating: number;
-  reviews: GoogleReviewViewModel[];
-};
-
-export type GoogleReviewViewModel = {
-  id: string;
-  title: string;
-  review: string;
-  reviewer: string | null;
-  rating: number | null;
-  date: Date;
-  response: string | null;
-};
-
-const BASE_URL = 'https://mybusiness.googleapis.com/v4';
-
-const RATING_ENUMS: Record<string, number | null> = {};
-RATING_ENUMS.STAR_RATING_UNSPECIFIED = null;
-RATING_ENUMS.ONE = 1;
-RATING_ENUMS.TWO = 2;
-RATING_ENUMS.THREE = 3;
-RATING_ENUMS.FOUR = 4;
-RATING_ENUMS.FIVE = 5;
-
-/**
- * Retrieved general data of all reviews in addition to filtered reviews
- * @param bearerToken OAuth 2.0 token for connecting to the API
- * @param accountId Google Business Account ID
- * @param locationId Location ID to retrieve data from
- * @param startDate left bound date for reviews to be retrieved
- * @param endDate right bound date for reviews to be retrieved
- * @returns a GoogleReviewWrapper containing aggregated data plus filtered reviews
- */
-export const getReviews = async (
+export const getLocations = async (
   bearerToken: string,
-  accountId: string,
-  locationId: string,
-  startDate: Date,
-  endDate: Date
-): Promise<GoogleReviewWrapperViewModel> => {
-  const reviews: GoogleReviewViewModel[] = [];
-  let averageRating = 0;
-  let totalReviewCount = 0;
+  accountId: string
+): Promise<string[]> => {
+  const locations: string[] = [];
 
-  const url = `${BASE_URL}/accounts/${accountId}/locations/${locationId}/reviews`;
+  const url = `https://mybusinessbusinessinformation.googleapis.com/v1/accounts/${accountId}/locations`;
   let pageToken: string | undefined | null = null;
 
   while (pageToken != undefined) {
-    const params: any = { pageSize: 50, orderBy: 'updateTime desc' };
+    const params: any = {
+      pageSize: 100,
+      readMask: 'name',
+    };
     if (pageToken) params.pageToken = pageToken; // for first call to not have pageToken
 
     const result = await axios
@@ -70,21 +38,65 @@ export const getReviews = async (
 
     if (!result) break;
 
-    const currentPageReviews = result!.data.reviews.map((r: any) =>
-      mapReviewsResponseToType(r)
+    const currentPageLocations = result!.data.locationReviews.map(
+      (l: any) => l.name
+    );
+    locations.push(...currentPageLocations);
+
+    pageToken = result!.data.nextPageToken;
+  }
+  return locations;
+};
+
+/**
+ * Retrieved general data of all reviews in addition to filtered reviews
+ * @param bearerToken OAuth 2.0 token for connecting to the API
+ * @param accountId Google Business Account ID
+ * @param locationIds List of location ids
+ * @param startDate left bound date for reviews to be retrieved
+ * @param endDate right bound date for reviews to be retrieved
+ * @returns a GoogleReviewWrapper containing aggregated data plus filtered reviews
+ */
+export const getLocationReviews = async (
+  bearerToken: string,
+  accountId: string,
+  locationIds: string[],
+  startDate: Date,
+  endDate: Date
+): Promise<GoogleReviewViewModel[]> => {
+  const reviews: GoogleReviewViewModel[] = [];
+
+  const url = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations:batchGetReviews`;
+  let pageToken: string | undefined | null = null;
+
+  while (pageToken != undefined) {
+    const body: any = {
+      locationNames: locationIds,
+      pageSize: 50,
+      orderBy: 'updateTime desc',
+      ignoreRatingOnlyReviews: false,
+    };
+    if (pageToken) body.pageToken = pageToken; // for first call to not have pageToken
+
+    const result = await axios
+      .get(url, {
+        headers: { Authorization: 'Bearer ' + bearerToken },
+        data: body,
+      })
+      .catch(() => null);
+
+    if (!result) break;
+
+    const currentPageReviews = result!.data.locationReviews.map((l: any) =>
+      mapReviewsResponseToType(l)
     );
     reviews.push(
       ...filterReviewsByDate(currentPageReviews, startDate, endDate)
     );
 
-    if (!pageToken) {
-      // add these values only in first iteration
-      totalReviewCount = result!.data.totalReviewCount;
-      averageRating = result!.data.averageRating;
-    }
     pageToken = result!.data.nextPageToken;
   }
-  return { totalReviewCount, averageRating, reviews };
+  return reviews;
 };
 
 /**
@@ -92,16 +104,19 @@ export const getReviews = async (
  * @param review an any object that contains specific fields defined in the third link at the top of the document
  * @returns a GoogleReview object
  */
-const mapReviewsResponseToType = (review: any): GoogleReviewViewModel => {
+const mapReviewsResponseToType = (location: any): GoogleReviewViewModel => {
   return {
-    id: review.reviewId,
-    title: review.name,
-    review: review.comment,
+    id: location.review.reviewId,
+    locationName: location.name,
+    title: location.review.name,
+    review: location.review.comment,
     reviewer:
-      review.reviewer.displayName == '' ? null : review.reviewer.displayName,
-    rating: RATING_ENUMS[review.starRating],
-    date: new Date(review.reviewer.updateTime),
-    response: review.reviewReply?.comment ?? null,
+      location.review.reviewer.displayName == ''
+        ? null
+        : location.review.reviewer.displayName,
+    rating: GOOGLE_REVIEW_RATING_ENUMS[location.review.starRating],
+    date: new Date(location.review.reviewer.updateTime),
+    response: location.review.reviewReply?.comment ?? null,
   };
 };
 
