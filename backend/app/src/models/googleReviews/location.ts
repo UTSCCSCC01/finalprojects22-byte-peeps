@@ -9,24 +9,13 @@ import {
   Table,
 } from 'sequelize-typescript';
 import User from '../user/user';
+import GoogleReviewsAccount from './account';
 import GoogleReviewsReview from './review';
 
 @Table({
   tableName: 'google_reviews_locations',
 })
 export default class GoogleReviewsLocation extends Model {
-  @AllowNull(false)
-  @Column
-  token: string;
-
-  @AllowNull(false)
-  @Column
-  isActive: boolean;
-
-  @AllowNull(false)
-  @Column
-  accountId: string;
-
   @AllowNull(false)
   @Column
   locationId: string;
@@ -40,13 +29,13 @@ export default class GoogleReviewsLocation extends Model {
   @DeletedAt
   deletedAt: Date;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => GoogleReviewsAccount)
   @AllowNull(false)
   @Column
-  userId: number;
+  accountId: number;
 
-  @BelongsTo(() => User)
-  user: User;
+  @BelongsTo(() => GoogleReviewsAccount)
+  account: GoogleReviewsAccount;
 
   @HasMany(() => GoogleReviewsReview)
   reviews: GoogleReviewsReview[];

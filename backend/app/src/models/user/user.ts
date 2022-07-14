@@ -5,6 +5,7 @@ import {
   AllowNull,
   HasOne,
   DeletedAt,
+  HasMany,
 } from 'sequelize-typescript';
 import FacebookApi from '../facebook/api';
 import InstagramApi from '../instagram/api';
@@ -12,6 +13,7 @@ import RedditSubreddit from '../reddit/subreddit';
 import TwitterUser from '../twitter/user';
 import YouTubeChannel from '../youtube/channel';
 import YelpBusiness from '../yelp/business';
+import GoogleReviewsAccount from '../googleReviews/account';
 
 @Table({
   tableName: 'users',
@@ -45,4 +47,7 @@ export default class User extends Model {
 
   @HasOne(() => YelpBusiness)
   yelpBusiness: YelpBusiness;
+
+  @HasOne(() => GoogleReviewsAccount)
+  googleReviewAccount: GoogleReviewsAccount;
 }
