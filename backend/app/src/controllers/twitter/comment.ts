@@ -88,10 +88,10 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
 ) => {
   try {
     if (
-      !req.query.startDate ||
-      req.query.startDate.length !== 8 ||
-      !req.query.endDate ||
-      req.query.endDate.length !== 8
+      !req.query.start ||
+      req.query.start.length !== 8 ||
+      !req.query.end ||
+      req.query.end.length !== 8
     )
       return res.status(400).send();
     const user = await User.findOne({
@@ -99,13 +99,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
       include: TwitterUser,
     });
 
-    const startDateParam = req.query.startDate!.toString();
+    const startDateParam = req.query.start!.toString();
     const startYear = parseInt(startDateParam.toString().substring(0, 4));
     const startMonth = parseInt(startDateParam.toString().substring(4, 6));
     const startDay = parseInt(startDateParam.toString().substring(6, 8));
     const startDate = new Date(startYear, startMonth - 1, startDay);
 
-    const endDateParam = req.query.endDate!.toString();
+    const endDateParam = req.query.end!.toString();
     const endYear = parseInt(endDateParam.toString().substring(0, 4));
     const endMonth = parseInt(endDateParam.toString().substring(4, 6));
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
@@ -119,7 +119,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
       });
 
     const tweets = await TwitterTweet.findAll({
-      where: { apiId: user!.twitterUser.id },
+      where: { twitterUserId: user!.twitterUser.id },
     });
     const tweetIds: number[] = tweets.map((p) => p.id);
 
@@ -159,10 +159,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 ) => {
   try {
     if (
-      !req.query.startDate ||
-      req.query.startDate.length !== 8 ||
-      !req.query.endDate ||
-      req.query.endDate.length !== 8
+      !req.query.start ||
+      req.query.start.length !== 8 ||
+      !req.query.end ||
+      req.query.end.length !== 8
     )
       return res.status(400).send();
 
@@ -171,13 +171,13 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       include: TwitterUser,
     });
 
-    const startDateParam = req.query.startDate!.toString();
+    const startDateParam = req.query.start!.toString();
     const startYear = parseInt(startDateParam.toString().substring(0, 4));
     const startMonth = parseInt(startDateParam.toString().substring(4, 6));
     const startDay = parseInt(startDateParam.toString().substring(6, 8));
     const startDate = new Date(startYear, startMonth - 1, startDay);
 
-    const endDateParam = req.query.endDate!.toString();
+    const endDateParam = req.query.end!.toString();
     const endYear = parseInt(endDateParam.toString().substring(0, 4));
     const endMonth = parseInt(endDateParam.toString().substring(4, 6));
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
@@ -191,7 +191,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       });
 
     const tweets = await TwitterTweet.findAll({
-      where: { apiId: user!.twitterUser.id },
+      where: { twitterUserId: user!.twitterUser.id },
     });
     const tweetIds: number[] = tweets.map((p) => p.id);
 

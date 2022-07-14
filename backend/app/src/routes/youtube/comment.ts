@@ -9,10 +9,10 @@ import {
 
 const commentRouter = Router();
 
+commentRouter.get('/subjectivity_analysis', getCommentsSubjectivityAnalysis);
+commentRouter.get('/sentiment_analysis', getCommentsSentimentAnalysis);
 commentRouter.get('/', getComments);
 commentRouter.get('/', getAllComments);
 commentRouter.get('/:id', getCommentById);
-commentRouter.get('/sentiment_analysis', getCommentsSentimentAnalysis);
-commentRouter.get('/subjectivity_analysis', getCommentsSubjectivityAnalysis);
 
 export default commentRouter;

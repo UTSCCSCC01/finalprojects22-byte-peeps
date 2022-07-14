@@ -10,13 +10,19 @@ import YouTubeVideo from '../../models/youtube/video';
  * Provides the page number and size, provides comments of any IG media related to the user API
  */
 export const getComments: RequestHandler = async (req, res, next) => {
-  console.log('reached youtube comments')
   try {
-    if (!req.query.startDate || req.query.startDate.length !== 8
-      || !req.query.endDate || req.query.endDate.length !== 8)
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
       return res.status(400).send();
 
-    const user = await User.findOne({ where: { username: req.session.username }, include: YouTubeChannel });
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: YouTubeChannel,
+    });
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -84,10 +90,10 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
 ) => {
   try {
     if (
-      !req.query.startDate ||
-      req.query.startDate.length !== 8 ||
-      !req.query.endDate ||
-      req.query.endDate.length !== 8
+      !req.query.start ||
+      req.query.start.length !== 8 ||
+      !req.query.end ||
+      req.query.end.length !== 8
     )
       return res.status(400).send();
 
@@ -96,13 +102,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
       include: YouTubeChannel,
     });
 
-    const startDateParam = req.query.startDate!.toString();
+    const startDateParam = req.query.start!.toString();
     const startYear = parseInt(startDateParam.toString().substring(0, 4));
     const startMonth = parseInt(startDateParam.toString().substring(4, 6));
     const startDay = parseInt(startDateParam.toString().substring(6, 8));
     const startDate = new Date(startYear, startMonth - 1, startDay);
 
-    const endDateParam = req.query.endDate!.toString();
+    const endDateParam = req.query.end!.toString();
     const endYear = parseInt(endDateParam.toString().substring(0, 4));
     const endMonth = parseInt(endDateParam.toString().substring(4, 6));
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
@@ -156,10 +162,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 ) => {
   try {
     if (
-      !req.query.startDate ||
-      req.query.startDate.length !== 8 ||
-      !req.query.endDate ||
-      req.query.endDate.length !== 8
+      !req.query.start ||
+      req.query.start.length !== 8 ||
+      !req.query.end ||
+      req.query.end.length !== 8
     )
       return res.status(400).send();
 
@@ -168,13 +174,13 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       include: YouTubeChannel,
     });
 
-    const startDateParam = req.query.startDate!.toString();
+    const startDateParam = req.query.start!.toString();
     const startYear = parseInt(startDateParam.toString().substring(0, 4));
     const startMonth = parseInt(startDateParam.toString().substring(4, 6));
     const startDay = parseInt(startDateParam.toString().substring(6, 8));
     const startDate = new Date(startYear, startMonth - 1, startDay);
 
-    const endDateParam = req.query.endDate!.toString();
+    const endDateParam = req.query.end!.toString();
     const endYear = parseInt(endDateParam.toString().substring(0, 4));
     const endMonth = parseInt(endDateParam.toString().substring(4, 6));
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
