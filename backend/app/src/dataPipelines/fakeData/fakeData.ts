@@ -475,9 +475,9 @@ async function addGoogleReviewsData(
       const date = faker.date.betweens(startDate, endDate, 1)[0];
       const randomSentimentData = fakeData[randomIndex()];
 
-      await GoogleReviewsReview.create({
+      GoogleReviewsReview.create({
         title: faker.lorem.sentence(),
-        review: faker.lorem.paragraph(),
+        review: randomSentimentData.review,
         reviewer: faker.internet.userName(),
         rating: randomRating(),
         response: faker.lorem.paragraph(),
