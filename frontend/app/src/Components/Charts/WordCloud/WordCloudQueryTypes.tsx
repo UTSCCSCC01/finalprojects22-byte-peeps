@@ -1,5 +1,5 @@
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { TagData } from './WordCloudData'
+// import { TagData } from './WordCloudData'
 
 type WordCloudQueryType = {
   cloudQuery: string;
@@ -10,7 +10,7 @@ export type DictWordCloudQuery = {
 };
 
 export type UseWordCloudrQuery = {
-  data: TagData[] | undefined | null;
+  data: any[];
   isLoading: boolean;
   error: string | null;
 };

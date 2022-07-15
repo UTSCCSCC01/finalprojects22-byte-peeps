@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import { AnyRecord } from 'dns';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
@@ -11,7 +12,7 @@ import { selectAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
 import { extractBackendError } from '../../../utils/httpHelpers';
-import { TagData } from './WordCloudData';
+// import { TagData } from './WordCloudData';
 import { UseWordCloudrQuery, DictWordCloudQuery } from './WordCloudQueryTypes';
 import { WordCloudResponse, WordCloudUrlRequest } from './WordCloudURLConst';
 // import {}
@@ -23,8 +24,8 @@ import { WordCloudResponse, WordCloudUrlRequest } from './WordCloudURLConst';
  * @param {{ [key: string]: React.ReactElement }} cardIcons
  * @return {CardData[] | null} - null if response fails
  */
-function formatData(tagCount: [key: string, i: number][]): TagData[] | null {
-  if (!tagCount) return null;
+function formatData(tagCount: [key: string, i: number][]): any[] {
+  if (!tagCount) return [];
 
   const fromattedWordData: any[] = [];
 
@@ -76,25 +77,15 @@ function useWordCloud(): UseWordCloudrQuery {
 
   const cloudQuery = wordCloudQuery[appName];
 
-  const getHeaderCardsData = async (): Promise<WordCloudResponse> => {
+  const getWordCloudData = async (): Promise<WordCloudResponse> => {
     return await HTTP.get(
       `${cloudQuery}?start=${startDate}&end=${endDate}`
     ).then((res) => res.data);
   };
 
-  const query = useQuery<
-    WordCloudResponse,
-    AxiosError<ErrorResponse>,
-    TagData[] | null
-  >(
-    ['headerCardsData', appName, startDate, endDate], // the states that change the query go here
-    () => getHeaderCardsData(),
-    {
-      select: React.useCallback(
-        (data: WordCloudResponse) => formatData(cardNames, data, cardIcons),
-        [cardNames, cardIcons]
-      ),
-    }
+  const query = useQuery<WordCloudResponse, AxiosError<ErrorResponse>, any[]>(
+    ['wordCloudData', appName, startDate, endDate], // the states that change the query go here
+    () => getWordCloudData()
   );
 
   return {

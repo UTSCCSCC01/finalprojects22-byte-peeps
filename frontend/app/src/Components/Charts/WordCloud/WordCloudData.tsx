@@ -5,13 +5,13 @@ import Loader from '../../Loader/Loader';
 import NoData from '../../NoData/NoData';
 import './Card.css';
 
-export type TagData = {
-  value: string,
-  count: number
-};
+// export type TagData = {
+//   value: string,
+//   count: number
+// };
 
 interface CardInfoProps {
-  data: TagData | null;
+  data: any[];
   isLoading: Boolean;
   error: String | null;
 }
