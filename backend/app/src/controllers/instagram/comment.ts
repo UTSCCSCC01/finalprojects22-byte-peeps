@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import {
+  invalidInput,
   invalidDateRangeResponse,
   unknownError,
 } from '../../globalHelpers/globalConstants';
@@ -22,7 +23,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
       !req.query.endDate ||
       req.query.endDate.length !== 8
     )
-      return res.status(400).send();
+      return res.status(400).send(invalidInput);
 
     const user = await User.findOne({
       where: { username: req.session.username },
@@ -222,10 +223,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           negative: negative,
         });
       } catch (error) {
-        res.status(400).send({ message: 'Invalid Data Input' });
+        res.status(400).send(invalidInput);
       }
     }
   } else {
-    res.status(400).send({ message: 'Invalid Date Input' });
+    res.status(400).send(invalidInput);
   }
 };

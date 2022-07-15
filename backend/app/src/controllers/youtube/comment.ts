@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 const { Op } = require('sequelize');
 import {
   invalidDateRangeResponse,
+  invalidInput,
   unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
@@ -25,7 +26,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
       !req.query.endDate ||
       req.query.endDate.length !== 8
     )
-      return res.status(400).send();
+      return res.status(400).send(invalidInput);
 
     const user = await User.findOne({
       where: { username: req.session.username },
@@ -76,17 +77,9 @@ export const getComments: RequestHandler = async (req, res, next) => {
     );
     res.send({ count: comments.length, data: filteredComments });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: unknownError });
+    next(e);
   }
 };
-
-export const getAllComments: RequestHandler = async (req, res, next) => {
-  const allComments: YoutubeComment[] = await YoutubeComment.findAll();
-  return res.status(200).json({ data: allComments });
-};
-
-export const getCommentById: RequestHandler = async (req, res, next) => {};
 
 /**
  * Provides the % of comments that are labeled as subjective
