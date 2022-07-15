@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import {
   invalidInput,
+  invalidDateRangeResponse,
   unknownError,
 } from '../../globalHelpers/globalConstants';
 import InstagramApi from '../../models/instagram/api';
@@ -8,7 +9,8 @@ import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
 import User from '../../models/user/user';
 const { Op } = require('sequelize');
-import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
+import { SentimentAnalysisStatus, SubjectivityAnalysis } from '../../globalHelpers/globalConstants';
+import { getDates } from '../../globalHelpers/globalHelpers';
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
@@ -97,16 +99,54 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   res,
   next
 ) => {
-  const subjective = await InstagramComment.count({
-    where: { subjectivityAnalysis: 'subjective' },
-  });
-  const objective = await InstagramComment.count({
-    where: { subjectivityAnalysis: 'objective' },
-  });
-  res.send({
-    subjective: subjective,
-    objective: objective,
-  });
+  try {
+    const startDateParam = req.query.start?.toString();
+    const endDateParam = req.query.end?.toString();
+
+    const { startDate, endDate } = getDates(startDateParam, endDateParam);
+
+    if (!startDate || !endDate)
+      return res.status(400).send(invalidDateRangeResponse);
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: InstagramApi,
+    });
+
+    if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
+
+    const media = await InstagramMedia.findAll({
+      where: { apiId: user!.instagramApi.id },
+    });
+    const mediaIds: number[] = media.map((m) => m.id);
+
+    const subjective = await InstagramComment.count({
+      where: {
+        mediaId: mediaIds,
+        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    const objective = await InstagramComment.count({
+      where: {
+        mediaId: mediaIds,
+        subjectivityAnalysis: SubjectivityAnalysis.Objective,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    res.send({
+      subjective: subjective,
+      objective: objective,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**
@@ -124,6 +164,14 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 
   if (startDateParam && endDateParam) {
     if (startDateParam.length === 8 && endDateParam.length === 8) {
+      const user = await User.findOne({
+        where: { username: req.session.username },
+        include: InstagramApi,
+      });
+
+      if (!user?.instagramApi)
+        return res.send({ positive: 0, neutral: 0, negative: 0 });
+
       // parse
       const year = parseInt(startDateParam.toString().substring(0, 4));
       const month = parseInt(startDateParam.toString().substring(4, 6));
@@ -136,8 +184,15 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       try {
         startDate = new Date(year, month - 1, day);
         endDate = new Date(year_end, month_end - 1, day_end + 1);
+
+        const media = await InstagramMedia.findAll({
+          where: { apiId: user!.instagramApi.id },
+        });
+        const mediaIds: number[] = media.map((m) => m.id);
+
         const positive = await InstagramComment.count({
           where: {
+            mediaId: mediaIds,
             sentimentAnalysis: SentimentAnalysisStatus.Positive,
             date: {
               [Op.between]: [startDate, endDate],
@@ -146,6 +201,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const neutral = await InstagramComment.count({
           where: {
+            mediaId: mediaIds,
             sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             date: {
               [Op.between]: [startDate, endDate],
@@ -154,6 +210,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const negative = await InstagramComment.count({
           where: {
+            mediaId: mediaIds,
             sentimentAnalysis: SentimentAnalysisStatus.Negative,
             date: {
               [Op.between]: [startDate, endDate],
