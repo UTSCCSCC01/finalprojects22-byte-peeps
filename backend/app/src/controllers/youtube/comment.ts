@@ -26,7 +26,7 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       !req.query.endDate ||
       req.query.endDate.length !== 8
     )
-      return res.status(400).send();
+      return res.status(400).send({ message: 'Invalid Data Input' });
 
     const user = await User.findOne({
       where: { username: req.session.username },
@@ -44,7 +44,7 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.youtubeChannel) return res.send({ count: 0, data: [] });
+    if (!user?.youtubeChannel) return res.send({ data: [] });
 
     const videos = await YouTubeVideo.findAll({
       where: { channelId: user!.youtubeChannel.id },
@@ -66,6 +66,7 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     res.send({ data: keywordExtraction(getKeywords) });
   } catch (e) {
     console.log(e);
+    next(e);
     res.status(500).json({ message: unknownError });
   }
 };

@@ -17,21 +17,6 @@ import { UseWordCloudrQuery, DictWordCloudQuery } from './WordCloudQueryTypes';
 import { WordCloudResponse, WordCloudUrlRequest } from './WordCloudURLConst';
 import { WordCloudData } from './WordCloudQueryTypes';
 
-// function formatData(tagCount: [key: string, i: number][]): any[] {
-//   if (!tagCount) return [];
-
-//   const fromattedWordData: any[] = [];
-
-//   Object.keys(tagCount).forEach((key: string) => {
-//     fromattedWordData.push({
-//       value: tagCount[0],
-//       count: tagCount[1],
-//     });
-//   });
-
-//   return fromattedWordData;
-// }
-
 const wordCloudQuery: DictWordCloudQuery = {
   [AppNames.Facebook]: {
     cloudQuery: WordCloudUrlRequest.Facebook,
@@ -40,19 +25,19 @@ const wordCloudQuery: DictWordCloudQuery = {
     cloudQuery: WordCloudUrlRequest.Instagram,
   },
   [AppNames.Twitter]: {
-    cloudQuery: WordCloudUrlRequest.Instagram,
+    cloudQuery: WordCloudUrlRequest.Twitter,
   },
   [AppNames.YouTube]: {
     cloudQuery: WordCloudUrlRequest.YouTube,
   },
   [AppNames.Reddit]: {
-    cloudQuery: WordCloudUrlRequest.Instagram,
+    cloudQuery: WordCloudUrlRequest.Reddit,
   },
   [AppNames.GoogleReviews]: {
-    cloudQuery: WordCloudUrlRequest.Instagram,
+    cloudQuery: WordCloudUrlRequest.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    cloudQuery: WordCloudUrlRequest.Instagram,
+    cloudQuery: WordCloudUrlRequest.Yelp,
   },
   [AppNames.default]: {
     cloudQuery: '',
