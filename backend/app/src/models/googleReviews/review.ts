@@ -8,6 +8,7 @@ import {
   Is,
   Model,
   Table,
+  Unique,
 } from 'sequelize-typescript';
 import GoogleReviewsLocation from './location';
 
@@ -47,6 +48,7 @@ export default class GoogleReviewsReview extends Model {
   date: Date;
 
   @AllowNull(false)
+  @Unique
   @Column
   reviewId: string;
 

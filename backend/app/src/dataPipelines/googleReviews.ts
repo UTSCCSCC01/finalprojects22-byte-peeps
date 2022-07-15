@@ -82,35 +82,18 @@ async function updateLocationReviews(
     }
 
     /* Add review or update */
-    GoogleReviewsReview.findOne({
-      where: { reviewId: review.id },
-    }).then(function (obj) {
-      if (obj) {
-        obj.update({
-          title: review.title,
-          review: review.review,
-          rating: review.rating,
-          response: review.response,
-          date: review.date,
-          sentimentAnalysis: textAnalysis.SentimentAnalysis,
-          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
-          topicClassification: textAnalysis.TopicClassification,
-        });
-      } else {
-        GoogleReviewsReview.create({
-          title: review.title,
-          review: review.review,
-          reviewer: review.reviewer,
-          rating: review.rating,
-          response: review.response,
-          date: review.date,
-          reviewId: review.id,
-          location: location!.id,
-          sentimentAnalysis: textAnalysis.SentimentAnalysis,
-          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
-          topicClassification: textAnalysis.TopicClassification,
-        });
-      }
+    GoogleReviewsReview.upsert({
+      title: review.title,
+      review: review.review,
+      reviewer: review.reviewer,
+      rating: review.rating,
+      response: review.response,
+      date: review.date,
+      reviewId: review.id, // unique key
+      location: location!.id,
+      sentimentAnalysis: textAnalysis.SentimentAnalysis,
+      subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+      topicClassification: textAnalysis.TopicClassification,
     });
   }
 }
