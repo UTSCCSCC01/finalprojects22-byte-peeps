@@ -2,10 +2,10 @@ import GoogleReviewsAccount from './account';
 import GoogleReviewsLocation from './location';
 import GoogleReviewsReview from './review';
 
-const facebookModels = [
+const googleReviewsModels = [
   GoogleReviewsAccount,
   GoogleReviewsLocation,
   GoogleReviewsReview,
 ];
 
-export default facebookModels;
+export default googleReviewsModels;
