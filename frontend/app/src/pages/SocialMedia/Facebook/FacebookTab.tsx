@@ -2,9 +2,6 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
-import PieChart, {
-  PieChartAnalysisProps,
-} from '../../../Components/Charts/PieChart/PieChartAnalysis';
 
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
