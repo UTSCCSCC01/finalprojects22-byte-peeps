@@ -6,6 +6,7 @@ import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 import PieChart, {
   PieChartAnalysisProps,
 } from '../../../Components/Charts/PieChart/PieChartAnalysis';
+import WordCloud from '../../../Components/Charts/WordCloud/WordCloud';
 import InstagramCommentsTable from '../../../Components/MetricsTable/InstagramCommentsTable';
 import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
 import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
@@ -92,7 +93,7 @@ const FacebookTab: React.FC<Props> = () => {
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Word Cloud'}>
-          <ToBeImplemented className="exampleChart center" />
+          <WordCloud />
         </CardCharts>
       </Grid>
 
