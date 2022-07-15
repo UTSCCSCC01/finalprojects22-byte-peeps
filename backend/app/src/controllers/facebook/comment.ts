@@ -1,5 +1,10 @@
 import { RequestHandler } from 'express';
+import { unknownError } from '../../globalHelpers/globalConstants';
+import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import FacebookPost from '../../models/facebook/post';
+import User from '../../models/user/user';
 const { Op } = require('sequelize');
 
 /**
@@ -109,5 +114,58 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     }
   } else {
     res.status(404).send('Invalid Date Input');
+  }
+};
+
+export const getWordCloudData: RequestHandler = async (req, res, next) => {
+  try {
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
+      return res.status(400).send();
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: FacebookApi,
+    });
+
+    const startDateParam = req.query.startDate!.toString();
+    const startYear = parseInt(startDateParam.toString().substring(0, 4));
+    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
+    const startDay = parseInt(startDateParam.toString().substring(6, 8));
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+
+    const endDateParam = req.query.endDate!.toString();
+    const endYear = parseInt(endDateParam.toString().substring(0, 4));
+    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
+    const endDay = parseInt(endDateParam.toString().substring(6, 8));
+    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+
+    if (!user?.facebookApi) return res.send({ count: 0, data: [] });
+
+    const posts = await FacebookPost.findAll({
+      where: { apiId: user!.facebookApi.id },
+    });
+    const postIds: number[] = posts.map((p) => p.id);
+    const comments = await FacebookComment.findAll({
+      where: {
+        postId: postIds,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      attributes: ['message'],
+    });
+
+    function getText(acc: string, comment: { message: string }) {
+      return acc.concat(' ', comment.message);
+    }
+    const getKeywords = comments.reduce(getText, ' ');
+    res.send({ data: keywordExtraction(getKeywords) });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError });
   }
 };

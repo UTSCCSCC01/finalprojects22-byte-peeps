@@ -34,7 +34,7 @@ import { WordCloudData } from './WordCloudQueryTypes';
 
 const wordCloudQuery: DictWordCloudQuery = {
   [AppNames.Facebook]: {
-    cloudQuery: WordCloudUrlRequest.Instagram,
+    cloudQuery: WordCloudUrlRequest.Facebook,
   },
   [AppNames.Instagram]: {
     cloudQuery: WordCloudUrlRequest.Instagram,
@@ -43,7 +43,7 @@ const wordCloudQuery: DictWordCloudQuery = {
     cloudQuery: WordCloudUrlRequest.Instagram,
   },
   [AppNames.YouTube]: {
-    cloudQuery: WordCloudUrlRequest.Instagram,
+    cloudQuery: WordCloudUrlRequest.YouTube,
   },
   [AppNames.Reddit]: {
     cloudQuery: WordCloudUrlRequest.Instagram,

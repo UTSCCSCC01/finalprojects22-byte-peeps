@@ -5,5 +5,7 @@ type FacebookWordCloudResponse = {
   export type WordCloudResponse = FacebookWordCloudResponse;
   
   export enum WordCloudUrlRequest {
-    Instagram = '/instagram/comments',
+    Facebook = '/facebook/word_cloud',
+    Instagram = '/instagram/word_cloud',
+    YouTube = '/youtube/word_cloud'
   }

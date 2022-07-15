@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getWordCloudData } from '../../controllers/instagram/comment';
 import {
   createComment,
   deleteComment,
@@ -15,5 +16,7 @@ commentRouter.get('/', getAllComments);
 commentRouter.get('/:id', getCommentById);
 
 commentRouter.delete('/:id', deleteComment);
+
+commentRouter.get('/wordCloud', getWordCloudData);
 
 export default commentRouter;
