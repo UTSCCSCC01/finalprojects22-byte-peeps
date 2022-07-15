@@ -6,6 +6,7 @@ import userReducer from './Slices/user/userSlice';
 import twitterSetupReducer from './Slices/twitterSetup/twitterSetupSlice';
 import redditSetupReducer from './Slices/redditSetup/redditSetupSlice';
 import youtubeSetupReducer from './Slices/youtubeSetup/youtubeSetupSlice';
+import yelpSetupReducer from './Slices/yelpSetup/yelpSetupSlice';
 import facebookReducer from './Slices/facebook/facebookSlice';
 import globalReducer from './Slices/webApp/webAppSlice';
 import dateRangeReducer from './Slices/dateSelector/dateSelectorSlice';
@@ -19,6 +20,7 @@ export const store = configureStore({
     twitterSetup: twitterSetupReducer,
     redditSetup: redditSetupReducer,
     youtubeSetup: youtubeSetupReducer,
+    yelpSetup: yelpSetupReducer,
     facebook: facebookReducer,
     global: globalReducer,
     dateRange: dateRangeReducer,

@@ -1,18 +1,15 @@
 import { Router } from 'express';
 import { getWordCloudData } from '../../controllers/instagram/comment';
 import {
-  createComment,
-  deleteComment,
   getAllComments,
   getCommentById,
+  getComments,
 } from '../../controllers/youtube/comment';
 
 const commentRouter = Router();
 
-commentRouter.post('/create', createComment);
-
+commentRouter.get('/', getComments);
 commentRouter.get('/', getAllComments);
-
 commentRouter.get('/:id', getCommentById);
 
 commentRouter.delete('/:id', deleteComment);

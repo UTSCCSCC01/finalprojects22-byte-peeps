@@ -4,6 +4,8 @@ import instagramModels from './instagram/models';
 import youtubeModels from './youtube/models';
 import twitterModels from './twitter/models';
 import redditModels from './reddit/models';
+import yelpModels from './yelp/models';
+import googleReviewsModels from './googleReviews/models';
 
 const models = [
   ...userModels,
@@ -12,6 +14,8 @@ const models = [
   ...youtubeModels,
   ...twitterModels,
   ...redditModels,
+  ...yelpModels,
+  ...googleReviewsModels,
 ];
 
 export default models;

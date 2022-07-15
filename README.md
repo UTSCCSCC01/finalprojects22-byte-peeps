@@ -2,24 +2,24 @@
 
 ## Motivation and Project Description
 
-- The customer is central in every product or service that is offered, hence obtaining customer feedback is essential to the success of any business small or large.
-- This feedback often comes in the form of unstructured data, such as text. In fact, open ended questions are one of the best ways to obtain feedback. In addition, this feedback can come from many sources, such as surveys, client interviews and social media.
-- Gathering this data from multiple sources and attempting to extract key information is both time consuming and tiring thus it is an expense to the business.
-- There are already existing platforms that provide businesses with a unified source to gather this data, as well as mine information from it. One example is Microsoft Dynamics 365 that has this capability, however it costs $1,500 per user to obtain and understand this feedback - making it an infeasible expense for small businesses, startups and content creators.
-- Our platform would provide this audience with a tool that acts as a unified source to obtain this information and make sense of it.
+-   The customer is central in every product or service that is offered, hence obtaining customer feedback is essential to the success of any business small or large.
+-   This feedback often comes in the form of unstructured data, such as text. In fact, open ended questions are one of the best ways to obtain feedback. In addition, this feedback can come from many sources, such as surveys, client interviews and social media.
+-   Gathering this data from multiple sources and attempting to extract key information is both time consuming and tiring thus it is an expense to the business.
+-   There are already existing platforms that provide businesses with a unified source to gather this data, as well as mine information from it. One example is Microsoft Dynamics 365 that has this capability, however it costs $1,500 per user to obtain and understand this feedback - making it an infeasible expense for small businesses, startups and content creators.
+-   Our platform would provide this audience with a tool that acts as a unified source to obtain this information and make sense of it.
 
 ## Tech Stack
 
-- Front End
+-   Front End
 
-  - React + Typescript
-  - HTML/CSS
+    -   React + Typescript
+    -   HTML/CSS
 
-- Back End
+-   Back End
 
-  - Node.js + TypeScript
-  - Express.js
-  - PostgreSQL
+    -   Node.js + TypeScript
+    -   Express.js
+    -   PostgreSQL
 
 ## Installation
 
@@ -47,34 +47,34 @@ Instructions are available [here](https://docs.npmjs.com/downloading-and-install
 
 2. Creating Local DB:
 
-- If you were on MacOS, you need to download Pgadmin [here](https://www.pgadmin.org/download/pgadmin-4-macos/)
-- Open Pgadmin
-- Click on Local server
-  - If you do not see this option on the dashboard, click 'Add New Server'.
-  - Under the `Connection` tab fill in 'localhost' for the host name field
-  - Ensure port 5432 is the selected port
-  - Input your postgres password. If you get a password authentication error and cannot remember your password then [reset it](https://stackoverflow.com/a/67902158)
-- Right click databases
-- Click create -> database
-- name it `c01`
+-   If you were on MacOS, you need to download Pgadmin [here](https://www.pgadmin.org/download/pgadmin-4-macos/)
+-   Open Pgadmin
+-   Click on Local server
+    -   If you do not see this option on the dashboard, click 'Add New Server'.
+    -   Under the `Connection` tab fill in 'localhost' for the host name field
+    -   Ensure port 5432 is the selected port
+    -   Input your postgres password. If you get a password authentication error and cannot remember your password then [reset it](https://stackoverflow.com/a/67902158)
+-   Right click databases
+-   Click create -> database
+-   name it `c01`
 
 3. Connecting to Production DB:
 
-- Right click on servers
-- Click create...
-- New server
-- Enter a name
-- Go to connection tab
-- Enter credentials given from one of our fellow developers.
+-   Right click on servers
+-   Click create...
+-   New server
+-   Enter a name
+-   Go to connection tab
+-   Enter credentials given from one of our fellow developers.
 
 4. Updating of Local DB with Production DB data:
 
-- Right click on the `c01` DB on the production server
-- Click back up and save it
-- Right click on the development DB
-- Click restore
-- Select the backup you made
-- Click restore
+-   Right click on the `c01` DB on the production server
+-   Click back up and save it
+-   Right click on the development DB
+-   Click restore
+-   Select the backup you made
+-   Click restore
 
 ### Backend Setup
 
@@ -110,6 +110,9 @@ TWITTER_APP_BEARER_TOKEN=<TWITTER-BEARER-TOKEN>
 
 # YouTube API
 YOUTUBE_API_KEY=<YOUTUBE-API-KEY>
+
+# Yelp API
+YELP_API_KEY=<YELP-API-KEY>
 ```
 
 3. To run the dev server:
@@ -144,39 +147,39 @@ npm run start
 
 ## Contribution
 
-- Do you use Git Flow?
+-   Do you use Git Flow?
 
-  - Yes, we use a main branch, a development branch and many feature branches.
+    -   Yes, we use a main branch, a development branch and many feature branches.
 
-- What do you name your branches?
+-   What do you name your branches?
 
-  - main: `main` branch that is deployed
-  - develop: `develop` latest development branch
-  - hotfix: `hot-fix-<issue-name>`
-  - feature: `feature-<feature-name>`
-  - bug (that is not a hot fix): `bug-<bug-info>`
+    -   main: `main` branch that is deployed
+    -   develop: `develop` latest development branch
+    -   hotfix: `hot-fix-<issue-name>`
+    -   feature: `feature-<feature-name>`
+    -   bug (that is not a hot fix): `bug-<bug-info>`
 
-- Do you use github issues or another ticketing website?
+-   Do you use github issues or another ticketing website?
 
-  - We will be using `Jira` as a ticketing platform.
+    -   We will be using `Jira` as a ticketing platform.
 
-- Creating frontend components:
+-   Creating frontend components:
 
-  - Use the template complement folder under the components directory
+    -   Use the template complement folder under the components directory
 
-- Creating backend files:
+-   Creating backend files:
 
-  - There must be a new file under each of the controllers, models and routes folder following the same structure as the template file
+    -   There must be a new file under each of the controllers, models and routes folder following the same structure as the template file
 
-- Do you use pull requests?
+-   Do you use pull requests?
 
-  - Yes each feature, bug and hot fix should have an independent pull request.
+    -   Yes each feature, bug and hot fix should have an independent pull request.
 
-- Process:
-  1. Clone this repository and create a new branch off the dev branch with the appropriate name.
-  2. Implement the feature.
-  3. Test your feature and ensure it does not break any existing functionality.
-  4. Create and submit a pull request with a detailed description to be reviewed by at least two other contributors.
+-   Process:
+    1. Clone this repository and create a new branch off the dev branch with the appropriate name.
+    2. Implement the feature.
+    3. Test your feature and ensure it does not break any existing functionality.
+    4. Create and submit a pull request with a detailed description to be reviewed by at least two other contributors.
 
 ## Deployment
 
@@ -184,40 +187,40 @@ Due to github actions being displayed, we will be running the github actions loc
 
 Currently, the website is deployed at: https://c01.mohamedtayeh.com/
 
-- Installation:
+-   Installation:
 
-  - **Pre-requisite:** must have docker installed and instructions are [here](https://docs.docker.com/engine/install/)
-  - Act command line tool installation instructions [here](https://github.com/nektos/act)
+    -   **Pre-requisite:** must have docker installed and instructions are [here](https://docs.docker.com/engine/install/)
+    -   Act command line tool installation instructions [here](https://github.com/nektos/act)
 
-- Files:
+-   Files:
 
-  - The following files are needed and should be placed at the root directy of the code:
+    -   The following files are needed and should be placed at the root directy of the code:
 
-    1. `ssh-key.txt`
-    2. `my.secrets`
+        1. `ssh-key.txt`
+        2. `my.secrets`
 
-- Run the following commands at the root directory:
+-   Run the following commands at the root directory:
 
-  1. Backend Deployment:
+    1. Backend Deployment:
 
-  ```
-  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
-  ```
+    ```
+    act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
+    ```
 
-  2. Frontend Deployment:
+    2. Frontend Deployment:
 
-  ```
-  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
-  ```
+    ```
+    act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
+    ```
 
-- **Note:** the last command will say failure but it did actually work.
+-   **Note:** the last command will say failure but it did actually work.
 
 ## Authors
 
-- [Mohamed Tayeh](https://github.com/mohamed-tayeh)
-- [Bassel Ashi](https://github.com/BasselAshi)
-- [Connie Lin](https://github.com/connieJ-lin)
-- [Mohammad Qadir](https://github.com/DomiVesalius)
-- [Karandeep Lubana](https://github.com/KarandeepLubana)
-- [Jiaming Yang](https://github.com/Jiaming-Yang-20)
-- [Juan Camilo Corral](https://github.com/Wikisaqui)
+-   [Mohamed Tayeh](https://github.com/mohamed-tayeh)
+-   [Bassel Ashi](https://github.com/BasselAshi)
+-   [Connie Lin](https://github.com/connieJ-lin)
+-   [Mohammad Qadir](https://github.com/DomiVesalius)
+-   [Karandeep Lubana](https://github.com/KarandeepLubana)
+-   [Jiaming Yang](https://github.com/Jiaming-Yang-20)
+-   [Juan Camilo Corral](https://github.com/Wikisaqui)

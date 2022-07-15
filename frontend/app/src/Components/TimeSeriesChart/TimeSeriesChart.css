@@ -27,16 +27,6 @@
   margin-left: -60px;
 }
 
-.tooltiptext::after {
-  content: '';
-
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: black transparent transparent transparent;
-}
 .tooltiptext {
   visibility: visible;
 }

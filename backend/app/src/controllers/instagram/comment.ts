@@ -4,7 +4,7 @@ import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
 import User from '../../models/user/user';
-const { sequelize, Op } = require('sequelize');
+const { Op } = require('sequelize');
 import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
@@ -13,22 +13,41 @@ import { keywordExtraction } from '../../middlewares/keywordExtraction';
  */
 export const getComments: RequestHandler = async (req, res, next) => {
   try {
-    const user = await User.findOne({
-      where: { username: req.session.username },
-      include: InstagramApi,
-    });
+    if (!req.query.startDate || req.query.startDate.length !== 8 
+      || !req.query.endDate || req.query.endDate.length !== 8)
+      return res.status(400).send();
+    
+    const user = await User.findOne({where: { username: req.session.username }, include: InstagramApi});
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
-    if (!user?.instagramApi) return res.send({ count: 0, data: [] });
+    const startDateParam = req.query.startDate!.toString();
+    const startYear = parseInt(startDateParam.toString().substring(0, 4));
+    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
+    const startDay = parseInt(startDateParam.toString().substring(6, 8));
+    const startDate = new Date(startYear, startMonth - 1, startDay);
 
-    const media = await InstagramMedia.findAll({
-      where: { apiId: user!.instagramApi.id },
-    });
-    const mediaIds: number[] = media.map((m) => m.id);
+    const endDateParam = req.query.endDate!.toString();
+    const endYear = parseInt(endDateParam.toString().substring(0, 4));
+    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
+    const endDay = parseInt(endDateParam.toString().substring(6, 8));
+    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+
+    if (!user?.instagramApi)
+      return res.send({ count: 0, data: [] });
+
+    const media = await InstagramMedia.findAll({ where: { apiId: user!.instagramApi.id }});
+    const mediaIds: number[] = media.map(m => m.id);
     const comments = await InstagramComment.findAll({
-      where: { mediaId: mediaIds },
-      order: [['date', 'DESC']],
+      where: {
+        mediaId: mediaIds,
+        date: {
+          [Op.between]: [startDate, endDate],
+        }
+      },
+      order: [
+        ['date', 'DESC']
+      ],
       attributes: [
         'id',
         'userName',
@@ -36,13 +55,10 @@ export const getComments: RequestHandler = async (req, res, next) => {
         'likes',
         'sentimentAnalysis',
         'topicClassification',
-        'subjectivityAnalysis',
-      ],
+        'subjectivityAnalysis'
+      ]
     });
-    const filteredComments = comments.slice(
-      pageNumber * pageSize,
-      pageNumber * pageSize + pageSize
-    );
+    const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
     res.send({ count: comments.length, data: filteredComments });
   } catch (e) {
     console.log(e);

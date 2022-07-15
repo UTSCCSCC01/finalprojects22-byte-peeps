@@ -3,10 +3,19 @@ import bcrypt from 'bcrypt';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
+import GoogleReviewsAccount from '../../models/googleReviews/account';
+import GoogleReviewsLocation from '../../models/googleReviews/location';
+import GoogleReviewsReview from '../../models/googleReviews/review';
 import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
+import InstagramTag from '../../models/instagram/tag';
+import RedditComment from '../../models/reddit/comment';
+import RedditListing from '../../models/reddit/listing';
 import RedditSubreddit from '../../models/reddit/subreddit';
+import TwitterConversation from '../../models/twitter/conversation';
+import TwitterTweet from '../../models/twitter/tweet';
+import TwitterUser from '../../models/twitter/user';
 import User from '../../models/user/user';
 import YouTubeChannel from '../../models/youtube/channel';
 import YouTubeComment from '../../models/youtube/comment';
@@ -20,12 +29,16 @@ type RegisteredUser = {
   facebookApiId: number;
   instagramApiId: number;
   redditSubredditId: number;
+  twitterUserId: number;
+  googleReviewsAccountId: number;
 };
 
 const startDate: string = '2022-06-15T00:00:00.000Z';
 const endDate: string = '2022-07-15T23:59:59.999Z';
 const numberOfPosts = 30;
 const numberOfComments = 50;
+const numberOfLocations = 10;
+const numberOfReviews = 30;
 
 /**
  * Random index between 0 to number
@@ -33,6 +46,12 @@ const numberOfComments = 50;
  */
 function randomIndex(number: number = fakeData.length): number {
   return Math.floor(Math.random() * number);
+}
+
+function randomRating(): number | null {
+  const i = randomIndex(6);
+  if (i == 0) return null;
+  return i;
 }
 
 /**
@@ -82,17 +101,32 @@ function randomTopicClassification(): string {
  * @return {Promise<void>}
  */
 async function deleteAllData(): Promise<void> {
-  await User.destroy({ where: {} });
-  await YouTubeChannel.destroy({ where: {} });
-  await YouTubeVideo.destroy({ where: {} });
   await YouTubeComment.destroy({ where: {} });
-  await FacebookApi.destroy({ where: {} });
-  await FacebookPost.destroy({ where: {} });
-  await FacebookComment.destroy({ where: {} });
-  await InstagramApi.destroy({ where: {} });
-  await InstagramMedia.destroy({ where: {} });
+  await YouTubeVideo.destroy({ where: {} });
+  await YouTubeChannel.destroy({ where: {} });
+
+  await InstagramTag.destroy({ where: {} });
   await InstagramComment.destroy({ where: {} });
+  await InstagramMedia.destroy({ where: {} });
+  await InstagramApi.destroy({ where: {} });
+
+  await FacebookComment.destroy({ where: {} });
+  await FacebookPost.destroy({ where: {} });
+  await FacebookApi.destroy({ where: {} });
+
+  await TwitterConversation.destroy({ where: {} });
+  await TwitterTweet.destroy({ where: {} });
+  await TwitterUser.destroy({ where: {} });
+
+  await RedditComment.destroy({ where: {} });
+  await RedditListing.destroy({ where: {} });
   await RedditSubreddit.destroy({ where: {} });
+
+  await GoogleReviewsReview.destroy({ where: {} });
+  await GoogleReviewsLocation.destroy({ where: {} });
+  await GoogleReviewsAccount.destroy({ where: {} });
+
+  await User.destroy({ where: {} });
 }
 
 /**
@@ -148,6 +182,16 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     return 1;
   });
 
+  // add twitter user
+  let twitterUserId = await TwitterUser.create({
+    twitterId: faker.datatype.uuid(),
+    username: faker.internet.userName(),
+    userId,
+  }).then((user) => {
+    if (user) return user.id;
+    return 1;
+  });
+
   // add reddit subreddit
   let redditSubredditId = await RedditSubreddit.create({
     name: 'utsc',
@@ -157,14 +201,25 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     return 1;
   });
 
-  // add twitter user
+  // Add Google Reviews user
+  const googleReviewsAccountId = await GoogleReviewsAccount.create({
+    token: 'xxxxxx',
+    accountId: 'xxxxxx',
+    isActive: true,
+    userId,
+  }).then((account) => {
+    if (account) return account.id;
+    return 1;
+  });
 
   return {
     userId,
     youtubeChannelId,
     facebookApiId,
     instagramApiId,
+    twitterUserId,
     redditSubredditId,
+    googleReviewsAccountId,
   };
 }
 
@@ -266,7 +321,7 @@ async function addInstagramData(registeredUser: RegisteredUser): Promise<void> {
   Array.from({ length: numberOfPosts }).forEach(async () => {
     let date = faker.date.betweens(startDate, endDate, 1)[0];
 
-    // Create a facebook post
+    // Create a instagram post
     let instagramMediaId = await InstagramMedia.create({
       dataId: faker.datatype.uuid(),
       caption: faker.lorem.paragraph(),
@@ -294,6 +349,67 @@ async function addInstagramData(registeredUser: RegisteredUser): Promise<void> {
       });
     });
   });
+
+  Array.from({ length: numberOfPosts }).forEach(async () => {
+    let date = faker.date.betweens(startDate, endDate, 1)[0];
+    let randomSentimentData = fakeData[randomIndex()];
+
+    // add data for instagram tags
+    InstagramTag.create({
+      dataId: faker.datatype.uuid(),
+      username: faker.internet.userName(),
+      caption: randomSentimentData.review,
+      date: faker.date.between(date, endDate),
+      sentimentAnalysis: randomSentimentData.sentiment,
+      subjectivityAnalysis: randomSubjectivity(),
+      topicClassification: randomTopicClassification(),
+      likes: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+      apiId: registeredUser.instagramApiId,
+    });
+  });
+}
+
+/**
+ * Adds fake twitter data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
+async function addTwitterData(registeredUser: RegisteredUser): Promise<void> {
+  Array.from({ length: numberOfPosts }).forEach(async () => {
+    let date = faker.date.betweens(startDate, endDate, 1)[0];
+
+    // Create a tweet
+    let tweetId = await TwitterTweet.create({
+      twitterId: faker.datatype.uuid(),
+      conversationId: faker.datatype.uuid(),
+      text: faker.lorem.paragraph(),
+      date,
+      retweets: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+      replies: numberOfComments,
+      likes: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+      twitterUserId: registeredUser.twitterUserId,
+    }).then((tweet) => {
+      return tweet.id;
+    });
+
+    // create comments for each post
+    Array.from({ length: numberOfComments }).forEach(async () => {
+      let randomSentimentData = fakeData[randomIndex()];
+
+      TwitterConversation.create({
+        twitterId: faker.datatype.uuid(),
+        text: randomSentimentData.review,
+        date: faker.date.between(date, endDate),
+        likes: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+        retweets: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+        replies: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+        sentimentAnalysis: randomSentimentData.sentiment,
+        subjectivityAnalysis: randomSubjectivity(),
+        topicClassification: randomTopicClassification(),
+        tweetId,
+      });
+    });
+  });
 }
 
 /**
@@ -301,14 +417,80 @@ async function addInstagramData(registeredUser: RegisteredUser): Promise<void> {
  * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
  * @return {Promise<void>}
  */
-async function addRedditData(registeredUser: RegisteredUser): Promise<void> {}
+async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
+  Array.from({ length: numberOfPosts }).forEach(async () => {
+    let date = faker.date.betweens(startDate, endDate, 1)[0];
+
+    // Create a listing
+    let redditListingId = await RedditListing.create({
+      dataId: faker.datatype.uuid(),
+      title: faker.lorem.sentence(),
+      text: faker.lorem.paragraph(),
+      date,
+      score: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+      numComments: numberOfComments,
+      permalink: faker.internet.url(),
+      subredditId: registeredUser.redditSubredditId,
+    }).then((listing) => {
+      return listing.id;
+    });
+
+    // create comments on the listing
+    Array.from({ length: numberOfComments }).forEach(async () => {
+      let randomSentimentData = fakeData[randomIndex()];
+
+      RedditComment.create({
+        dataId: faker.datatype.uuid(),
+        userName: faker.internet.userName(),
+        text: randomSentimentData.review,
+        date: faker.date.between(date, endDate),
+        score: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+        replies: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
+        sentimentAnalysis: randomSentimentData.sentiment,
+        subjectivityAnalysis: randomSubjectivity(),
+        topicClassification: randomTopicClassification(),
+        listingId: redditListingId,
+      });
+    });
+  });
+}
 
 /**
- * Adds fake twitter data to the database
+ * Adds fake Google Reviews data to the database
  * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
  * @return {Promise<void>}
  */
-async function addTwitterData(registeredUser: RegisteredUser): Promise<void> {}
+async function addGoogleReviewsData(
+  registeredUser: RegisteredUser
+): Promise<void> {
+  Array.from({ length: numberOfLocations }).forEach(async () => {
+    // Create a location
+    const googleReviewsLocation = await GoogleReviewsLocation.create({
+      locationId: faker.company.companyName(),
+      accountId: registeredUser.googleReviewsAccountId,
+    });
+
+    // create comments on the listing
+    Array.from({ length: numberOfReviews }).forEach(async () => {
+      const date = faker.date.betweens(startDate, endDate, 1)[0];
+      const randomSentimentData = fakeData[randomIndex()];
+
+      GoogleReviewsReview.create({
+        title: faker.lorem.sentence(),
+        review: randomSentimentData.review,
+        reviewer: faker.internet.userName(),
+        rating: randomRating(),
+        response: faker.lorem.paragraph(),
+        date: faker.date.between(date, endDate),
+        reviewId: faker.datatype.uuid(),
+        sentimentAnalysis: randomSentimentData.sentiment,
+        subjectivityAnalysis: randomSubjectivity(),
+        topicClassification: randomTopicClassification(),
+        locationId: googleReviewsLocation.id,
+      });
+    });
+  });
+}
 
 /**
  * Wrapper to add the data in order
@@ -322,8 +504,9 @@ async function addFakeData(): Promise<void> {
   await addYouTubeData(registeredUser);
   await addFacebookData(registeredUser);
   await addInstagramData(registeredUser);
-  await addRedditData(registeredUser);
   await addTwitterData(registeredUser);
+  await addRedditData(registeredUser);
+  await addGoogleReviewsData(registeredUser);
   console.log('Fake data added.');
 }
 

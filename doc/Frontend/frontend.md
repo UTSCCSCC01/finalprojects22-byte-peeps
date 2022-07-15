@@ -9,12 +9,26 @@
   - `tabPanelContainer` - div container for the tabPanel. This is used for settings page.
   - `tabPage` - styling for pages that tabs to display subpages
 
+## Custom Hooks
+
+- Use Notification
+
+  - Used to provide a simple interface that can be passed to the `Notification` component, then manipulated using setters that change the notification state
+
+- Use Comments Table
+
+  - Used by the Comments Table to maintain states including paging and querying data
+
 ## Generic Components
 
 - Authenticated check:
 
   - `IsSignedIn.tsx` To display a component only when the user is authenticated
   - Example: `Header.tsx`
+
+- Active API check:
+
+  - `InactiveApiChecker.tsx` is used globally to display user alerts indicating that one of the setup APIs has expired and needs to be refreshed
 
 - Cards:
 
@@ -32,9 +46,19 @@
     - `createDate`: returns date obj from that format.
     - `formatDate`: fromats a date obj to that format.
 
+- Metrics Table
+
+  - `MetricsTable.tsx`
+  - Contains default configuration for displaying consistent tables with server side paging
+
+- Comments Table
+
+  - `CommentsTable.tsx`: the actual component, utilizes the metrics table and the `useCommentsTable` custom hook to display comments for social media platforms
+
 - Notification component:
 
-  - Todo
+  - `Notification.tsx`
+  - Contains default configuration for displaying consistent notifications that can be easily used with the `useNotification` hook
 
 - Loading:
 

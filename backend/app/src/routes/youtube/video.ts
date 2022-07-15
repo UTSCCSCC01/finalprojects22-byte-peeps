@@ -1,19 +1,16 @@
 import { Router } from 'express';
 import {
-  createVideo,
-  deleteVideo,
   getAllVideos,
+  getSentimentAnalysisForTimeSeries,
   getVideoById,
 } from '../../controllers/youtube/video';
 
 const videoRouter = Router();
 
-videoRouter.post('/create', createVideo);
-
 videoRouter.get('/', getAllVideos);
 
-videoRouter.get('/:id', getVideoById);
+videoRouter.get('/sentiment_analysis', getSentimentAnalysisForTimeSeries)
 
-videoRouter.delete('/:id', deleteVideo);
+videoRouter.get('/:id', getVideoById);
 
 export default videoRouter;
