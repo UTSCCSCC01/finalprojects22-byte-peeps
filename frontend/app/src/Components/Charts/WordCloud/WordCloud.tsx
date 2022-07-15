@@ -6,8 +6,11 @@ interface Props {}
 
 const WordCloud: React.FC<Props> = () => {
   const { data, isLoading, error } = useWordCloud();
-
-  return <TagCloud minSize={12} maxSize={35} tags={data} />;
+  if (data) {
+    return <TagCloud minSize={12} maxSize={35} tags={data} />;
+  } else {
+    return <TagCloud minSize={12} maxSize={35} tags={[]} />;
+  }
 };
 
 export default WordCloud;

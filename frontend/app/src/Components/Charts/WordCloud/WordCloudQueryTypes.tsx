@@ -9,8 +9,10 @@ export type DictWordCloudQuery = {
   [key in AppNames]: WordCloudQueryType;
 };
 
+export type WordCloudData = { value: string; count: number }[];
+
 export type UseWordCloudrQuery = {
-  data: any[];
+  data: WordCloudData | null | undefined;
   isLoading: boolean;
   error: string | null;
 };

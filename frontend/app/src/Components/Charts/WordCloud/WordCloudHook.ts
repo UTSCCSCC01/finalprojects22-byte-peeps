@@ -15,29 +15,22 @@ import { extractBackendError } from '../../../utils/httpHelpers';
 // import { TagData } from './WordCloudData';
 import { UseWordCloudrQuery, DictWordCloudQuery } from './WordCloudQueryTypes';
 import { WordCloudResponse, WordCloudUrlRequest } from './WordCloudURLConst';
-// import {}
+import { WordCloudData } from './WordCloudQueryTypes';
 
-/**
- * @summary Formats the return of the card header data to match the CardDate[] type otherwise null if there is no correct response
- * @param { { [key: string]: string }} cardNames
- * @param {{ [key: string]: number } | null} cardData - null if response fails
- * @param {{ [key: string]: React.ReactElement }} cardIcons
- * @return {CardData[] | null} - null if response fails
- */
-function formatData(tagCount: [key: string, i: number][]): any[] {
-  if (!tagCount) return [];
+// function formatData(tagCount: [key: string, i: number][]): any[] {
+//   if (!tagCount) return [];
 
-  const fromattedWordData: any[] = [];
+//   const fromattedWordData: any[] = [];
 
-  Object.keys(tagCount).forEach((key: string) => {
-    fromattedWordData.push({
-      value: tagCount[0],
-      count: tagCount[1],
-    });
-  });
+//   Object.keys(tagCount).forEach((key: string) => {
+//     fromattedWordData.push({
+//       value: tagCount[0],
+//       count: tagCount[1],
+//     });
+//   });
 
-  return fromattedWordData;
-}
+//   return fromattedWordData;
+// }
 
 const wordCloudQuery: DictWordCloudQuery = {
   [AppNames.Facebook]: {
@@ -66,10 +59,6 @@ const wordCloudQuery: DictWordCloudQuery = {
   },
 };
 
-/**
- * Custom hook to get the card header data depending on the platform using useQuery()
- * @return {UseCardsHeaderQuery} useQuery() hook types alongside other extensions
- */
 function useWordCloud(): UseWordCloudrQuery {
   const appName = useAppSelector(selectAppName);
   const startDate = useAppSelector(selectStartDate);
@@ -83,7 +72,11 @@ function useWordCloud(): UseWordCloudrQuery {
     ).then((res) => res.data);
   };
 
-  const query = useQuery<WordCloudResponse, AxiosError<ErrorResponse>, any[]>(
+  const query = useQuery<
+    WordCloudResponse,
+    AxiosError<ErrorResponse>,
+    WordCloudData | null
+  >(
     ['wordCloudData', appName, startDate, endDate], // the states that change the query go here
     () => getWordCloudData()
   );
