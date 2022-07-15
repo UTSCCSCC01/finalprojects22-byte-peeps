@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   GoogleReviewViewModel,
-  GOOGLE_REVIEW_RATING_ENUMS,
+  GoogleReviewRatings,
 } from './viewModels/googleReviews/review';
 
 /*
@@ -114,7 +114,7 @@ const mapReviewsResponseToType = (location: any): GoogleReviewViewModel => {
       location.review.reviewer.displayName == ''
         ? null
         : location.review.reviewer.displayName,
-    rating: GOOGLE_REVIEW_RATING_ENUMS[location.review.starRating],
+    rating: GoogleReviewRatings[location.review.starRating],
     date: new Date(location.review.reviewer.updateTime),
     response: location.review.reviewReply?.comment ?? null,
   };

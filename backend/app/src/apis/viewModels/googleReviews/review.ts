@@ -9,10 +9,10 @@ export type GoogleReviewViewModel = {
   response: string | null;
 };
 
-export const GOOGLE_REVIEW_RATING_ENUMS: Record<string, number | null> = {};
-GOOGLE_REVIEW_RATING_ENUMS.STAR_RATING_UNSPECIFIED = null;
-GOOGLE_REVIEW_RATING_ENUMS.ONE = 1;
-GOOGLE_REVIEW_RATING_ENUMS.TWO = 2;
-GOOGLE_REVIEW_RATING_ENUMS.THREE = 3;
-GOOGLE_REVIEW_RATING_ENUMS.FOUR = 4;
-GOOGLE_REVIEW_RATING_ENUMS.FIVE = 5;
+export const GoogleReviewRatings: Record<string, number | null> = {};
+GoogleReviewRatings.STAR_RATING_UNSPECIFIED = null;
+GoogleReviewRatings.ONE = 1;
+GoogleReviewRatings.TWO = 2;
+GoogleReviewRatings.THREE = 3;
+GoogleReviewRatings.FOUR = 4;
+GoogleReviewRatings.FIVE = 5;
