@@ -6,6 +6,10 @@ export const invalidDateRangeResponse = {
   message: 'Invalid date range',
 };
 
+export const invalidInput = {
+  message: 'Invalid Data Input',
+};
+
 export enum SentimentAnalysisColors {
   Positive = '#0088FE',
   Negative = '#71a6de',

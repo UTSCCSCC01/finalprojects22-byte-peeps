@@ -1,5 +1,8 @@
 import { RequestHandler } from 'express';
-import { unknownError } from '../../globalHelpers/globalConstants';
+import {
+  invalidInput,
+  unknownError,
+} from '../../globalHelpers/globalConstants';
 import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
@@ -12,11 +15,18 @@ import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
  */
 export const getComments: RequestHandler = async (req, res, next) => {
   try {
-    if (!req.query.startDate || req.query.startDate.length !== 8 
-      || !req.query.endDate || req.query.endDate.length !== 8)
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
       return res.status(400).send();
-    
-    const user = await User.findOne({where: { username: req.session.username }, include: InstagramApi});
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: InstagramApi,
+    });
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -32,21 +42,20 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.instagramApi)
-      return res.send({ count: 0, data: [] });
+    if (!user?.instagramApi) return res.send({ count: 0, data: [] });
 
-    const media = await InstagramMedia.findAll({ where: { apiId: user!.instagramApi.id }});
-    const mediaIds: number[] = media.map(m => m.id);
+    const media = await InstagramMedia.findAll({
+      where: { apiId: user!.instagramApi.id },
+    });
+    const mediaIds: number[] = media.map((m) => m.id);
     const comments = await InstagramComment.findAll({
       where: {
         mediaId: mediaIds,
         date: {
           [Op.between]: [startDate, endDate],
-        }
+        },
       },
-      order: [
-        ['date', 'DESC']
-      ],
+      order: [['date', 'DESC']],
       attributes: [
         'id',
         'userName',
@@ -54,12 +63,15 @@ export const getComments: RequestHandler = async (req, res, next) => {
         'likes',
         'sentimentAnalysis',
         'topicClassification',
-        'subjectivityAnalysis'
-      ]
+        'subjectivityAnalysis',
+      ],
     });
-    const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
+    const filteredComments = comments.slice(
+      pageNumber * pageSize,
+      pageNumber * pageSize + pageSize
+    );
     res.send({ count: comments.length, data: filteredComments });
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     res.status(500).json({ message: unknownError });
   }
@@ -154,10 +166,10 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           negative: negative,
         });
       } catch (error) {
-        res.status(400).send({ message: 'Invalid Data Input' });
+        res.status(400).send(invalidInput);
       }
     }
   } else {
-    res.status(400).send({ message: 'Invalid Date Input' });
+    res.status(400).send(invalidInput);
   }
 };

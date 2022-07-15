@@ -1,6 +1,9 @@
 import { RequestHandler } from 'express';
 const { Op } = require('sequelize');
-import { unknownError } from '../../globalHelpers/globalConstants';
+import {
+  invalidInput,
+  unknownError,
+} from '../../globalHelpers/globalConstants';
 import User from '../../models/user/user';
 import YouTubeChannel from '../../models/youtube/channel';
 import YoutubeComment from '../../models/youtube/comment';
@@ -10,7 +13,6 @@ import YouTubeVideo from '../../models/youtube/video';
  * Provides the page number and size, provides comments of any IG media related to the user API
  */
 export const getComments: RequestHandler = async (req, res, next) => {
-  console.log('reached youtube comments');
   try {
     if (
       !req.query.startDate ||
@@ -18,7 +20,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
       !req.query.endDate ||
       req.query.endDate.length !== 8
     )
-      return res.status(400).send();
+      return res.status(400).send(invalidInput);
 
     const user = await User.findOne({
       where: { username: req.session.username },
@@ -69,7 +71,6 @@ export const getComments: RequestHandler = async (req, res, next) => {
     );
     res.send({ count: comments.length, data: filteredComments });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: unknownError });
+    next(e);
   }
 };
