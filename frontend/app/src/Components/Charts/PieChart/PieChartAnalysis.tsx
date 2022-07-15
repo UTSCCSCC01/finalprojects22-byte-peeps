@@ -27,7 +27,6 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
     return accum + obj.value;
   }, 0);
 
-  // console.log(result);total
   return (
     <ResponsiveContainer width="95%" height={260}>
       <PieChart>

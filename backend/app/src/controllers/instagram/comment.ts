@@ -8,7 +8,7 @@ import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
 import User from '../../models/user/user';
 const { Op } = require('sequelize');
-import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
+import { SentimentAnalysisStatus, SubjectivityAnalysis } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
 
 /**
@@ -122,7 +122,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const subjective = await InstagramComment.count({
       where: {
         mediaId: mediaIds,
-        subjectivityAnalysis: 'subjective',
+        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -132,7 +132,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const objective = await InstagramComment.count({
       where: {
         mediaId: mediaIds,
-        subjectivityAnalysis: 'objective',
+        subjectivityAnalysis: SubjectivityAnalysis.Objective,
         date: {
           [Op.between]: [startDate, endDate],
         },

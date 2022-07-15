@@ -10,6 +10,7 @@ import RedditListing from '../../models/reddit/listing';
 import RedditSubreddit from '../../models/reddit/subreddit';
 const { Op } = require('sequelize');
 import User from '../../models/user/user';
+import { SentimentAnalysisStatus, SubjectivityAnalysis } from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
@@ -115,7 +116,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const subjective = await RedditComment.count({
       where: {
         listingId: listingIds,
-        subjectivityAnalysis: 'subjective',
+        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -125,7 +126,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const objective = await RedditComment.count({
       where: {
         listingId: listingIds,
-        subjectivityAnalysis: 'objective',
+        subjectivityAnalysis: SubjectivityAnalysis.Objective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -178,7 +179,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const positive = await RedditComment.count({
       where: {
         listingId: listingIds,
-        sentimentAnalysis: 'positive',
+        sentimentAnalysis: SentimentAnalysisStatus.Positive,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -188,7 +189,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const neutral = await RedditComment.count({
       where: {
         listingId: listingIds,
-        sentimentAnalysis: 'neutral',
+        sentimentAnalysis: SentimentAnalysisStatus.Neutral,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -198,7 +199,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const negative = await RedditComment.count({
       where: {
         listingId: listingIds,
-        sentimentAnalysis: 'negative',
+        sentimentAnalysis: SentimentAnalysisStatus.Negative,
         date: {
           [Op.between]: [startDate, endDate],
         },

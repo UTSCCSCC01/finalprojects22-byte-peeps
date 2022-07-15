@@ -11,6 +11,7 @@ import TwitterConversation from '../../models/twitter/conversation';
 import TwitterTweet from '../../models/twitter/tweet';
 import TwitterUser from '../../models/twitter/user';
 import User from '../../models/user/user';
+import { SentimentAnalysisStatus } from '../enums';
 
 /**
  * Provides the page number and size, provides comments of any Twitter tweet related to the user API
@@ -177,7 +178,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const positive = await TwitterConversation.count({
       where: {
         tweetId: tweetIds,
-        sentimentAnalysis: 'positve',
+        sentimentAnalysis: SentimentAnalysisStatus.Positive,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -187,7 +188,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const neutral = await TwitterConversation.count({
       where: {
         tweetId: tweetIds,
-        sentimentAnalysis: 'neutral',
+        sentimentAnalysis: SentimentAnalysisStatus.Neutral,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -197,7 +198,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const negative = await TwitterConversation.count({
       where: {
         tweetId: tweetIds,
-        sentimentAnalysis: 'negative',
+        sentimentAnalysis: SentimentAnalysisStatus.Negative,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -206,8 +207,8 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 
     res.send({
       positive: positive,
-      neutral: neutral,
       negative: negative,
+      neutral: neutral,
     });
   } catch (error) {
     next(error);

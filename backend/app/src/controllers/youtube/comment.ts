@@ -9,6 +9,10 @@ import User from '../../models/user/user';
 import YouTubeChannel from '../../models/youtube/channel';
 import YoutubeComment from '../../models/youtube/comment';
 import YouTubeVideo from '../../models/youtube/video';
+import {
+  SentimentAnalysisStatus,
+  SubjectivityAnalysis,
+} from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
@@ -121,7 +125,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const subjective = await YoutubeComment.count({
       where: {
         videoId: videoIds,
-        subjectivityAnalysis: 'subjective',
+        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -131,7 +135,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const objective = await YoutubeComment.count({
       where: {
         videoId: videoIds,
-        subjectivityAnalysis: 'objective',
+        subjectivityAnalysis: SubjectivityAnalysis.Objective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -181,7 +185,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const positive = await YoutubeComment.count({
       where: {
         videoId: videoIds,
-        sentimentAnalysis: 'positive',
+        sentimentAnalysis: SentimentAnalysisStatus.Positive,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -191,7 +195,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const neutral = await YoutubeComment.count({
       where: {
         videoId: videoIds,
-        sentimentAnalysis: 'neutral',
+        sentimentAnalysis: SentimentAnalysisStatus.Neutral,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -201,7 +205,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     const negative = await YoutubeComment.count({
       where: {
         videoId: videoIds,
-        sentimentAnalysis: 'negative',
+        sentimentAnalysis: SentimentAnalysisStatus.Negative,
         date: {
           [Op.between]: [startDate, endDate],
         },

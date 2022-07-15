@@ -5,6 +5,7 @@ import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
 import User from '../../models/user/user';
+import { SentimentAnalysisStatus, SubjectivityAnalysis } from '../../globalHelpers/globalConstants';
 const { Op } = require('sequelize');
 
 /**
@@ -118,7 +119,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const subjective = await FacebookComment.count({
       where: {
         postId: postIds,
-        subjectivityAnalysis: 'subjective',
+        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -127,7 +128,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     const objective = await FacebookComment.count({
       where: {
         postId: postIds,
-        subjectivityAnalysis: 'objective',
+        subjectivityAnalysis: SubjectivityAnalysis.Objective,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -191,7 +192,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         const positive = await FacebookComment.count({
           where: {
             postId: postIds,
-            sentimentAnalysis: 'positive',
+            sentimentAnalysis: SentimentAnalysisStatus.Positive,
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -200,7 +201,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         const neutral = await FacebookComment.count({
           where: {
             postId: postIds,
-            sentimentAnalysis: 'neutral',
+            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -209,7 +210,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         const negative = await FacebookComment.count({
           where: {
             postId: postIds,
-            sentimentAnalysis: 'negative',
+            sentimentAnalysis: SentimentAnalysisStatus.Negative,
             date: {
               [Op.between]: [startDate, endDate],
             },
