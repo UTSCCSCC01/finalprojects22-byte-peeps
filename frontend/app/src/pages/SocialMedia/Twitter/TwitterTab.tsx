@@ -2,13 +2,11 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
-import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
-import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
-import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
-import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
-import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
+import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
+import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
+import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 
 interface Props {}
 
@@ -26,7 +24,7 @@ const TwitterTab: React.FC<Props> = () => {
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Word Cloud'}>
-          <ToBeImplemented className="exampleChart center" />
+          <CommentsWordCloud />
         </CardCharts>
       </Grid>
 
