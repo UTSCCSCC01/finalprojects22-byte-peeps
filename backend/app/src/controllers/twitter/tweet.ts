@@ -42,7 +42,7 @@ export const getTweets: RequestHandler = async (req, res, next) => {
         [Op.between]: [dates.startDate, dates.endDate],
       },
     },
-    attributes: ['id', ['text', 'label']],
+    attributes: ['id', ['text', 'label'], 'date', ['twitterId', 'pid']],
   });
 
   res.send(tweets);

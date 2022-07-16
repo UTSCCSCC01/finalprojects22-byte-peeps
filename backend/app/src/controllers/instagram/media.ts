@@ -39,7 +39,7 @@ export const getMedia: RequestHandler = async (req, res, next) => {
         [Op.between]: [dates.startDate, dates.endDate],
       },
     },
-    attributes: ['id', ['caption', 'label']],
+    attributes: ['id', ['caption', 'label'], 'date', ['dataId', 'pid']],
   });
 
   res.send(media);

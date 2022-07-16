@@ -41,7 +41,7 @@ export const getVideos: RequestHandler = async (req, res, next) => {
         [Op.between]: [dates.startDate, dates.endDate],
       },
     },
-    attributes: ['id', ['title', 'label']],
+    attributes: ['id', ['title', 'label'], 'date', ['resourceId', 'pid']],
   });
 
   res.send(posts);

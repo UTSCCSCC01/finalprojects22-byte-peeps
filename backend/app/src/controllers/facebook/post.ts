@@ -41,7 +41,7 @@ export const getPosts: RequestHandler = async (req, res, next) => {
         [Op.between]: [dates.startDate, dates.endDate],
       },
     },
-    attributes: ['id', ['message', 'label']],
+    attributes: ['id', ['message', 'label'], 'date', ['dataId', 'pid']],
   });
 
   res.send(posts);

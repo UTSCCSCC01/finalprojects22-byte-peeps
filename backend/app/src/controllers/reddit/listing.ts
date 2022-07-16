@@ -42,7 +42,7 @@ export const getListings: RequestHandler = async (req, res, next) => {
         [Op.between]: [dates.startDate, dates.endDate],
       },
     },
-    attributes: ['id', ['title', 'label']],
+    attributes: ['id', ['title', 'label'], 'date', ['dataId', 'pid']],
   });
 
   res.send(posts);

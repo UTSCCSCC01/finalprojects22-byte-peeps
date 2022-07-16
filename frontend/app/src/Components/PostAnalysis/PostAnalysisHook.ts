@@ -11,7 +11,7 @@ import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
 import { platformPostsUrls } from './PostAnalysisConst';
 
-type PostsResponse = { id: number; label: string }[];
+type PostsResponse = { id: number; label: string; date: string; pid: string }[];
 
 function usePlatformPosts() {
   const appName = useAppSelector(selectAppName);
