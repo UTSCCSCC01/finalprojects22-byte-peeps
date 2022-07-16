@@ -1,10 +1,20 @@
 import { RequestHandler } from 'express';
-import { unknownError } from '../../globalHelpers/globalConstants';
+import {
+  invalidDateRangeResponse,
+  resourceNotFound,
+  unknownError,
+} from '../../globalHelpers/globalConstants';
+import { getDates } from '../../globalHelpers/globalHelpers';
 import RedditComment from '../../models/reddit/comment';
 import RedditListing from '../../models/reddit/listing';
 import RedditSubreddit from '../../models/reddit/subreddit';
 const { Op } = require('sequelize');
 import User from '../../models/user/user';
+import {
+  SentimentAnalysisStatus,
+  SubjectivityAnalysis,
+} from '../../globalHelpers/globalConstants';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
@@ -70,5 +80,196 @@ export const getComments: RequestHandler = async (req, res, next) => {
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: unknownError });
+  }
+};
+
+/**
+ * Provides the % of comments that are labeled as subjective
+ */
+export const getCommentsSubjectivityAnalysis: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const startDateParam = req.query.start?.toString();
+    const endDateParam = req.query.end?.toString();
+
+    const { startDate, endDate } = getDates(startDateParam, endDateParam);
+
+    if (!startDate || !endDate)
+      return res.status(400).send(invalidDateRangeResponse);
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: RedditSubreddit,
+    });
+
+    if (!user?.subreddit)
+      return res.send({
+        positive: 0,
+        neutral: 0,
+        negative: 0,
+      });
+
+    const listings = await RedditListing.findAll({
+      where: { subredditId: user!.subreddit.id },
+    });
+    const listingIds: number[] = listings.map((l) => l.id);
+
+    const subjective = await RedditComment.count({
+      where: {
+        listingId: listingIds,
+        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    const objective = await RedditComment.count({
+      where: {
+        listingId: listingIds,
+        subjectivityAnalysis: SubjectivityAnalysis.Objective,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    res.send({
+      subjective: subjective,
+      objective: objective,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Provides the % of comments that are labeled as positive, negative and neutral
+ */
+export const getCommentsSentimentAnalysis: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const startDateParam = req.query.start?.toString();
+    const endDateParam = req.query.end?.toString();
+
+    const { startDate, endDate } = getDates(startDateParam, endDateParam);
+
+    if (!startDate || !endDate)
+      return res.status(400).send(invalidDateRangeResponse);
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: RedditSubreddit,
+    });
+
+    if (!user?.subreddit)
+      return res.send({
+        positive: 0,
+        neutral: 0,
+        negative: 0,
+      });
+
+    const listings = await RedditListing.findAll({
+      where: { subredditId: user!.subreddit.id },
+    });
+    const listingIds: number[] = listings.map((l) => l.id);
+
+    const positive = await RedditComment.count({
+      where: {
+        listingId: listingIds,
+        sentimentAnalysis: SentimentAnalysisStatus.Positive,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    const neutral = await RedditComment.count({
+      where: {
+        listingId: listingIds,
+        sentimentAnalysis: SentimentAnalysisStatus.Neutral,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    const negative = await RedditComment.count({
+      where: {
+        listingId: listingIds,
+        sentimentAnalysis: SentimentAnalysisStatus.Negative,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    res.send({
+      positive: positive,
+      neutral: neutral,
+      negative: negative,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getWordCloudData: RequestHandler = async (req, res, next) => {
+  try {
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
+      return res.status(400).send({ message: 'Invalid Data Input' });
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: RedditSubreddit,
+    });
+
+    const startDateParam = req.query.startDate!.toString();
+    const startYear = parseInt(startDateParam.toString().substring(0, 4));
+    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
+    const startDay = parseInt(startDateParam.toString().substring(6, 8));
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+
+    const endDateParam = req.query.endDate!.toString();
+    const endYear = parseInt(endDateParam.toString().substring(0, 4));
+    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
+    const endDay = parseInt(endDateParam.toString().substring(6, 8));
+    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+
+    if (!user?.subreddit) return res.send([]);
+
+    const listings = await RedditListing.findAll({
+      where: { subredditId: user!.subreddit.id },
+    });
+    const listingsId: number[] = listings.map((m) => m.id);
+
+    const comments = await RedditComment.findAll({
+      where: {
+        listingId: listingsId,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      attributes: ['text'],
+    });
+
+    function getText(acc: string, comment: { text: string }) {
+      return acc.concat(' ', comment.text);
+    }
+    const getKeywords = comments.reduce(getText, ' ');
+
+    res.send(keywordExtraction(getKeywords));
+  } catch (e) {
+    next(e);
   }
 };

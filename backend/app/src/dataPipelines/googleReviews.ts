@@ -1,6 +1,5 @@
 import { CronJob } from 'cron';
 import { getLocations, getLocationReviews } from '../apis/googleReviews';
-import { GoogleReviewViewModel } from '../apis/viewModels/googleReviews/review';
 import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
 import GoogleReviewsAccount from '../models/googleReviews/account';
