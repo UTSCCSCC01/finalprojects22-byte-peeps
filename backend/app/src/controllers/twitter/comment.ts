@@ -5,6 +5,7 @@ import {
   unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 import InstagramComment from '../../models/instagram/comment';
 const { Op } = require('sequelize');
 import TwitterConversation from '../../models/twitter/conversation';

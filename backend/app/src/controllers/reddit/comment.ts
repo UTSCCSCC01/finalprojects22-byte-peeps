@@ -14,6 +14,7 @@ import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API

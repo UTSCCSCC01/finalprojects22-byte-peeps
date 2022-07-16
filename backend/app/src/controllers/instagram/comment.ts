@@ -14,6 +14,7 @@ import {
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API

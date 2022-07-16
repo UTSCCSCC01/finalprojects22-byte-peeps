@@ -8,12 +8,13 @@ import {
 import { getDates } from '../../globalHelpers/globalHelpers';
 import User from '../../models/user/user';
 import YouTubeChannel from '../../models/youtube/channel';
-import YoutubeComment from '../../models/youtube/comment';
+import YouTubeComment from '../../models/youtube/comment';
 import YouTubeVideo from '../../models/youtube/video';
 import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
@@ -50,7 +51,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
           where: { channelId: user!.youtubeChannel.id },
         });
     const videoIds: number[] = videos.map((v) => v.id);
-    const comments = await YoutubeComment.findAll({
+    const comments = await YouTubeComment.findAll({
       where: {
         videoId: videoIds,
         date: {
@@ -117,7 +118,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         });
     const videoIds: number[] = videos.map((v) => v.id);
 
-    const subjective = await YoutubeComment.count({
+    const subjective = await YouTubeComment.count({
       where: {
         videoId: videoIds,
         subjectivityAnalysis: SubjectivityAnalysis.Subjective,
@@ -127,7 +128,7 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
       },
     });
 
-    const objective = await YoutubeComment.count({
+    const objective = await YouTubeComment.count({
       where: {
         videoId: videoIds,
         subjectivityAnalysis: SubjectivityAnalysis.Objective,
@@ -182,7 +183,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
     const videoIds: number[] = videos.map((v) => v.id);
 
-    const positive = await YoutubeComment.count({
+    const positive = await YouTubeComment.count({
       where: {
         videoId: videoIds,
         sentimentAnalysis: SentimentAnalysisStatus.Positive,
@@ -192,7 +193,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       },
     });
 
-    const neutral = await YoutubeComment.count({
+    const neutral = await YouTubeComment.count({
       where: {
         videoId: videoIds,
         sentimentAnalysis: SentimentAnalysisStatus.Neutral,
@@ -202,7 +203,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       },
     });
 
-    const negative = await YoutubeComment.count({
+    const negative = await YouTubeComment.count({
       where: {
         videoId: videoIds,
         sentimentAnalysis: SentimentAnalysisStatus.Negative,

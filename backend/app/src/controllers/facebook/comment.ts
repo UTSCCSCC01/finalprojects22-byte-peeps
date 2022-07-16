@@ -1,5 +1,8 @@
 import { RequestHandler } from 'express';
-import { invalidDateRangeResponse } from '../../globalHelpers/globalConstants';
+import {
+  invalidDateRangeResponse,
+  invalidInput,
+} from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
@@ -9,6 +12,7 @@ import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 const { Op } = require('sequelize');
 
 /**
