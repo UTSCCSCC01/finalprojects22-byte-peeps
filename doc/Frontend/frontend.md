@@ -55,6 +55,10 @@
 
   - `CommentsTable.tsx`: the actual component, utilizes the metrics table and the `useCommentsTable` custom hook to display comments for social media platforms
 
+-Time Series Table
+
+- `GeneralTimeSeriesChart.tsx`: the actual component, utilizes the time series chart and the `useTimeSeriesTable` custom hook to display sentiment analysis across a period of time for social media platforms
+
 - Notification component:
 
   - `Notification.tsx`
