@@ -1,16 +1,13 @@
-type FacebookWordCloudResponse = {
-    comments: string;
-  };
-  
-  export type WordCloudResponse = FacebookWordCloudResponse;
-  
-  export enum WordCloudUrlRequest {
-    Facebook = '/facebook/comments/word_cloud',
-    Instagram = '/instagram/comments/word_cloud',
-    YouTube = '/youtube/comments/word_cloud',
-    Twitter = '',
-    Reddit = '',
-    GoogleReviews = '',
-    Yelp = '',
+import { WordCloudData } from './WordCloudQueryTypes';
 
-  }
+export type CommentsWordCloudResponse = WordCloudData;
+
+export enum CommentsWordCloudUrlRequest {
+  Facebook = '/facebook/comments/wordCloud',
+  Instagram = '/instagram/comments/wordCloud',
+  YouTube = '/youtube/comments/wordCloud',
+  Twitter = '/twitter/comments/wordCloud',
+  Reddit = '/reddit/comments/wordCloud',
+  GoogleReviews = '',
+  Yelp = '',
+}
