@@ -1,32 +1,32 @@
 type FacebookCardResponse = {
-  totalPosts: number;
+  totalPosts?: number;
   totalReactions: number;
   totalComments: number;
 };
 
 type InstagramCardResponse = {
-  totalPosts: number;
+  totalPosts?: number;
   totalLikes: number;
   totalComments: number;
   totalTags: number;
 };
 
 type TwitterCardResponse = {
-  totalTweets: number;
+  totalTweets?: number;
   totalLikes: number;
   totalReplies: number;
   totalRetweets: number;
 };
 
 type YouTubeCardResponse = {
-  totalVideos: number;
+  totalVideos?: number;
   totalViews: number;
   totalLikes: number;
   totalComments: number;
 };
 
 type RedditCardResponse = {
-  totalListings: number;
+  totalListings?: number;
   avgScore: number;
   totalComments: number;
 };

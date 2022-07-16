@@ -9,6 +9,7 @@ import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralT
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
+import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 
 interface Props {}
 
@@ -52,6 +53,10 @@ const InstagramTab: React.FC<Props> = () => {
         <CardCharts name={'Comments Subjectivity Analysis By Post'}>
           <GeneralTimeSeriesChart />
         </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <PostAnalysis />
       </Grid>
     </Grid>
   );

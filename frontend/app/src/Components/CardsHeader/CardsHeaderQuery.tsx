@@ -105,7 +105,7 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
  * Custom hook to get the card header data depending on the platform using useQuery()
  * @return {UseCardsHeaderQuery} useQuery() hook types alongside other extensions
  */
-function useCardsHeaderQuery(): UseCardsHeaderQuery {
+function useCardsHeaderQuery(postId?: number): UseCardsHeaderQuery {
   const appName = useAppSelector(selectAppName);
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
@@ -113,13 +113,15 @@ function useCardsHeaderQuery(): UseCardsHeaderQuery {
   const { cardQuery, cardLength, cardNames, cardIcons } =
     AppCardHeaderQuery[appName];
 
-  const getHeaderCardsData = async (): Promise<CardHeaderResponse> => {
-    return await HTTP.get(cardQuery, {
-      params: {
-        startDate,
-        endDate,
-      }
-    }).then((res) => res.data);
+  const getHeaderCardsData = async (
+    startDate: string,
+    endDate: string,
+    postId?: number
+  ): Promise<CardHeaderResponse> => {
+    const params = postId
+      ? { startDate, endDate, postId }
+      : { startDate, endDate };
+    return await HTTP.get(cardQuery, { params }).then((res) => res.data);
   };
 
   const query = useQuery<
@@ -127,8 +129,8 @@ function useCardsHeaderQuery(): UseCardsHeaderQuery {
     AxiosError<ErrorResponse>,
     CardData[] | null
   >(
-    ['headerCardsData', appName, startDate, endDate], // the states that change the query go here
-    () => getHeaderCardsData(),
+    ['headerCardsData', appName, startDate, endDate, postId], // the states that change the query go here
+    () => getHeaderCardsData(startDate, endDate, postId),
     {
       select: React.useCallback(
         (data: CardHeaderResponse) => formatData(cardNames, data, cardIcons),

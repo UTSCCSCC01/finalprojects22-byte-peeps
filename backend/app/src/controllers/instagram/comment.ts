@@ -1,4 +1,3 @@
-
 import { RequestHandler } from 'express';
 import {
   invalidInput,
@@ -34,32 +33,29 @@ export const getComments: RequestHandler = async (req, res, next) => {
       where: { username: req.session.username },
       include: InstagramApi,
     });
+    const postId = req.query.postId ?? null;
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
-    const startDateParam = req.query.startDate!.toString();
-    const startYear = parseInt(startDateParam.toString().substring(0, 4));
-    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
-    const startDay = parseInt(startDateParam.toString().substring(6, 8));
-    const startDate = new Date(startYear, startMonth - 1, startDay);
-
-    const endDateParam = req.query.endDate!.toString();
-    const endYear = parseInt(endDateParam.toString().substring(0, 4));
-    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
-    const endDay = parseInt(endDateParam.toString().substring(6, 8));
-    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+    const start: string = req.query.startDate.toString();
+    const end: string = req.query.endDate.toString();
+    const dates = getDates(start, end);
 
     if (!user?.instagramApi) return res.send({ count: 0, data: [] });
 
-    const media = await InstagramMedia.findAll({
-      where: { apiId: user!.instagramApi.id },
-    });
+    const media = postId
+      ? await InstagramMedia.findAll({
+          where: { apiId: user!.instagramApi.id, id: postId },
+        })
+      : await InstagramMedia.findAll({
+          where: { apiId: user!.instagramApi.id },
+        });
     const mediaIds: number[] = media.map((m) => m.id);
     const comments = await InstagramComment.findAll({
       where: {
         mediaId: mediaIds,
         date: {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: [dates.startDate, dates.endDate],
         },
       },
       order: [['date', 'DESC']],
@@ -85,18 +81,6 @@ export const getComments: RequestHandler = async (req, res, next) => {
 };
 
 /**
- * Provides the 50 most recent Instagram comments belonging to the provided Media
- */
-export const getCommentsByMediaId: RequestHandler = async (req, res, next) => {
-  const comments = await InstagramComment.findAll({
-    where: { mediaId: req.params['mediaId'] },
-    order: [['date', 'DESC']],
-    limit: 50,
-  });
-  res.send(comments);
-};
-
-/**
  * Provides the % of comments that are labeled as subjective
  */
 export const getCommentsSubjectivityAnalysis: RequestHandler = async (
@@ -105,8 +89,9 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   next
 ) => {
   try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+    const postId = req.query.postId;
 
     const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -120,9 +105,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
 
     if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
 
-    const media = await InstagramMedia.findAll({
-      where: { apiId: user!.instagramApi.id },
-    });
+    const media = postId
+      ? await InstagramMedia.findAll({
+          where: { apiId: user!.instagramApi.id, id: postId },
+        })
+      : await InstagramMedia.findAll({
+          where: { apiId: user!.instagramApi.id },
+        });
     const mediaIds: number[] = media.map((m) => m.id);
 
     const subjective = await InstagramComment.count({
@@ -162,77 +151,66 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
   res,
   next
 ) => {
-  const startDateParam = req.query.start;
-  const endDateParam = req.query.end;
-  let startDate: Date;
-  let endDate: Date;
+  try {
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+    const postId = req.query.postId;
 
-  if (startDateParam && endDateParam) {
-    if (startDateParam.length === 8 && endDateParam.length === 8) {
-      const user = await User.findOne({
-        where: { username: req.session.username },
-        include: InstagramApi,
-      });
+    const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
-      if (!user?.instagramApi)
-        return res.send({ positive: 0, neutral: 0, negative: 0 });
+    if (!startDate || !endDate)
+      return res.status(400).send(invalidDateRangeResponse);
 
-      // parse
-      const year = parseInt(startDateParam.toString().substring(0, 4));
-      const month = parseInt(startDateParam.toString().substring(4, 6));
-      const day = parseInt(startDateParam.toString().substring(6, 8));
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: InstagramApi,
+    });
 
-      const year_end = parseInt(endDateParam.toString().substring(0, 4));
-      const month_end = parseInt(endDateParam.toString().substring(4, 6));
-      const day_end = parseInt(endDateParam.toString().substring(6, 8));
+    if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
 
-      try {
-        startDate = new Date(year, month - 1, day);
-        endDate = new Date(year_end, month_end - 1, day_end + 1);
-
-        const media = await InstagramMedia.findAll({
+    const media = postId
+      ? await InstagramMedia.findAll({
+          where: { apiId: user!.instagramApi.id, id: postId },
+        })
+      : await InstagramMedia.findAll({
           where: { apiId: user!.instagramApi.id },
         });
-        const mediaIds: number[] = media.map((m) => m.id);
+    const mediaIds: number[] = media.map((m) => m.id);
 
-        const positive = await InstagramComment.count({
-          where: {
-            mediaId: mediaIds,
-            sentimentAnalysis: SentimentAnalysisStatus.Positive,
-            date: {
-              [Op.between]: [startDate, endDate],
-            },
-          },
-        });
-        const neutral = await InstagramComment.count({
-          where: {
-            mediaId: mediaIds,
-            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
-            date: {
-              [Op.between]: [startDate, endDate],
-            },
-          },
-        });
-        const negative = await InstagramComment.count({
-          where: {
-            mediaId: mediaIds,
-            sentimentAnalysis: SentimentAnalysisStatus.Negative,
-            date: {
-              [Op.between]: [startDate, endDate],
-            },
-          },
-        });
-        res.send({
-          positive: positive,
-          neutral: neutral,
-          negative: negative,
-        });
-      } catch (error) {
-        res.status(400).send(invalidInput);
-      }
-    }
-  } else {
-    res.status(400).send(invalidInput);
+    const positive = await InstagramComment.count({
+      where: {
+        mediaId: mediaIds,
+        sentimentAnalysis: SentimentAnalysisStatus.Positive,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+    const neutral = await InstagramComment.count({
+      where: {
+        mediaId: mediaIds,
+        sentimentAnalysis: SentimentAnalysisStatus.Neutral,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+    const negative = await InstagramComment.count({
+      where: {
+        mediaId: mediaIds,
+        sentimentAnalysis: SentimentAnalysisStatus.Negative,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+    res.send({
+      positive: positive,
+      neutral: neutral,
+      negative: negative,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 

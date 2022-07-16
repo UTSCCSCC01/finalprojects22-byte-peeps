@@ -1,8 +1,12 @@
 import { Router } from 'express';
-import { getSentimentAnalysisForTimeSeries } from '../../controllers/reddit/listing';
+import {
+  getListings,
+  getSentimentAnalysisForTimeSeries,
+} from '../../controllers/reddit/listing';
 
 const listingRouter = Router();
 
-listingRouter.get('/sentiment_analysis', getSentimentAnalysisForTimeSeries)
+listingRouter.get('/', getListings);
+listingRouter.get('/sentiment_analysis', getSentimentAnalysisForTimeSeries);
 
 export default listingRouter;

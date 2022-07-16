@@ -6,6 +6,7 @@ import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/Sentim
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
+import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 
 interface Props {}
@@ -51,6 +52,10 @@ const TwitterTab: React.FC<Props> = () => {
           {/* <TimeSeriesChart /> */}
           <GeneralTimeSeriesChart />
         </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <PostAnalysis />
       </Grid>
     </Grid>
   );

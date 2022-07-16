@@ -3,10 +3,14 @@ import PieChart, { PieChartAnalysisProps } from './PieChartAnalysis';
 import { SubjectivityAnalysisColors } from '../../../utils/enums';
 import useSubjectivityPieChart from './SubjectivityPieChartHook';
 
-interface Props {}
+interface Props {
+  postId?: number;
+}
 
-const SubjectivityPieChartWrapper: React.FC<Props> = () => {
-  const { pieChartData, isLoading, error } = useSubjectivityPieChart();
+const SubjectivityPieChartWrapper: React.FC<Props> = (props) => {
+  const { pieChartData, isLoading, error } = useSubjectivityPieChart(
+    props.postId
+  );
 
   const data = [
     { name: 'Subjective', value: 0 },
@@ -31,17 +35,15 @@ const SubjectivityPieChartWrapper: React.FC<Props> = () => {
     SubjectivityAnalysisColors.Objective,
   ];
 
-  const subjectivityAnalysis: PieChartAnalysisProps = {
-    data,
-    isLoading,
-    error,
-    isDataPresent,
-    COLORS,
-  };
-
   return (
     <>
-      <PieChart {...subjectivityAnalysis} />
+      <PieChart
+        data={data}
+        isLoading={isLoading}
+        error={error}
+        isDataPresent={isDataPresent}
+        COLORS={COLORS}
+      />
     </>
   );
 };

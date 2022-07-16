@@ -13,6 +13,7 @@ import User from '../../models/user/user';
 export const getFacebookStats: RequestHandler = async (req, res, next) => {
   const startDateParam = req.query.startDate?.toString();
   const endDateParam = req.query.endDate?.toString();
+  const postId = req.query.postId;
 
   const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -32,21 +33,29 @@ export const getFacebookStats: RequestHandler = async (req, res, next) => {
     });
 
   // Get Total Posts here
-  const totalPosts = await FacebookPost.count({
-    where: {
-      apiId: user!.facebookApi.id,
-      date: {
-        [Op.between]: [startDate, endDate],
+  let postsRes = {};
+  if (!postId) {
+    const totalPosts = await FacebookPost.count({
+      where: {
+        apiId: user!.facebookApi.id,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
       },
-    },
-  });
+    });
+    postsRes = { totalPosts };
+  }
+
+  let postFilter = {};
 
   // Get Total comments
+  if (postId) postFilter = { postId: postId };
   const totalComments = await FacebookComment.count({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
+      ...postFilter,
     },
     include: [
       {
@@ -59,12 +68,14 @@ export const getFacebookStats: RequestHandler = async (req, res, next) => {
   });
 
   // Get Total Reactions
+  if (postId) postFilter = { id: postId };
   let queryResult = await FacebookPost.findAll({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
       apiId: user!.facebookApi.id,
+      ...postFilter,
     },
     attributes: [
       [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
@@ -85,7 +96,7 @@ export const getFacebookStats: RequestHandler = async (req, res, next) => {
   });
 
   return res.send({
-    totalPosts,
+    ...postsRes,
     totalReactions: totalReactions,
     totalComments,
   });

@@ -43,29 +43,34 @@ const SentimentPieChartQuery: DictPieChartQuery = {
   },
 };
 
-const useSentimentPieChart = (): UsePieChartQuery => {
+const useSentimentPieChart = (postId?: number): UsePieChartQuery => {
   const appName = useAppSelector(selectAppName);
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
   const { pieChartQuery } = SentimentPieChartQuery[appName];
 
-  const getCommentsSentimentAnalysis =
-    async (): Promise<SentimentAnalysisResponse> => {
-      return await HTTP.get(
-        `${pieChartQuery}?start=${startDate}&end=${endDate}`
-      ).then((res) => {
-        return res.data;
-      });
-    };
+  const getCommentsSentimentAnalysis = async (
+    startDate: String,
+    endDate: String,
+    postId?: number
+  ): Promise<SentimentAnalysisResponse> => {
+    const params = postId
+      ? { startDate, endDate, postId }
+      : { startDate, endDate };
+    return await HTTP.get(pieChartQuery, { params }).then((res) => {
+      return res.data;
+    });
+  };
 
   const query = useQuery<
     SentimentAnalysisResponse,
     AxiosError<ErrorResponse>,
     SentimentAnalysis | null
-  >(['SentimentAnalysisData', appName, startDate, endDate], () =>
-    getCommentsSentimentAnalysis()
+  >(['SentimentAnalysisData', appName, startDate, endDate, postId], () =>
+    getCommentsSentimentAnalysis(startDate, endDate, postId)
   );
+
   return {
     pieChartdata: query.data,
     isLoading: query.isLoading,

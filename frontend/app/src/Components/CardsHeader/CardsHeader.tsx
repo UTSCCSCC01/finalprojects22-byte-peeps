@@ -2,17 +2,23 @@ import React from 'react';
 import CardGenerator from '../CardsGenerator/CardGenerator';
 import useCardsHeaderQuery from './CardsHeaderQuery';
 
-interface Props {}
+interface Props {
+  postId?: number;
+  variant?: 'outlined' | 'elevation';
+}
 
-const CardsHeader: React.FC<Props> = () => {
-  const { data, dataLength, isLoading, error } = useCardsHeaderQuery();
+const CardsHeader: React.FC<Props> = (props) => {
+  const { data, dataLength, isLoading, error } = useCardsHeaderQuery(
+    props.postId
+  );
 
   return (
     <CardGenerator
       cardData={data}
-      cardDataLength={dataLength}
+      cardDataLength={data?.length ?? dataLength}
       isLoading={isLoading}
       error={error}
+      variant={props.variant}
     />
   );
 };

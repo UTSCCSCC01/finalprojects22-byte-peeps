@@ -3,10 +3,12 @@ import PieChart, { PieChartAnalysisProps } from './PieChartAnalysis';
 import { SentimentAnalysisColors } from '../../../utils/enums';
 import useSentimentPieChart from './SentimentPieChartHook';
 
-interface Props {}
+interface Props {
+  postId?: number;
+}
 
-const PieChartWrapper: React.FC<Props> = () => {
-  const { pieChartdata, isLoading, error } = useSentimentPieChart();
+const PieChartWrapper: React.FC<Props> = (props) => {
+  const { pieChartdata, isLoading, error } = useSentimentPieChart(props.postId);
 
   const data = [
     { name: 'Positve', value: 0 },
@@ -34,16 +36,15 @@ const PieChartWrapper: React.FC<Props> = () => {
     SentimentAnalysisColors.Negative,
   ];
 
-  const sentimentAnalysis: PieChartAnalysisProps = {
-    data,
-    isLoading,
-    error,
-    isDataPresent,
-    COLORS,
-  };
   return (
     <>
-      <PieChart {...sentimentAnalysis} />
+      <PieChart
+        data={data}
+        isLoading={isLoading}
+        error={error}
+        isDataPresent={isDataPresent}
+        COLORS={COLORS}
+      />
     </>
   );
 };

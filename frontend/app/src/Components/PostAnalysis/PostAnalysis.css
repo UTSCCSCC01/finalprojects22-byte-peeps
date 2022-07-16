@@ -1,0 +1,11 @@
+.MuiCardHeader-action {
+  margin-right: 0 !important;
+}
+
+.MuiInputBase-root {
+  padding-right: 30px !important;
+}
+
+.post-info {
+  text-align: center;
+}

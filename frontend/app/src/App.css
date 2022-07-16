@@ -1,3 +1,6 @@
+body {
+  background-color: #eff7fa;
+}
 .center {
   display: flex;
   flex-direction: column;

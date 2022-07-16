@@ -64,7 +64,7 @@ export type UseCommentsTable = {
   error: string | null;
 };
 
-function useCommentsTable(): UseCommentsTable {
+function useCommentsTable(postId?: number): UseCommentsTable {
   const appName = useAppSelector(selectAppName);
 
   const startDate = useAppSelector(selectStartDate);
@@ -77,19 +77,21 @@ function useCommentsTable(): UseCommentsTable {
     startDate: String,
     endDate: String,
     page: number,
-    pageSize: number
+    pageSize: number,
+    postId?: number
   ): Promise<CommentsTableResponse> => {
-    return await HTTP.get(appData.url, {
-      params: { startDate, endDate, page, pageSize },
-    }).then((res) => res.data);
+    const params = postId
+      ? { startDate, endDate, page, pageSize, postId }
+      : { startDate, endDate, page, pageSize };
+    return await HTTP.get(appData.url, { params }).then((res) => res.data);
   };
 
   const query = useQuery<
     CommentsTableResponse,
     AxiosError<ErrorResponse>,
     CommentsTableResponse | null
-  >(['commentsTableData', startDate, endDate, page, pageSize], () =>
-    getCommentsData(startDate, endDate, page, pageSize)
+  >(['commentsTableData', startDate, endDate, page, pageSize, postId], () =>
+    getCommentsData(startDate, endDate, page, pageSize, postId)
   );
 
   return {

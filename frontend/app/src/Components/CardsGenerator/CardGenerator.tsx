@@ -7,6 +7,7 @@ interface Props {
   cardDataLength: number;
   isLoading: boolean;
   error: string | null;
+  variant?: 'outlined' | 'elevation';
 }
 
 const CardGenerator: React.FC<Props> = (props) => {
@@ -27,6 +28,7 @@ const CardGenerator: React.FC<Props> = (props) => {
             error={props.error}
             isLoading={props.isLoading}
             data={props.cardData ? props.cardData[i] : null}
+            variant={props.variant}
           />
         </Grid>
       ))}

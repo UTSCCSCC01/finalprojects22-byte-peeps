@@ -9,6 +9,7 @@ import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralT
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
+import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 
 // todo not sure if this is necessary since mui theme takes care of dark mode
 // const Item = styled(Paper)(({ theme }) => ({
@@ -61,6 +62,10 @@ const FacebookTab: React.FC<Props> = () => {
         <CardCharts name={'Comments Sentiment Analysis By Post'}>
           <GeneralTimeSeriesChart />
         </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <PostAnalysis />
       </Grid>
     </Grid>
   );
