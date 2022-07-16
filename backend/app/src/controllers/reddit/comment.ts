@@ -10,7 +10,10 @@ import RedditListing from '../../models/reddit/listing';
 import RedditSubreddit from '../../models/reddit/subreddit';
 const { Op } = require('sequelize');
 import User from '../../models/user/user';
-import { SentimentAnalysisStatus, SubjectivityAnalysis } from '../../globalHelpers/globalConstants';
+import {
+  SentimentAnalysisStatus,
+  SubjectivityAnalysis,
+} from '../../globalHelpers/globalConstants';
 
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
@@ -29,32 +32,29 @@ export const getComments: RequestHandler = async (req, res, next) => {
       where: { username: req.session.username },
       include: RedditSubreddit,
     });
+    const postId = req.query.postId ?? null;
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
-    const startDateParam = req.query.startDate!.toString();
-    const startYear = parseInt(startDateParam.toString().substring(0, 4));
-    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
-    const startDay = parseInt(startDateParam.toString().substring(6, 8));
-    const startDate = new Date(startYear, startMonth - 1, startDay);
-
-    const endDateParam = req.query.endDate!.toString();
-    const endYear = parseInt(endDateParam.toString().substring(0, 4));
-    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
-    const endDay = parseInt(endDateParam.toString().substring(6, 8));
-    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+    const start: string = req.query.startDate.toString();
+    const end: string = req.query.endDate.toString();
+    const dates = getDates(start, end);
 
     if (!user?.subreddit) return res.send({ count: 0, data: [] });
 
-    const listings = await RedditListing.findAll({
-      where: { subredditId: user!.subreddit.id },
-    });
+    const listings = postId
+      ? await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id, id: postId },
+        })
+      : await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id },
+        });
     const listingIds: number[] = listings.map((l) => l.id);
     const comments = await RedditComment.findAll({
       where: {
         listingId: listingIds,
         date: {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: [dates.startDate, dates.endDate],
         },
       },
       order: [['date', 'DESC']],

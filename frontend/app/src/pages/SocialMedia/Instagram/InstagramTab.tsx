@@ -12,6 +12,15 @@ import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
+import { useAppDispatch, useAppSelector } from '../../../Redux/hooks';
+import {
+  getCommentsSentimentAnalysis,
+  selectError,
+  selectIsSentimentAnalysisLoading,
+  selectSentimentAnalysis,
+} from '../../../Redux/Slices/facebook/facebookSlice';
+import { SentimentAnalysisColors } from '../../../utils/enums';
+import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 
 interface Props {}
 
@@ -52,9 +61,13 @@ const InstagramTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comments Subjectivity Analysis By Post'}>
+        <CardCharts name={'Comment Sentiment Analysis Timeline'}>
           <GeneralTimeSeriesChart />
         </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <PostAnalysis />
       </Grid>
     </Grid>
   );

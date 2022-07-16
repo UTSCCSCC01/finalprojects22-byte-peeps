@@ -3,6 +3,7 @@ import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
+import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
 import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
@@ -49,10 +50,14 @@ const TwitterTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comments Sentiment Analysis By Post'}>
+        <CardCharts name={'Comment Sentiment Analysis Timeline'}>
           {/* <TimeSeriesChart /> */}
           <GeneralTimeSeriesChart />
         </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <PostAnalysis />
       </Grid>
     </Grid>
   );

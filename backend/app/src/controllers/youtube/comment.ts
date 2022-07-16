@@ -32,32 +32,29 @@ export const getComments: RequestHandler = async (req, res, next) => {
       where: { username: req.session.username },
       include: YouTubeChannel,
     });
+    const postId = req.query.postId ?? null;
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
-    const startDateParam = req.query.startDate!.toString();
-    const startYear = parseInt(startDateParam.toString().substring(0, 4));
-    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
-    const startDay = parseInt(startDateParam.toString().substring(6, 8));
-    const startDate = new Date(startYear, startMonth - 1, startDay);
-
-    const endDateParam = req.query.endDate!.toString();
-    const endYear = parseInt(endDateParam.toString().substring(0, 4));
-    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
-    const endDay = parseInt(endDateParam.toString().substring(6, 8));
-    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+    const start: string = req.query.startDate.toString();
+    const end: string = req.query.endDate.toString();
+    const dates = getDates(start, end);
 
     if (!user?.youtubeChannel) return res.send({ count: 0, data: [] });
 
-    const videos = await YouTubeVideo.findAll({
-      where: { channelId: user!.youtubeChannel.id },
-    });
+    const videos = postId
+      ? await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id, id: postId },
+        })
+      : await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id },
+        });
     const videoIds: number[] = videos.map((v) => v.id);
     const comments = await YoutubeComment.findAll({
       where: {
         videoId: videoIds,
         date: {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: [dates.startDate, dates.endDate],
         },
       },
       order: [['date', 'DESC']],

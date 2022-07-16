@@ -1,11 +1,11 @@
 import useCommentsTable from './CommentsTableHook';
 import MetricsTable from '../MetricsTable/MetricsTable';
 
-export default function CommentsTable() {
-  const query = useCommentsTable();
+export default function CommentsTable(props: { postId?: number }) {
+  const query = useCommentsTable(props.postId);
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 350.5, width: '100%' }}>
       <MetricsTable
         colDef={query.colDef}
         loading={query.isLoading}

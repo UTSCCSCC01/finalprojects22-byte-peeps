@@ -30,32 +30,29 @@ export const getComments: RequestHandler = async (req, res, next) => {
       where: { username: req.session.username },
       include: TwitterUser,
     });
+    const postId = req.query.postId ?? null;
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
-    const startDateParam = req.query.startDate!.toString();
-    const startYear = parseInt(startDateParam.toString().substring(0, 4));
-    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
-    const startDay = parseInt(startDateParam.toString().substring(6, 8));
-    const startDate = new Date(startYear, startMonth - 1, startDay);
-
-    const endDateParam = req.query.endDate!.toString();
-    const endYear = parseInt(endDateParam.toString().substring(0, 4));
-    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
-    const endDay = parseInt(endDateParam.toString().substring(6, 8));
-    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+    const start: string = req.query.startDate.toString();
+    const end: string = req.query.endDate.toString();
+    const dates = getDates(start, end);
 
     if (!user?.twitterUser) return res.send({ count: 0, data: [] });
 
-    const tweets = await TwitterTweet.findAll({
-      where: { twitterUserId: user!.twitterUser.id },
-    });
+    const tweets = postId
+      ? await TwitterTweet.findAll({
+          where: { twitterUserId: user!.twitterUser.id, id: postId },
+        })
+      : await TwitterTweet.findAll({
+          where: { twitterUserId: user!.twitterUser.id },
+        });
     const tweetIds: number[] = tweets.map((p) => p.id);
     const comments = await TwitterConversation.findAll({
       where: {
         tweetId: tweetIds,
         date: {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: [dates.startDate, dates.endDate],
         },
       },
       order: [['date', 'DESC']],
