@@ -43,28 +43,35 @@ const SubjectivityPieChartQuery: DictPieChartQuery = {
   },
 };
 
-const useSubjectivityPieChart = (): UseSubjectivityPieChartQuery => {
+const useSubjectivityPieChart = (
+  postId?: number
+): UseSubjectivityPieChartQuery => {
   const appName = useAppSelector(selectAppName);
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
   const { pieChartQuery } = SubjectivityPieChartQuery[appName];
-  const getCommentsSubjectivityAnalysis =
-    async (): Promise<SubjectivityAnalysisResponse> => {
-      return await HTTP.get(
-        `${pieChartQuery}?start=${startDate}&end=${endDate}`
-      ).then((res) => {
-        return res.data;
-      });
-    };
+  const getCommentsSubjectivityAnalysis = async (
+    startDate: String,
+    endDate: String,
+    postId?: number
+  ): Promise<SubjectivityAnalysisResponse> => {
+    const params = postId
+      ? { startDate, endDate, postId }
+      : { startDate, endDate };
+    return await HTTP.get(pieChartQuery, { params }).then((res) => {
+      return res.data;
+    });
+  };
 
   const query = useQuery<
     SubjectivityAnalysisResponse,
     AxiosError<ErrorResponse>,
     SubjectivityAnalysis | null
-  >(['SubjectivityAnalysisData', appName, startDate, endDate], () =>
-    getCommentsSubjectivityAnalysis()
+  >(['SubjectivityAnalysisData', appName, startDate, endDate, postId], () =>
+    getCommentsSubjectivityAnalysis(startDate, endDate, postId)
   );
+
   return {
     pieChartData: query.data,
     isLoading: query.isLoading,

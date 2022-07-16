@@ -87,8 +87,9 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   next
 ) => {
   try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+    const postId = req.query.postId;
 
     const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -107,9 +108,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const tweets = await TwitterTweet.findAll({
-      where: { twitterUserId: user!.twitterUser.id },
-    });
+    const tweets = postId
+      ? await TwitterTweet.findAll({
+          where: { twitterUserId: user!.twitterUser.id, id: postId },
+        })
+      : await TwitterTweet.findAll({
+          where: { twitterUserId: user!.twitterUser.id },
+        });
     const tweetIds: number[] = tweets.map((p) => p.id);
 
     const subjective = await TwitterConversation.count({
@@ -147,8 +152,9 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
   next
 ) => {
   try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+    const postId = req.query.postId;
 
     const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -167,9 +173,13 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const tweets = await TwitterTweet.findAll({
-      where: { twitterUserId: user!.twitterUser.id },
-    });
+    const tweets = postId
+      ? await TwitterTweet.findAll({
+          where: { twitterUserId: user!.twitterUser.id, id: postId },
+        })
+      : await TwitterTweet.findAll({
+          where: { twitterUserId: user!.twitterUser.id },
+        });
     const tweetIds: number[] = tweets.map((p) => p.id);
 
     const positive = await TwitterConversation.count({

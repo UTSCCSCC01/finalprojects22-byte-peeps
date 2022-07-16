@@ -6,11 +6,12 @@ interface Props {
   name: string;
   children: React.ReactNode;
   action?: React.ReactNode;
+  variant?: 'elevation' | 'outlined';
 }
 
 const CardCharts: React.FC<Props> = (props) => {
   return (
-    <Card>
+    <Card variant={props.variant ?? 'elevation'}>
       <CardHeader
         title={<div className="cardTitle">{props.name}</div>}
         action={props.action}

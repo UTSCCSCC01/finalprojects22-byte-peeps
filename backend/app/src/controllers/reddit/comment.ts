@@ -88,8 +88,9 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   next
 ) => {
   try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+    const postId = req.query.postId;
 
     const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -108,9 +109,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const listings = await RedditListing.findAll({
-      where: { subredditId: user!.subreddit.id },
-    });
+    const listings = postId
+      ? await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id, id: postId },
+        })
+      : await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id },
+        });
     const listingIds: number[] = listings.map((l) => l.id);
 
     const subjective = await RedditComment.count({
@@ -151,8 +156,9 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
   next
 ) => {
   try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+    const postId = req.query.postId;
 
     const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -171,9 +177,13 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const listings = await RedditListing.findAll({
-      where: { subredditId: user!.subreddit.id },
-    });
+    const listings = postId
+      ? await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id, id: postId },
+        })
+      : await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id },
+        });
     const listingIds: number[] = listings.map((l) => l.id);
 
     const positive = await RedditComment.count({
