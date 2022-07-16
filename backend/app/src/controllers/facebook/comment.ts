@@ -211,3 +211,56 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
     next(error);
   }
 };
+
+export const getWordCloudData: RequestHandler = async (req, res, next) => {
+  try {
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
+      return res.status(400).send(invalidInput);
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: FacebookApi,
+    });
+
+    const startDateParam = req.query.startDate!.toString();
+    const startYear = parseInt(startDateParam.toString().substring(0, 4));
+    const startMonth = parseInt(startDateParam.toString().substring(4, 6));
+    const startDay = parseInt(startDateParam.toString().substring(6, 8));
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+
+    const endDateParam = req.query.endDate!.toString();
+    const endYear = parseInt(endDateParam.toString().substring(0, 4));
+    const endMonth = parseInt(endDateParam.toString().substring(4, 6));
+    const endDay = parseInt(endDateParam.toString().substring(6, 8));
+    const endDate = new Date(endYear, endMonth - 1, endDay + 1);
+
+    if (!user?.facebookApi) return res.send([]);
+
+    const posts = await FacebookPost.findAll({
+      where: { apiId: user!.facebookApi.id },
+    });
+    const postIds: number[] = posts.map((p) => p.id);
+    const comments = await FacebookComment.findAll({
+      where: {
+        postId: postIds,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      attributes: ['message'],
+    });
+
+    function getText(acc: string, comment: { message: string }) {
+      return acc.concat(' ', comment.message);
+    }
+
+    const getKeywords = comments.reduce(getText, ' ');
+    return res.send(keywordExtraction(getKeywords));
+  } catch (e) {
+    next(e);
+  }
+};

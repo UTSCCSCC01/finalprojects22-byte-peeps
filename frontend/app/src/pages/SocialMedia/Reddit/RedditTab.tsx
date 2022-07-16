@@ -2,14 +2,12 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
+import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
+import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
+import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
-import InstagramCommentsTimeSeries from '../../../Components/TimeSeriesChart/IntagramCommentsTimeSeries';
-import TimeSeriesChart from '../../../Components/TimeSeriesChart/TimeSeriesChartExample';
-import ToBeImplemented from '../../../Components/ToBeImplemented/ToBeImplemented';
-import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
-import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 
 interface Props {}
 
@@ -27,7 +25,7 @@ const RedditTab: React.FC<Props> = () => {
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Word Cloud'}>
-          <ToBeImplemented className="exampleChart center" />
+          <CommentsWordCloud />
         </CardCharts>
       </Grid>
 
@@ -50,7 +48,7 @@ const RedditTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comment Sentiment Analysis Timeline'}>
+        <CardCharts name={'Comments Sentiment Analysis By Post'}>
           {/* <TimeSeriesChart /> */}
           <GeneralTimeSeriesChart />
         </CardCharts>

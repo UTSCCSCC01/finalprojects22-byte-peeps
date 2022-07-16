@@ -107,7 +107,7 @@ export function YelpSetup() {
               onChange={(e) =>
                 dispatch(
                   setNewBusiness(
-                    searchResults.find((p) => p.id == e.target.value)
+                    searchResults.find((p) => p.id === e.target.value)
                   )
                 )
               }

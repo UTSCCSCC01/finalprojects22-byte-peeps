@@ -24,15 +24,17 @@ function removeAllPunctuation(text: string): string {
 /**
  * Extracts keywords from a string of text
  * @param {string} text
- * @return {[string, number][]} keyword and its score list
+ * @return {{value: string, count: number}[]} keyword and its score list
  */
-export function keywordExtraction(text: string): [string, number][] {
+export function keywordExtraction(
+  text: string
+): { value: string; count: number }[] {
   const keywords = rake.generate(removeAllPunctuation(text), opts);
 
-  let result: [string, number][] = [];
+  let result: { value: string; count: number }[] = [];
 
-  keywords.forEach((keyword: string, index: number) => {
-    result.push([keyword, keywords.length - index]);
+  keywords.slice(0, 25).forEach((keyword: string, index: number) => {
+    result.push({ value: keyword, count: 25 - index });
   });
 
   return result;
