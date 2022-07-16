@@ -10,7 +10,7 @@ export type DefaultColumnStyleType = {
 
 export type CommentsTableColDef = GridColDef[];
 
-type CommentsTableQueryType = { 
+type CommentsTableQueryType = {
   url: string;
   colDef: CommentsTableColDef;
 };

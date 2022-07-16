@@ -1,38 +1,22 @@
 import { RequestHandler } from 'express';
-import {
-  invalidDateRangeResponse,
-  invalidInput,
-  unknownError,
-} from '../../globalHelpers/globalConstants';
-import { getDates } from '../../globalHelpers/globalHelpers';
+import { unknownError } from '../../globalHelpers/globalConstants';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
 import FacebookPost from '../../models/facebook/post';
 import User from '../../models/user/user';
-import {
-  SentimentAnalysisStatus,
-  SubjectivityAnalysis,
-} from '../../globalHelpers/globalConstants';
 const { Op } = require('sequelize');
 
 /**
  * Provides the page number and size, provides comments of any Facebook posts related to the user API
  */
-export const getComments: RequestHandler = async (req, res, next) => {
+ export const getComments: RequestHandler = async (req, res, next) => {
   try {
-    if (
-      !req.query.startDate ||
-      req.query.startDate.length !== 8 ||
-      !req.query.endDate ||
-      req.query.endDate.length !== 8
-    )
+    if (!req.query.startDate || req.query.startDate.length !== 8 
+      || !req.query.endDate || req.query.endDate.length !== 8)
       return res.status(400).send();
-
-    const user = await User.findOne({
-      where: { username: req.session.username },
-      include: FacebookApi,
-    });
+    
+    const user = await User.findOne({where: { username: req.session.username }, include: FacebookApi});
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -48,20 +32,21 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.facebookApi) return res.send({ count: 0, data: [] });
+    if (!user?.facebookApi)
+      return res.send({ count: 0, data: [] });
 
-    const posts = await FacebookPost.findAll({
-      where: { apiId: user!.facebookApi.id },
-    });
-    const postIds: number[] = posts.map((p) => p.id);
+    const posts = await FacebookPost.findAll({ where: { apiId: user!.facebookApi.id }});
+    const postIds: number[] = posts.map(p => p.id);
     const comments = await FacebookComment.findAll({
       where: {
         postId: postIds,
         date: {
           [Op.between]: [startDate, endDate],
-        },
+        }
       },
-      order: [['date', 'DESC']],
+      order: [
+        ['date', 'DESC']
+      ],
       attributes: [
         'id',
         'userName',
@@ -69,15 +54,12 @@ export const getComments: RequestHandler = async (req, res, next) => {
         'likes',
         'sentimentAnalysis',
         'topicClassification',
-        'subjectivityAnalysis',
-      ],
+        'subjectivityAnalysis'
+      ]
     });
-    const filteredComments = comments.slice(
-      pageNumber * pageSize,
-      pageNumber * pageSize + pageSize
-    );
+    const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
     res.send({ count: comments.length, data: filteredComments });
-  } catch (e) {
+  } catch(e) {
     console.log(e);
     res.status(500).json({ message: unknownError });
   }
@@ -103,53 +85,16 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   res,
   next
 ) => {
-  try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
-
-    const { startDate, endDate } = getDates(startDateParam, endDateParam);
-
-    if (!startDate || !endDate)
-      return res.status(400).send(invalidDateRangeResponse);
-
-    const user = await User.findOne({
-      where: { username: req.session.username },
-      include: FacebookApi,
-    });
-
-    if (!user?.facebookApi) return res.send({ subjective: 0, objective: 0 });
-
-    const posts = await FacebookPost.findAll({
-      where: { apiId: user!.facebookApi.id },
-    });
-    const postIds: number[] = posts.map((p) => p.id);
-
-    const subjective = await FacebookComment.count({
-      where: {
-        postId: postIds,
-        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
-        date: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-    });
-    const objective = await FacebookComment.count({
-      where: {
-        postId: postIds,
-        subjectivityAnalysis: SubjectivityAnalysis.Objective,
-        date: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-    });
-
-    res.send({
-      subjective: subjective,
-      objective: objective,
-    });
-  } catch (error) {
-    next(error);
-  }
+  const subjective = await FacebookComment.count({
+    where: { subjectivityAnalysis: 'subjective' },
+  });
+  const objective = await FacebookComment.count({
+    where: { subjectivityAnalysis: 'objective' },
+  });
+  res.send({
+    subjective: subjective,
+    objective: objective,
+  });
 };
 
 /**
@@ -168,17 +113,6 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 
   if (startDateParam && endDateParam) {
     if (startDateParam.length === 8 && endDateParam.length === 8) {
-      const user = await User.findOne({
-        where: { username: req.session.username },
-        include: FacebookApi,
-      });
-      if (!user?.facebookApi)
-        return res.send({
-          positive: 0,
-          neutral: 0,
-          negative: 0,
-        });
-
       // parse
       const year = parseInt(startDateParam.toString().substring(0, 4));
       const month = parseInt(startDateParam.toString().substring(4, 6));
@@ -192,15 +126,9 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         startDate = new Date(year, month - 1, day);
         endDate = new Date(year_end, month_end - 1, day_end + 1);
 
-        const posts = await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id },
-        });
-        const postIds: number[] = posts.map((p) => p.id);
-
         const positive = await FacebookComment.count({
           where: {
-            postId: postIds,
-            sentimentAnalysis: SentimentAnalysisStatus.Positive,
+            sentimentAnalysis: 'positive',
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -208,8 +136,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const neutral = await FacebookComment.count({
           where: {
-            postId: postIds,
-            sentimentAnalysis: SentimentAnalysisStatus.Neutral,
+            sentimentAnalysis: 'neutral',
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -217,8 +144,7 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const negative = await FacebookComment.count({
           where: {
-            postId: postIds,
-            sentimentAnalysis: SentimentAnalysisStatus.Negative,
+            sentimentAnalysis: 'negative',
             date: {
               [Op.between]: [startDate, endDate],
             },
@@ -230,11 +156,11 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           negative: negative,
         });
       } catch (error) {
-        res.status(400).send({ message: 'Date Input not Provided' });
+        res.status(404).send('Date Input not Provided');
       }
     }
   } else {
-    res.status(400).send({ message: 'Invalid Date Input' });
+    res.status(404).send('Invalid Date Input');
   }
 };
 
@@ -246,7 +172,7 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       !req.query.endDate ||
       req.query.endDate.length !== 8
     )
-      return res.status(400).send(invalidInput);
+      return res.status(400).send({ message: 'Invalid Data Input' });
     const user = await User.findOne({
       where: { username: req.session.username },
       include: FacebookApi,
@@ -264,7 +190,7 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.facebookApi) return res.send([]);
+    if (!user?.facebookApi) return res.send({ data: [] });
 
     const posts = await FacebookPost.findAll({
       where: { apiId: user!.facebookApi.id },
@@ -283,10 +209,11 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     function getText(acc: string, comment: { message: string }) {
       return acc.concat(' ', comment.message);
     }
-
     const getKeywords = comments.reduce(getText, ' ');
-    return res.send(keywordExtraction(getKeywords));
+    res.send({ data: keywordExtraction(getKeywords) });
   } catch (e) {
+    console.log(e);
     next(e);
+    res.status(500).json({ message: unknownError });
   }
 };

@@ -34,7 +34,7 @@ function getSession(): null | string {
  */
 export function useGetSession(): [boolean] {
   const dispatch = useAppDispatch();
-  const [isSignedIn] = useState<boolean>(checkForSession);
+  const [isSignedIn] = useState<boolean>(checkForSession());
 
   function checkForSession(): boolean {
     const username = getSession();

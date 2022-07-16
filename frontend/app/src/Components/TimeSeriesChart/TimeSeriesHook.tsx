@@ -50,6 +50,7 @@ export function useTimeSeriesTable(): UseTimeSeriesTable {
   const endDate = useAppSelector(selectEndDate);
 
   const appData = timeSeriesTable[appName];
+  console.log(appData.url);
 
   const getAnalysis = async (): Promise<TimeSeriesResponse> => {
     return await HTTP.get(appData.url, {

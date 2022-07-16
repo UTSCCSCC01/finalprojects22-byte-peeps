@@ -12,9 +12,7 @@ const CardCharts: React.FC<Props> = (props) => {
     <Card>
       <CardContent className="cardChartContent">
         <div className="cardTitle">{props.name}</div>
-        <div className="center" style={{ minHeight: '325px' }}>
-          {props.children}
-        </div>
+        <div className="center">{props.children}</div>
       </CardContent>
     </Card>
   );

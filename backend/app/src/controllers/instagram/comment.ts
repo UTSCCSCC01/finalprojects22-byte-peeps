@@ -1,19 +1,11 @@
 import { RequestHandler } from 'express';
-import {
-  invalidInput,
-  invalidDateRangeResponse,
-  unknownError,
-} from '../../globalHelpers/globalConstants';
+import { unknownError } from '../../globalHelpers/globalConstants';
 import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
 import InstagramMedia from '../../models/instagram/media';
 import User from '../../models/user/user';
 const { Op } = require('sequelize');
-import {
-  SentimentAnalysisStatus,
-  SubjectivityAnalysis,
-} from '../../globalHelpers/globalConstants';
-import { getDates } from '../../globalHelpers/globalHelpers';
+import { SentimentAnalysisStatus } from '../../globalHelpers/globalConstants';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 /**
@@ -21,18 +13,11 @@ import { keywordExtraction } from '../../middlewares/keywordExtraction';
  */
 export const getComments: RequestHandler = async (req, res, next) => {
   try {
-    if (
-      !req.query.startDate ||
-      req.query.startDate.length !== 8 ||
-      !req.query.endDate ||
-      req.query.endDate.length !== 8
-    )
-      return res.status(400).send(invalidInput);
-
-    const user = await User.findOne({
-      where: { username: req.session.username },
-      include: InstagramApi,
-    });
+    if (!req.query.startDate || req.query.startDate.length !== 8 
+      || !req.query.endDate || req.query.endDate.length !== 8)
+      return res.status(400).send();
+    
+    const user = await User.findOne({where: { username: req.session.username }, include: InstagramApi});
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -48,20 +33,21 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.instagramApi) return res.send({ count: 0, data: [] });
+    if (!user?.instagramApi)
+      return res.send({ count: 0, data: [] });
 
-    const media = await InstagramMedia.findAll({
-      where: { apiId: user!.instagramApi.id },
-    });
-    const mediaIds: number[] = media.map((m) => m.id);
+    const media = await InstagramMedia.findAll({ where: { apiId: user!.instagramApi.id }});
+    const mediaIds: number[] = media.map(m => m.id);
     const comments = await InstagramComment.findAll({
       where: {
         mediaId: mediaIds,
         date: {
           [Op.between]: [startDate, endDate],
-        },
+        }
       },
-      order: [['date', 'DESC']],
+      order: [
+        ['date', 'DESC']
+      ],
       attributes: [
         'id',
         'userName',
@@ -69,13 +55,10 @@ export const getComments: RequestHandler = async (req, res, next) => {
         'likes',
         'sentimentAnalysis',
         'topicClassification',
-        'subjectivityAnalysis',
-      ],
+        'subjectivityAnalysis'
+      ]
     });
-    const filteredComments = comments.slice(
-      pageNumber * pageSize,
-      pageNumber * pageSize + pageSize
-    );
+    const filteredComments = comments.slice(pageNumber * pageSize, pageNumber * pageSize + pageSize);
     res.send({ count: comments.length, data: filteredComments });
   } catch (e) {
     console.log(e);
@@ -103,54 +86,16 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   res,
   next
 ) => {
-  try {
-    const startDateParam = req.query.start?.toString();
-    const endDateParam = req.query.end?.toString();
-
-    const { startDate, endDate } = getDates(startDateParam, endDateParam);
-
-    if (!startDate || !endDate)
-      return res.status(400).send(invalidDateRangeResponse);
-
-    const user = await User.findOne({
-      where: { username: req.session.username },
-      include: InstagramApi,
-    });
-
-    if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
-
-    const media = await InstagramMedia.findAll({
-      where: { apiId: user!.instagramApi.id },
-    });
-    const mediaIds: number[] = media.map((m) => m.id);
-
-    const subjective = await InstagramComment.count({
-      where: {
-        mediaId: mediaIds,
-        subjectivityAnalysis: SubjectivityAnalysis.Subjective,
-        date: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-    });
-
-    const objective = await InstagramComment.count({
-      where: {
-        mediaId: mediaIds,
-        subjectivityAnalysis: SubjectivityAnalysis.Objective,
-        date: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-    });
-
-    res.send({
-      subjective: subjective,
-      objective: objective,
-    });
-  } catch (error) {
-    next(error);
-  }
+  const subjective = await InstagramComment.count({
+    where: { subjectivityAnalysis: 'subjective' },
+  });
+  const objective = await InstagramComment.count({
+    where: { subjectivityAnalysis: 'objective' },
+  });
+  res.send({
+    subjective: subjective,
+    objective: objective,
+  });
 };
 
 /**
@@ -168,14 +113,6 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 
   if (startDateParam && endDateParam) {
     if (startDateParam.length === 8 && endDateParam.length === 8) {
-      const user = await User.findOne({
-        where: { username: req.session.username },
-        include: InstagramApi,
-      });
-
-      if (!user?.instagramApi)
-        return res.send({ positive: 0, neutral: 0, negative: 0 });
-
       // parse
       const year = parseInt(startDateParam.toString().substring(0, 4));
       const month = parseInt(startDateParam.toString().substring(4, 6));
@@ -188,15 +125,8 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       try {
         startDate = new Date(year, month - 1, day);
         endDate = new Date(year_end, month_end - 1, day_end + 1);
-
-        const media = await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
-        const mediaIds: number[] = media.map((m) => m.id);
-
         const positive = await InstagramComment.count({
           where: {
-            mediaId: mediaIds,
             sentimentAnalysis: SentimentAnalysisStatus.Positive,
             date: {
               [Op.between]: [startDate, endDate],
@@ -205,7 +135,6 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const neutral = await InstagramComment.count({
           where: {
-            mediaId: mediaIds,
             sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             date: {
               [Op.between]: [startDate, endDate],
@@ -214,7 +143,6 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         });
         const negative = await InstagramComment.count({
           where: {
-            mediaId: mediaIds,
             sentimentAnalysis: SentimentAnalysisStatus.Negative,
             date: {
               [Op.between]: [startDate, endDate],
@@ -227,11 +155,11 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
           negative: negative,
         });
       } catch (error) {
-        res.status(400).send(invalidInput);
+        res.status(400).send({ message: 'Invalid Data Input' });
       }
     }
   } else {
-    res.status(400).send(invalidInput);
+    res.status(400).send({ message: 'Invalid Date Input' });
   }
 };
 
@@ -261,7 +189,7 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     const endDay = parseInt(endDateParam.toString().substring(6, 8));
     const endDate = new Date(endYear, endMonth - 1, endDay + 1);
 
-    if (!user?.instagramApi) return res.send([]);
+    if (!user?.instagramApi) return res.send({ data: [] });
 
     const media = await InstagramMedia.findAll({
       where: { apiId: user!.instagramApi.id },
@@ -281,8 +209,10 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       return acc.concat(' ', comment.message);
     }
     const getKeywords = comments.reduce(getText, ' ');
-    res.send(keywordExtraction(getKeywords));
+    res.send({ data: keywordExtraction(getKeywords) });
   } catch (e) {
+    console.log(e);
     next(e);
+    res.status(500).json({ message: unknownError });
   }
 };

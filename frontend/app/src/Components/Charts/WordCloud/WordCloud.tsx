@@ -1,35 +1,16 @@
 import React from 'react';
 import { TagCloud } from 'react-tagcloud';
-import ErrorMessage from '../../ErrorMessage/ErrorMessage';
-import Loader from '../../Loader/Loader';
-import NoData from '../../NoData/NoData';
-import { WordCloudData } from './WordCloudQueryTypes';
-import './WordCloud.css';
+import useWordCloud from './WordCloudHook';
 
-interface Props {
-  data: WordCloudData | null | undefined;
-  isLoading: boolean;
-  error: string | null;
-}
+interface Props {}
 
-const WordCloud: React.FC<Props> = (props) => {
-  const { data, isLoading, error } = props;
-
-  if (isLoading) return <Loader />;
-  if (error) return <ErrorMessage error={error} />;
-  if (!data) return <NoData />;
-
-  return (
-    <TagCloud
-      colorOptions={{
-        luminosity: 'dark',
-        format: 'rgb',
-      }}
-      minSize={10}
-      maxSize={18}
-      tags={data}
-    />
-  );
+const WordCloud: React.FC<Props> = () => {
+  const { data, isLoading, error } = useWordCloud();
+  if (data) {
+    return <TagCloud minSize={12} maxSize={35} tags={data} />;
+  } else {
+    return <TagCloud minSize={12} maxSize={35} tags={[]} />;
+  }
 };
 
 export default WordCloud;

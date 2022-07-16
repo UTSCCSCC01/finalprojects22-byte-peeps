@@ -16,6 +16,7 @@ export const getAllVideos: RequestHandler = async (req, res, next) => {
 export const getVideoById: RequestHandler = async (req, res, next) => { };
 
 export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res, next) => {
+  console.log('reach youtube sentiment analysis')
   try {
     const user = await User.findOne({
       where: { username: req.session.username },

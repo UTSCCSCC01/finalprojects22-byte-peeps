@@ -24,6 +24,7 @@ export const getMedia: RequestHandler = async (req, res, next) => {
  */
 
 export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res, next) => {
+  console.log('reached instagram sentiment analysis')
   try {
     const user = await User.findOne({
       where: { username: req.session.username },

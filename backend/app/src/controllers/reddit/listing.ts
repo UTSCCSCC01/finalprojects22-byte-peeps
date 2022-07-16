@@ -13,6 +13,7 @@ import User from '../../models/user/user';
 import getStartEndDate from '../helpers/helpers';
 
 export const getSentimentAnalysisForTimeSeries: RequestHandler = async (req, res, next) => {
+    console.log('reached reddit sentiment analysis')
     try {
         const user = await User.findOne({
             where: { username: req.session.username },
