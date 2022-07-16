@@ -14,6 +14,7 @@ import User from '../../models/user/user';
 export const getInstagramStats: RequestHandler = async (req, res, next) => {
   const startDateParam = req.query.startDate?.toString();
   const endDateParam = req.query.endDate?.toString();
+  const postId = req.query.postId;
 
   const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -34,21 +35,29 @@ export const getInstagramStats: RequestHandler = async (req, res, next) => {
     });
 
   // Get Total Posts here
-  const totalPosts = await InstagramMedia.count({
-    where: {
-      apiId: user!.instagramApi.id,
-      date: {
-        [Op.between]: [startDate, endDate],
+  let postsRes = {};
+  if (!postId) {
+    const totalPosts = await InstagramMedia.count({
+      where: {
+        apiId: user!.instagramApi.id,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
       },
-    },
-  });
+    });
+    postsRes = { totalPosts };
+  }
+
+  let postFilter = {};
 
   // Get Total comments
+  if (postId) postFilter = { mediaId: postId };
   const totalComments = await InstagramComment.count({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
+      ...postFilter,
     },
     include: [
       {
@@ -61,12 +70,14 @@ export const getInstagramStats: RequestHandler = async (req, res, next) => {
   });
 
   // Get Total Likes
+  if (postId) postFilter = { id: postId };
   const queryResult = (await InstagramMedia.findAll({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
       apiId: user!.instagramApi.id,
+      ...postFilter,
     },
     attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
     raw: true,
@@ -75,19 +86,23 @@ export const getInstagramStats: RequestHandler = async (req, res, next) => {
   const totalLikes = parseInt(queryResult.totalLikes || '0');
 
   // Get Total Tags
-  const totalTags = await InstagramTag.count({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
+  let tagsRes = {};
+  if (!postId) {
+    const totalTags = await InstagramTag.count({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        apiId: user!.instagramApi.id,
       },
-      apiId: user!.instagramApi.id,
-    },
-  });
+    });
+    tagsRes = { totalTags };
+  }
 
   return res.send({
-    totalPosts,
+    ...postsRes,
     totalLikes,
     totalComments,
-    totalTags,
+    ...tagsRes,
   });
 };

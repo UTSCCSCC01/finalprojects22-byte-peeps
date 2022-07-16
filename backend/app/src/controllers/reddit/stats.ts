@@ -13,6 +13,7 @@ import User from '../../models/user/user';
 export const getRedditStats: RequestHandler = async (req, res, next) => {
   const startDateParam = req.query.startDate?.toString();
   const endDateParam = req.query.endDate?.toString();
+  const postId = req.query.postId;
 
   const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -32,21 +33,29 @@ export const getRedditStats: RequestHandler = async (req, res, next) => {
     });
 
   // Get Total Posts here
-  const totalListings = await RedditListing.count({
-    where: {
-      subredditId: user!.subreddit.id,
-      date: {
-        [Op.between]: [startDate, endDate],
+  let postsRes = {};
+  if (!postId) {
+    const totalListings = await RedditListing.count({
+      where: {
+        subredditId: user!.subreddit.id,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
       },
-    },
-  });
+    });
+    postsRes = { totalListings };
+  }
+
+  let postFilter = {};
 
   // Get Total comments
+  if (postId) postFilter = { listingId: postId };
   const totalComments = await RedditComment.count({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
+      ...postFilter,
     },
     include: [
       {
@@ -59,12 +68,14 @@ export const getRedditStats: RequestHandler = async (req, res, next) => {
   });
 
   // Get Average listing score
+  if (postId) postFilter = { id: postId };
   const queryResult = (await RedditListing.findAll({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
       subredditId: user!.subreddit.id,
+      ...postFilter,
     },
     attributes: [[Sequelize.fn('avg', Sequelize.col('score')), 'avgScore']],
     raw: true,
@@ -75,7 +86,7 @@ export const getRedditStats: RequestHandler = async (req, res, next) => {
   const avgScore = parseInt(queryResult.avgScore || '0');
 
   return res.send({
-    totalListings,
+    ...postsRes,
     avgScore,
     totalComments,
   });

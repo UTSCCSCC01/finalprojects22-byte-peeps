@@ -8,6 +8,7 @@ import './PostAnalysis.css';
 import SubjectivityPieChartWrapper from '../Charts/PieChart/SubjectivityPieChartWrapper';
 import SentimentPieChartWrapper from '../Charts/PieChart/SentimentPieChartWrapper';
 import ToBeImplemented from '../ToBeImplemented/ToBeImplemented';
+import CardsHeader from '../CardsHeader/CardsHeader';
 
 export default function PostAnalysis() {
   const query = usePlatformPosts();
@@ -64,6 +65,13 @@ export default function PostAnalysis() {
                 postId={typeof postId == 'number' ? postId : undefined}
               />
             </CardCharts>
+          </Grid>
+
+          <Grid item xs={12}>
+            <CardsHeader
+              variant="outlined"
+              postId={typeof postId == 'number' ? postId : undefined}
+            />
           </Grid>
 
           <Grid item xs={12}>

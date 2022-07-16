@@ -13,6 +13,7 @@ import User from '../../models/user/user';
 export const getTwitterStats: RequestHandler = async (req, res, next) => {
   const startDateParam = req.query.startDate?.toString();
   const endDateParam = req.query.endDate?.toString();
+  const postId = req.query.postId;
 
   const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
@@ -33,21 +34,29 @@ export const getTwitterStats: RequestHandler = async (req, res, next) => {
     });
 
   // Get Total tweets
-  const totalTweets = await TwitterTweet.count({
-    where: {
-      twitterUserId: user!.twitterUser.id,
-      date: {
-        [Op.between]: [startDate, endDate],
+  let postsRes = {};
+  if (!postId) {
+    const totalTweets = await TwitterTweet.count({
+      where: {
+        twitterUserId: user!.twitterUser.id,
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
       },
-    },
-  });
+    });
+    postsRes = { totalTweets };
+  }
+
+  let postFilter = {};
 
   // Get Total replies for all tweets
+  if (postId) postFilter = { tweetId: postId };
   const totalReplies = await TwitterConversation.count({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
+      ...postFilter,
     },
     include: [
       {
@@ -60,12 +69,14 @@ export const getTwitterStats: RequestHandler = async (req, res, next) => {
   });
 
   // Get Total Likes and retweets for the actual tweets
+  if (postId) postFilter = { id: postId };
   const queryResult = (await TwitterTweet.findAll({
     where: {
       date: {
         [Op.between]: [startDate, endDate],
       },
       twitterUserId: user!.twitterUser.id,
+      ...postFilter,
     },
     attributes: [
       [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
@@ -81,7 +92,7 @@ export const getTwitterStats: RequestHandler = async (req, res, next) => {
   const totalRetweets = parseInt(queryResult.totalRetweets || '0');
 
   return res.send({
-    totalTweets,
+    ...postsRes,
     totalLikes,
     totalReplies,
     totalRetweets,

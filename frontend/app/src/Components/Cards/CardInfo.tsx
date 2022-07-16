@@ -15,6 +15,7 @@ interface CardInfoProps {
   data: CardData | null;
   isLoading: Boolean;
   error: String | null;
+  variant?: 'outlined' | 'elevation';
 }
 
 const CardInfo: React.FC<CardInfoProps> = (props) => {
@@ -36,7 +37,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
   }
 
   return (
-    <Card>
+    <Card variant={props.variant}>
       <CardContent className="cardContent">{content}</CardContent>
     </Card>
   );
