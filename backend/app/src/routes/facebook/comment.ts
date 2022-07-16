@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import {
   getComments,
-  getCommentsByPostId,
   getCommentsSubjectivityAnalysis,
   getCommentsSentimentAnalysis,
+  getWordCloudData,
 } from '../../controllers/facebook/comment';
 
 const commentRouter = Router();
@@ -11,6 +11,6 @@ const commentRouter = Router();
 commentRouter.get('/', getComments);
 commentRouter.get('/sentiment_analysis', getCommentsSentimentAnalysis);
 commentRouter.get('/subjectivity_analysis', getCommentsSubjectivityAnalysis);
-commentRouter.get('/:postId', getCommentsByPostId);
+commentRouter.get('/wordCloud', getWordCloudData);
 
 export default commentRouter;

@@ -1,3 +1,6 @@
+body {
+  background-color: #eff7fa;
+}
 .center {
   display: flex;
   flex-direction: column;
@@ -11,41 +14,30 @@
   align-items: center;
 }
 
-.App {
-  text-align: center;
+.page {
+  padding: 24px !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.fullDimension {
+  width: 100%;
+  height: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.tabPanelContainer {
+  padding: 24px 0 0 0;
+  width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.tabPanel {
+  max-width: 620px;
+  width: 100%;
+  margin-right: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.tabPage {
+  padding: 24px 0 0 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.exampleChart {
+  min-height: 280px;
 }

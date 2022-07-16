@@ -1,15 +1,9 @@
 import React from 'react';
-import { Counter } from '../Components/Counter/Counter';
 
-export interface ISurveysProps {}
+interface Props {}
 
-const Surveys: React.FunctionComponent<ISurveysProps> = (props) => {
-  return (
-    <div>
-      <h1>Surveys</h1>
-      <Counter />
-    </div>
-  );
+const Surveys: React.FC<Props> = () => {
+  return <></>;
 };
 
 export default Surveys;

@@ -1,10 +1,8 @@
 import { CronJob } from 'cron';
-import fetch from 'node-fetch';
 import FacebookApi from '../models/facebook/api';
 import FacebookPost from '../models/facebook/post';
 import FacebookComment from '../models/facebook/comment';
-
-const FacebookGraphApiUrl = 'https://graph.facebook.com';
+import { getAccountPosts, getPostComments } from '../apis/facebook';
 
 /**
  * Updates the database as follows:
@@ -16,44 +14,48 @@ const FacebookGraphApiUrl = 'https://graph.facebook.com';
  *           fetches and updates the comments.
  */
 async function startPipeline() {
-  /* Get stored Facebook Accounts (API) */
-  let facebookApis = await FacebookApi.findAll();
-  if (facebookApis.length == 0) return;
+  try {
+    /* Get stored Facebook Accounts (API) */
+    let facebookApis = await FacebookApi.findAll();
+    if (facebookApis.length == 0) return;
 
-  /* Get boundary dates */
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 5000);
-  const today = new Date();
-  const dates = [
-    Math.round(yesterday.getTime() / 1000),
-    Math.round(today.getTime() / 1000),
-  ];
+    /* Get boundary dates */
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const today = new Date();
+    const dates = [
+      Math.round(yesterday.getTime() / 1000),
+      Math.round(today.getTime() / 1000),
+    ];
 
-  /* Update data for each FB account */
-  facebookApis.forEach(async (api) => {
-    /* Get IG account data */
-    const accessToken = api.token;
-    const apiId = api.id;
+    /* Update data for each FB account */
+    facebookApis.forEach(async (api) => {
+      /* Get IG account data */
+      const accessToken = api.token;
+      const apiId = api.id;
 
-    /* Fetch and update posts */
-    updateAccountPost(accessToken, apiId, dates);
+      /* Fetch and update posts */
+      await updateAccountPost(accessToken, apiId, dates);
 
-    /* Fetch and update comments */
-    const post = await FacebookPost.findAll({
-      where: { apiId: api.id },
+      /* Fetch and update comments */
+      const post = await FacebookPost.findAll({
+        where: { apiId: api.id },
+      });
+      if (post.length == 0) return;
+      post.forEach(async (post) => {
+        await updatePostComments(accessToken, post);
+      });
     });
-    if (post.length == 0) return;
-    post.forEach((post) => {
-      updatePostComments(post.dataId, accessToken, post.id, dates);
-    });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 /**
  * Uses the Facebook Graph API to fetch and store information related
  * to posts belonging to the provided Facebook account
  * @param {string} accessToken The access token of the Facebook App
- * @param {number} apiId The id of the FacebookApi object that will be linked
+ * @param {number} apiId The id of the FacebookApi object that's linked to the post
  * @param {number[]} dates The date range to fetch data from in seconds
  */
 async function updateAccountPost(
@@ -61,21 +63,12 @@ async function updateAccountPost(
   apiId: number,
   dates: number[]
 ) {
-  /* Build URL */
-  const FacebookPostsUrl =
-    FacebookGraphApiUrl +
-    `/me/posts` +
-    `?access_token=${accessToken}` +
-    '&fields=id,created_time,message,reactions' +
-    `&since=${dates[0]}&until=${dates[1]}`;
-
   /* Perform request */
-  const response: any = await fetch(FacebookPostsUrl);
-  const data = await response.json();
-  if (data['data'] === undefined || data['data'].length == 0) return;
+  const data: any[] = await getAccountPosts(accessToken, dates[0], dates[1]);
+  if (data === null) return;
 
   /* Update data in db */
-  data['data'].forEach(async (post: { [key: string]: any }) => {
+  data.forEach(async (post: { [key: string]: any }) => {
     const reactions: { [key: string]: number } = {
       LIKE: 0,
       LOVE: 0,
@@ -88,20 +81,34 @@ async function updateAccountPost(
     post['reactions']['data'].forEach((reaction: any) => {
       reactions[reaction['type']] += 1;
     });
-    FacebookPost.findOrCreate({
+    FacebookPost.findOne({
       where: { dataId: post['id'] },
-      defaults: {
-        date: post['created_time'],
-        message: post['message'],
-        likes: reactions['LIKE'],
-        loves: reactions['LOVE'],
-        cares: reactions['CARE'],
-        hahas: reactions['HAHA'],
-        wows: reactions['WOW'],
-        sads: reactions['SAD'],
-        angrys: reactions['ANGRY'],
-        apiId: apiId,
-      },
+    }).then(function (obj) {
+      if (obj) {
+        obj.update({
+          likes: reactions['LIKE'],
+          loves: reactions['LOVE'],
+          cares: reactions['CARE'],
+          hahas: reactions['HAHA'],
+          wows: reactions['WOW'],
+          sads: reactions['SAD'],
+          angrys: reactions['ANGRY'],
+        });
+      } else {
+        FacebookPost.create({
+          dataId: post['id'],
+          date: post['created_time'],
+          message: post['message'],
+          likes: reactions['LIKE'],
+          loves: reactions['LOVE'],
+          cares: reactions['CARE'],
+          hahas: reactions['HAHA'],
+          wows: reactions['WOW'],
+          sads: reactions['SAD'],
+          angrys: reactions['ANGRY'],
+          apiId: apiId,
+        });
+      }
     });
   });
 }
@@ -109,40 +116,33 @@ async function updateAccountPost(
 /**
  * Uses the Facebook Graph API to fetch and store information related
  * to the comments belonging to the provided post
- * @param {string} postId The id given by Facebook to the post
  * @param {string} accessToken The access token of the Facebook App
- * @param {number} postObjId The id of the post object in the db
- * @param {number[]} dates The date range to fetch data from in seconds
+ * @param {number} post The FacebookPost object that's linked to the comments
  */
-async function updatePostComments(
-  postId: string,
-  accessToken: string,
-  postObjId: number,
-  dates: number[]
-) {
-  /* Build URL */
-  const FacebookCommentsUrl =
-    FacebookGraphApiUrl +
-    `/${postId}/comments` +
-    `?access_token=${accessToken}` +
-    '&fields=id,created_time,from,message,like_count';
-
+async function updatePostComments(accessToken: string, post: FacebookPost) {
   /* Perform request */
-  const response: any = await fetch(FacebookCommentsUrl);
-  const data = await response.json();
-  if (data['data'] === undefined || data['data'].length == 0) return;
+  const data: any[] = await getPostComments(accessToken, post.dataId);
+  if (data === null) return;
 
   /* Update data in db */
-  data['data'].forEach(async (comment: { [key: string]: any }) => {
-    FacebookComment.findOrCreate({
+  data.forEach(async (comment: { [key: string]: any }) => {
+    FacebookComment.findOne({
       where: { dataId: comment['id'] },
-      defaults: {
-        date: comment['created_time'],
-        userName: comment['from']['name'],
-        message: comment['message'],
-        likes: Number(comment['like_count']),
-        postId: postObjId,
-      },
+    }).then(function (obj) {
+      if (obj) {
+        obj.update({
+          likes: Number(comment['like_count']),
+        });
+      } else {
+        FacebookPost.create({
+          dataId: comment['id'],
+          date: comment['created_time'],
+          userName: comment['from']['name'],
+          message: comment['message'],
+          likes: Number(comment['like_count']),
+          postId: post.id,
+        });
+      }
     });
   });
 }

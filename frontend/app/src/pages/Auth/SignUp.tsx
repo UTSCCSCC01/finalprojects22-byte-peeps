@@ -1,23 +1,20 @@
 import { LockOutlined } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Avatar, Button, Stack, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Notification } from '../../Components/Notification/Notification';
+import { RoutePaths } from '../../Components/Router/RoutesConstants';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import {
-  selectSignUpError,
-  selectSignUpStatus,
-  selectUserErrorMessage,
-  signUp,
-} from '../../Redux/Slices/user/userSlice';
-import { RoutePaths } from '../../RoutesConstants';
+import { selectSignUpStatus, signUp } from '../../Redux/Slices/user/userSlice';
+import useNotification, {
+  NotificationState,
+} from '../../utils/hooks/Notification';
 import './Auth.css';
+
+let notification: NotificationState;
+export function getSignUpNotification(): NotificationState {
+  return notification;
+}
 
 interface Props {}
 
@@ -26,10 +23,9 @@ const SignUp: React.FunctionComponent<Props> = () => {
   const [pwd, setPwd] = useState('');
 
   const dispatch = useAppDispatch();
+  notification = useNotification({});
 
   const isSignedUp = useAppSelector(selectSignUpStatus);
-  const isSignUpError = useAppSelector(selectSignUpError);
-  const userErrorMsg = useAppSelector(selectUserErrorMessage);
 
   const handleRegister = () => {
     dispatch(signUp({ username: user, password: pwd }));
@@ -43,53 +39,55 @@ const SignUp: React.FunctionComponent<Props> = () => {
   }, [isSignedUp]);
 
   return (
-    <Box
-      component="form"
-      className="formContainer"
+    <Stack
+      spacing={2}
+      className="center formContainer"
       sx={{
         boxShadow: 1,
       }}
     >
-      <Stack spacing={2} className="center">
-        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-          <LockOutlined />
-        </Avatar>
-        <Typography component="h1" align="center">
-          Sign Up{' '}
-        </Typography>
-        <TextField
-          id="outlined-user-input"
-          label="Username"
-          type="username"
-          required={true}
-          autoComplete="current-password"
-          onChange={(event) => {
-            setUser(event.target.value);
-          }}
-        />
-        <TextField
-          id="outlined-password-input"
-          label="Password"
-          type="password"
-          required={true}
-          autoComplete="current-password"
-          onChange={(event) => {
-            setPwd(event.target.value);
-          }}
-        />
-        <Button fullWidth variant="contained" onClick={handleRegister}>
-          Sign Up
-        </Button>
-      </Stack>
+      <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+        <LockOutlined />
+      </Avatar>
+      <Typography component="h1" align="center">
+        Sign Up{' '}
+      </Typography>
+      <TextField
+        id="outlined-user-input"
+        label="Username"
+        type="username"
+        required={true}
+        autoComplete="current-password"
+        onChange={(event) => {
+          setUser(event.target.value);
+        }}
+      />
+      <TextField
+        id="outlined-password-input"
+        label="Password"
+        type="password"
+        required={true}
+        autoComplete="current-password"
+        onChange={(event) => {
+          setPwd(event.target.value);
+        }}
+      />
+      <Button
+        fullWidth
+        variant="contained"
+        onClick={handleRegister}
+        className="authButton"
+      >
+        Sign Up
+      </Button>
 
-      {isSignedUp && <p style={{ color: 'green' }}>Signed up successfully!</p>}
-      {isSignUpError && <p style={{ color: 'red' }}>{userErrorMsg}</p>}
-
-      <div className="rowCenter signUp">
+      <div className="rowCenter footer">
         Ready to login? &nbsp;
         <Link to={RoutePaths.SignIn}> Sign in here</Link>
       </div>
-    </Box>
+
+      <Notification state={notification} />
+    </Stack>
   );
 };
 

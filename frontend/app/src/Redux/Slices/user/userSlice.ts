@@ -1,10 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ErrorResponse, ReduxStatus } from '../../reduxConstants';
+import { AxiosResponse } from 'axios';
+import AuthStorage from '../../../Components/AuthStorage/AuthStorage';
+import { history } from '../../../Components/Router/RouterComponent';
+import {
+  RouteNames,
+  RoutePaths,
+} from '../../../Components/Router/RoutesConstants';
+import { getSingInNotification } from '../../../pages/Auth/SignIn';
+import { getSignUpNotification } from '../../../pages/Auth/SignUp';
+import { ErrorResponse } from '../../../utils/enums';
+import { NotificationType } from '../../../utils/hooks/Notification';
+import { ReduxStatus } from '../../reduxConstants';
 import { AppDispatch, RootState } from '../../store';
+import { setPageName } from '../webApp/webAppSlice';
 import { signInAPI, signOutAPI, signUpAPI } from './userAPI';
 import { User } from './userSliceConstants';
 
-export interface UserState {
+interface UserState {
   username: string;
   signInStatus: ReduxStatus;
   signOutStatus: ReduxStatus;
@@ -29,7 +41,10 @@ export const signIn = createAsyncThunk<
 >('user/signIn', async (user, thunkAPI) => {
   try {
     const response = await signInAPI(user);
+    AuthStorage.storeSession(user.username);
     thunkAPI.dispatch(setUsername(user.username));
+    history.push(RoutePaths.Dashboard);
+    thunkAPI.dispatch(setPageName(RouteNames.Dashboard));
 
     return response.data;
   } catch (error: any) {
@@ -39,13 +54,17 @@ export const signIn = createAsyncThunk<
 
 export const signOut = createAsyncThunk<
   null | ErrorResponse,
-  null,
+  {},
   {
     dispatch: AppDispatch;
   }
 >('user/signOut', async (user, thunkAPI) => {
   try {
     const response = await signOutAPI();
+    AuthStorage.removeSession();
+    thunkAPI.dispatch(setUsername(''));
+    history.push(RoutePaths.SignIn);
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -60,7 +79,9 @@ export const signUp = createAsyncThunk<
   }
 >('user/signUp', async (user, thunkAPI) => {
   try {
-    const response = await signUpAPI(user);
+    const response: AxiosResponse<any, any> = await signUpAPI(user);
+    // send a notification of success
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data.message);
@@ -90,6 +111,12 @@ export const userSlice = createSlice({
       .addCase(signIn.rejected, (state, action) => {
         state.signInStatus = ReduxStatus.failed;
         state.errorMessage = String(action.payload);
+
+        const notification = getSingInNotification();
+
+        notification.setMessage(String(action.payload));
+        notification.setType(NotificationType.Error);
+        notification.setShown(true);
       })
       .addCase(signOut.pending, (state) => {
         state.signOutStatus = ReduxStatus.loading;
@@ -115,17 +142,27 @@ export const userSlice = createSlice({
       .addCase(signUp.fulfilled, (state) => {
         state.signUpStatus = ReduxStatus.success;
         state.errorMessage = '';
+
+        const notification = getSignUpNotification();
+        notification.setMessage('Signed up successfully!');
+        notification.setType(NotificationType.Success);
+        notification.setShown(true);
       })
       .addCase(signUp.rejected, (state, action) => {
         state.signUpStatus = ReduxStatus.failed;
         state.errorMessage = String(action.payload);
+
+        const notification = getSignUpNotification();
+        notification.setMessage(String(action.payload));
+        notification.setType(NotificationType.Error);
+        notification.setShown(true);
       });
   },
 });
 
 // selectors
 export const selectSignInStatus = (state: RootState) =>
-  state.user.signInStatus === ReduxStatus.success;
+  state.user.username !== '';
 export const selectSignInLoading = (state: RootState) =>
   state.user.signInStatus === ReduxStatus.loading;
 export const selectSignInError = (state: RootState) =>

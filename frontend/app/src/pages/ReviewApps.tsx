@@ -2,8 +2,8 @@ import React from 'react';
 
 interface Props {}
 
-const ReviewApps: React.FunctionComponent<Props> = () => {
-  return <h1>Review Apps</h1>;
+const ReviewApps: React.FC<Props> = () => {
+  return <></>;
 };
 
 export default ReviewApps;

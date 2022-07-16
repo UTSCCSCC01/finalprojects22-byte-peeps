@@ -15,18 +15,20 @@ import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import FacebookLogin from 'react-facebook-login';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
+  getCurrentPageAsync,
   retrievePagesAsync,
   saveCurrentPageAsync,
   selectCurrentPage,
   selectPages,
   selectStage,
   setCurrentPage,
-  setStage
+  setStage,
 } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
 import useNotification, {
   NotificationState,
 } from '../../utils/hooks/Notification';
 import { Notification } from '../Notification/Notification';
+import { useEffect } from 'react';
 
 let notification: NotificationState;
 export function getFacebookSetupNotification(): NotificationState {
@@ -36,13 +38,17 @@ export function getFacebookSetupNotification(): NotificationState {
 export function FacebookSetup() {
   const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID ?? '';
   const facebookScopes =
-    'email,pages_show_list,instagram_basic,pages_read_engagement,pages_read_user_content,public_profile';
+    'email,pages_show_list,instagram_basic,instagram_manage_comments,pages_read_engagement,pages_read_user_content,public_profile';
 
   notification = useNotification({});
   let stage = useAppSelector(selectStage);
   let pages = useAppSelector(selectPages);
   let currentPage = useAppSelector(selectCurrentPage);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCurrentPageAsync());
+  }, [dispatch]);
 
   const responseFacebook = (response: any) => {
     if (response.grantedScopes !== facebookScopes) {

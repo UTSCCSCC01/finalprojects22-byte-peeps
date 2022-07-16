@@ -20,51 +20,56 @@ const YouTubeApiEndPoint = google.youtube({
  * @returns {Promise<void>} - Promise that resolves when the function is complete
  */
 async function startPipeline(): Promise<void> {
-  let youtubeChannels = await YouTubeChannel.findAll();
-  if (youtubeChannels.length == 0) return;
+  try {
+    let youtubeChannels = await YouTubeChannel.findAll();
+    if (youtubeChannels.length == 0) return;
 
-  /* Get the last day that a You dates */
-  const updateVideosWorkFlow: Promise<[YouTubeVideo, boolean | null]>[] = [];
+    /* Get the last day that a You dates */
+    const updateVideosWorkFlow: Promise<[YouTubeVideo, boolean | null]>[] = [];
 
-  // for looop over youtube channel and do the same thing as below
-  for (let i = 0; i < youtubeChannels.length; i++) {
-    const youtubeChannel = youtubeChannels[i];
+    // for looop over youtube channel and do the same thing as below
+    for (let i = 0; i < youtubeChannels.length; i++) {
+      const youtubeChannel = youtubeChannels[i];
 
-    /* Get channel id */
-    const channelIdKey = youtubeChannel.id;
-    const channelId = youtubeChannel.channelId;
-    const oauth = youtubeChannel.oauth;
+      /* Get channel id */
+      const channelIdKey = youtubeChannel.id;
+      const channelId = youtubeChannel.channelId;
+      const oauth = youtubeChannel.oauth;
 
-    /* Last day that a YouTube video was published */
-    let lastDate: Date = await YouTubeVideo.findOne({
-      where: { channelId: channelIdKey },
-      order: [['publishTime', 'DESC']],
-    }).then((video) => {
-      if (video) return video.publishTime;
-      return new Date(0);
+      /* Last day that a YouTube video was published */
+      let lastDate: Date = await YouTubeVideo.findOne({
+        where: { channelId: channelIdKey },
+        order: [['date', 'DESC']],
+      }).then((video) => {
+        if (video) return video.date;
+        return new Date(0);
+      });
+
+      updateVideosWorkFlow.push(
+        ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
+      );
+    }
+
+    await Promise.all(updateVideosWorkFlow);
+
+    const updateVideoStatisticsWorkFlow: Promise<void>[] = [];
+
+    youtubeChannels.forEach(async (api) => {
+      /* Get channel id */
+      const channelIdKey = api.id;
+      const oauth = api.oauth;
+
+      updateVideoStatisticsWorkFlow.push(
+        updateVideoStatistics(channelIdKey, oauth)
+      );
     });
 
-    updateVideosWorkFlow.push(
-      ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
-    );
+    await Promise.all(updateVideoStatisticsWorkFlow);
+  } catch (err) {
+    console.error(err);
   }
-
-  await Promise.all(updateVideosWorkFlow);
-
-  const updateVideoStatisticsWorkFlow: Promise<void>[] = [];
-
-  youtubeChannels.forEach(async (api) => {
-    /* Get channel id */
-    const channelIdKey = api.id;
-    const oauth = api.oauth;
-
-    updateVideoStatisticsWorkFlow.push(
-      updateVideoStatistics(channelIdKey, oauth)
-    );
-  });
-
-  await Promise.all(updateVideoStatisticsWorkFlow);
 }
+
 /**
  * Updates the each video's resource id
  * @summary If the description is long, write your summary here. Otherwise, feel free to remove this.
@@ -97,15 +102,14 @@ async function updateVideos(
 
     for (let i = 0; i < data.items.length; i++) {
       const video = data.items[i];
-      let publishTime = video.snippet?.publishedAt;
+      let date = video.snippet?.publishedAt;
       let title = video.snippet?.title;
       let videoId = video.id?.videoId;
 
       const query = YouTubeVideo.upsert({
         resourceId: videoId,
-        date: new Date(),
         title,
-        publishTime,
+        date,
         channelId: channelIdKey,
       });
 
@@ -217,7 +221,7 @@ async function updateComments(
       let authorDisplayName = topLevelComment?.snippet?.authorDisplayName;
       let commentMessage = topLevelComment?.snippet?.textDisplay;
       let commentLikes = topLevelComment?.snippet?.likeCount;
-      let publishedAt = topLevelComment?.snippet?.publishedAt;
+      let date = topLevelComment?.snippet?.publishedAt;
 
       if (!commentMessage) continue;
 
@@ -227,7 +231,7 @@ async function updateComments(
 
       let dbCommentUpdateQuery = YouTubeComment.upsert({
         resourceId: commentId,
-        date: publishedAt,
+        date: date,
         userName: authorDisplayName,
         message: commentMessage,
         likes: commentLikes,

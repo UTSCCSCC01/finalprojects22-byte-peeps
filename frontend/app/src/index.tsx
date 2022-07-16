@@ -10,14 +10,21 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+    },
+  },
+});
+
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <QueryClientProvider client={new QueryClient()}>
-        <App />
-      </QueryClientProvider>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

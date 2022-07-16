@@ -2,6 +2,7 @@ import {
   AllowNull,
   BelongsTo,
   Column,
+  DataType,
   Default,
   DeletedAt,
   ForeignKey,
@@ -25,7 +26,7 @@ export default class YouTubeComment extends Model {
   userName: string;
 
   @AllowNull(false)
-  @Column
+  @Column(DataType.TEXT)
   message: string;
 
   @AllowNull
