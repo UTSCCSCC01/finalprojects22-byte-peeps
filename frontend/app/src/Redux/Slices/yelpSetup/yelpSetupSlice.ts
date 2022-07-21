@@ -13,7 +13,9 @@ export interface YelpSetupState {
   business: string | null;
   newBusiness: { id: string; name: string };
   searchObject: { term: string; location: string };
-  searchResults: { id: string; name: string }[] | null;
+  searchResults:
+    | { id: string; name: string; address: string; zip_code: string }[]
+    | null;
 }
 
 const initialState: YelpSetupState = {

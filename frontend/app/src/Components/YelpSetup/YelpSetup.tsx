@@ -114,7 +114,7 @@ export function YelpSetup() {
             >
               {searchResults.map((p) => (
                 <MenuItem key={p.name} value={p.id}>
-                  {p.name}
+                  {p.name} ({p.address}, {p.zip_code})
                 </MenuItem>
               ))}
             </Select>
