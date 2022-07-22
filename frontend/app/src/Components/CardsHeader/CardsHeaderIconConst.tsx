@@ -10,6 +10,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet, faUserTag } from '@fortawesome/free-solid-svg-icons';
 import { MUITheme } from '../../utils/enums';
+import StarRateIcon from '@mui/icons-material/StarRate';
 
 const FacebookCardIcons = {
   totalPosts: <FeedIcon color="primary" />,
@@ -48,12 +49,24 @@ const RedditCardIcons = {
   totalComments: <ChatTwoToneIcon color="primary" />,
 };
 
+const YelpCardIcons = {
+  totalReviews: <FeedIcon color="primary" />,
+  avgReview: <StarRateIcon color="primary" />,
+};
+
+const GoogleReviewsCardIcons = {
+  totalReviews: <FeedIcon color="primary" />,
+  avgReview: <StarRateIcon color="primary" />,
+};
+
 const CardHeaderIcons = {
   FacebookCardIcons,
   InstagramCardIcons,
   TwitterCardIcons,
   YouTubeCardIcons,
   RedditCardIcons,
+  YelpCardIcons,
+  GoogleReviewsCardIcons,
 };
 
 export default CardHeaderIcons;

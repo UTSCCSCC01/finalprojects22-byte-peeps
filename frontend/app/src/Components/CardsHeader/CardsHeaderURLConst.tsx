@@ -31,12 +31,24 @@ type RedditCardResponse = {
   totalComments: number;
 };
 
+type YelpCardResponse = {
+  totalReviews: number;
+  avgReview: number;
+};
+
+type GoogleReviewsCardResponse = {
+  totalReviews: number;
+  avgReview: number;
+};
+
 export type CardHeaderResponse =
   | FacebookCardResponse
   | InstagramCardResponse
   | TwitterCardResponse
   | YouTubeCardResponse
-  | RedditCardResponse;
+  | RedditCardResponse
+  | YelpCardResponse
+  | GoogleReviewsCardResponse;
 
 export enum CardHeaderURLRequest {
   FacebookCardHeader = '/facebook/stats/cards',
@@ -44,4 +56,6 @@ export enum CardHeaderURLRequest {
   TwitterCardHeader = '/twitter/stats/cards',
   YouTubeCardHeader = '/youtube/stats/cards',
   RedditCardHeader = '/reddit/stats/cards',
+  YelpCardHeader = '/yelp/stats/cards',
+  GoogleReviewsCardHeader = '/googleReviews/stats/cards',
 }
