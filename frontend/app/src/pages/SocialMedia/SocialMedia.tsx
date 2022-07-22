@@ -1,20 +1,19 @@
-import { Box, Tab, Tabs } from '@mui/material';
-import React, { useEffect } from 'react';
-import { RouteNames } from '../../Components/Router/RoutesConstants';
-import { useAppDispatch } from '../../Redux/hooks';
-import { setAppName, setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import RedditIcon from '@mui/icons-material/Reddit';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import { Box, Tab, Tabs } from '@mui/material';
+import React from 'react';
 import TabPanel, { a11yProps } from '../../Components/TabPanel/TabPanel';
+import { useAppDispatch } from '../../Redux/hooks';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { setAppName } from '../../Redux/Slices/webApp/webAppSlice';
 import FacebookTab from './Facebook/FacebookTab';
 import InstagramTab from './Instagram/InstagramTab';
 import RedditTab from './Reddit/RedditTab';
 import TwitterTab from './Twitter/TwitterTab';
 import YoutubeTab from './YouTube/YoutubeTab';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 
 interface Props {}
 
@@ -57,15 +56,12 @@ const SocialMedia: React.FC<Props> = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
     setCurrTab(newTab);
+    dispatch(setAppName(tabAppNames[newTab]));
   };
 
   function dispatchAppName(appName: AppNames) {
     dispatch(setAppName(appName));
   }
-
-  useEffect(() => {
-    dispatch(setPageName(RouteNames.Socials));
-  }, [dispatch]);
 
   return (
     <div className="page">

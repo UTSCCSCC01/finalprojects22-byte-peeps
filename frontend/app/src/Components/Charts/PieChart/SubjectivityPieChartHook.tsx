@@ -6,15 +6,16 @@ import {
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { selectAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
-import { SubjectivityUrlRequest } from './SubjectivityUrlConst';
+import { extractBackendError } from '../../../utils/httpHelpers';
 import { DictPieChartQuery } from './PieChartQueryTypes';
 import { UseSubjectivityPieChartQuery } from './SubjectivityPieChartQueryTypes';
-import { SubjectivityAnalysisResponse } from './SubjectivityUrlConst';
-import { SubjectivityAnalysis } from './SubjectivityUrlConst';
-import { extractBackendError } from '../../../utils/httpHelpers';
+import {
+  SubjectivityAnalysis,
+  SubjectivityAnalysisResponse,
+  SubjectivityUrlRequest,
+} from './SubjectivityUrlConst';
 
 const SubjectivityPieChartQuery: DictPieChartQuery = {
   [AppNames.Facebook]: {
@@ -44,9 +45,9 @@ const SubjectivityPieChartQuery: DictPieChartQuery = {
 };
 
 const useSubjectivityPieChart = (
+  appName: AppNames,
   postId?: number
 ): UseSubjectivityPieChartQuery => {
-  const appName = useAppSelector(selectAppName);
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 

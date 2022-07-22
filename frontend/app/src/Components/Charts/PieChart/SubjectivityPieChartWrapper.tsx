@@ -1,14 +1,17 @@
 import React from 'react';
-import PieChart, { PieChartAnalysisProps } from './PieChartAnalysis';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import { SubjectivityAnalysisColors } from '../../../utils/enums';
+import PieChart from './PieChartAnalysis';
 import useSubjectivityPieChart from './SubjectivityPieChartHook';
 
 interface Props {
+  appName: AppNames;
   postId?: number;
 }
 
 const SubjectivityPieChartWrapper: React.FC<Props> = (props) => {
   const { pieChartData, isLoading, error } = useSubjectivityPieChart(
+    props.appName,
     props.postId
   );
 
