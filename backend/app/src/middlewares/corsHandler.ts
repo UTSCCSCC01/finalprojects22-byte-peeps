@@ -2,6 +2,7 @@
 let allowedOrigins = [
   `http://localhost:${process.env.FRONTEND_PORT}`,
   'https://c01.mohamedtayeh.com',
+  'https://datalytic.ml',
 ];
 
 const corsHandler = {
