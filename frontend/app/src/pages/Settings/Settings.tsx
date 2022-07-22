@@ -1,5 +1,4 @@
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
-import GoogleIcon from '@mui/icons-material/Google';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import RedditIcon from '@mui/icons-material/Reddit';
 import StarIcon from '@mui/icons-material/Star';
@@ -12,22 +11,22 @@ import { InactiveApiChecker } from '../../Components/InactiveApiChecker/Inactive
 import { InstagramSetup } from '../../Components/InstagramSetup/InstagramSetup';
 import { RedditSetup } from '../../Components/RedditSetup/RedditSetup';
 import TabPanel, { a11yProps } from '../../Components/TabPanel/TabPanel';
-import ToBeImplemented from '../../Components/ToBeImplemented/ToBeImplemented';
 import { TwitterSetup } from '../../Components/TwitterSetup/TwitterSetup';
-import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
-import './Settings.css';
 import { YelpSetup } from '../../Components/YelpSetup/YelpSetup';
+import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import './Settings.css';
 
 interface Props {}
 
 const tabLabels: string[] = [
-  'Facebook',
-  'Instagram',
-  'Twitter',
-  'YouTube',
-  'Reddit',
-  'Google',
-  'Yelp',
+  AppNames.Facebook,
+  AppNames.Instagram,
+  AppNames.Twitter,
+  AppNames.YouTube,
+  AppNames.Reddit,
+  // 'Google',
+  AppNames.Yelp,
 ];
 
 const tabIcons: JSX.Element[] = [
@@ -36,7 +35,7 @@ const tabIcons: JSX.Element[] = [
   <TwitterIcon />,
   <YouTubeIcon />,
   <RedditIcon />,
-  <GoogleIcon />,
+  // <GoogleIcon />,
   <StarIcon />,
 ];
 
@@ -46,7 +45,7 @@ const tabPanels: JSX.Element[] = [
   <TwitterSetup />,
   <YoutubeSetup />,
   <RedditSetup />,
-  <ToBeImplemented />,
+  // <ToBeImplemented />,
   <YelpSetup />,
 ];
 

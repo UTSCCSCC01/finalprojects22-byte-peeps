@@ -7,10 +7,9 @@ import {
 import SignIn from '../../pages/Auth/SignIn';
 import SignUp from '../../pages/Auth/SignUp';
 import Dashboard from '../../pages/Dashboard/Dashboard';
-import ReviewApps from '../../pages/ReviewApps';
+import ReviewApps from '../../pages/ReviewApps/ReviewApps';
 import Settings from '../../pages/Settings/Settings';
 import SocialMedia from '../../pages/SocialMedia/SocialMedia';
-import Surveys from '../../pages/Surveys';
 import Header from '../Header/Header';
 import ProtectedRoute from './ProtectedRoute';
 import { RoutePaths } from './RoutesConstants';
@@ -34,14 +33,14 @@ const RouterComponent: React.FC<Props> = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path={RoutePaths.Surveys}
           element={
             <ProtectedRoute>
               <Surveys />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path={RoutePaths.Reviews}
           element={
@@ -63,6 +62,14 @@ const RouterComponent: React.FC<Props> = () => {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
             </ProtectedRoute>
           }
         />
