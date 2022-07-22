@@ -24,6 +24,9 @@ app.use(requestRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
+app.use(notFoundHandler);
+app.use(errorHandler);
+
 connection
   .sync({ alter: true })
   .then(() => {
@@ -38,4 +41,4 @@ app.listen(PORT, () => {
 });
 
 startPipelines();
-// addFakeData();
+addFakeData();

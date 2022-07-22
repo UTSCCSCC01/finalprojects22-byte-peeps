@@ -49,7 +49,7 @@ async function startPipeline(): Promise<void> {
         ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
       );
     }
-    
+
     await Promise.all(updateVideosWorkFlow);
 
     const updateVideoStatisticsWorkFlow: Promise<void>[] = [];

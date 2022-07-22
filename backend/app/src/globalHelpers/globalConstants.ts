@@ -24,5 +24,5 @@ export enum SentimentAnalysisStatus {
 
 export enum SubjectivityAnalysis {
   Subjective = 'subjective',
-  Objective = 'objective'
+  Objective = 'objective',
 }

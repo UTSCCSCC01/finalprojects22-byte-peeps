@@ -18,7 +18,7 @@ async function startPipeline() {
     /* Get stored Facebook Accounts (API) */
     let facebookApis = await FacebookApi.findAll();
     if (facebookApis.length == 0) return;
-  
+
     /* Get boundary dates */
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -33,7 +33,7 @@ async function startPipeline() {
       /* Get IG account data */
       const accessToken = api.token;
       const apiId = api.id;
-  
+
       /* Fetch and update posts */
       await updateAccountPost(accessToken, apiId, dates);
 
@@ -119,10 +119,7 @@ async function updateAccountPost(
  * @param {string} accessToken The access token of the Facebook App
  * @param {number} post The FacebookPost object that's linked to the comments
  */
-async function updatePostComments(
-  accessToken: string,
-  post: FacebookPost,
-) {
+async function updatePostComments(accessToken: string, post: FacebookPost) {
   /* Perform request */
   const data: any[] = await getPostComments(accessToken, post.dataId);
   if (data === null) return;

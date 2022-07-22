@@ -93,7 +93,16 @@ export function InstagramSetup() {
       {status === 'active' && page && page?.id === connectedPageId && (
         <Grid item xs={12}>
           <Alert variant="standard" severity="success">
-            Your Instagram account <i>{page.name}</i> is connected. If you would like to set up another page, you have to <a target="_blank" href="https://help.instagram.com/176235449218188" rel="noreferrer">connect</a> it to your set-up Facebook page
+            Your Instagram account <i>{page.name}</i> is connected. If you would
+            like to set up another page, you have to{' '}
+            <a
+              target="_blank"
+              href="https://help.instagram.com/176235449218188"
+              rel="noreferrer"
+            >
+              connect
+            </a>{' '}
+            it to your set-up Facebook page
           </Alert>
         </Grid>
       )}

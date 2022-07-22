@@ -207,13 +207,21 @@ Currently, the website is deployed at: https://c01.mohamedtayeh.com/
     act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
     ```
 
-    2. Frontend Deployment:
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
+  ```
 
     ```
     act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
     ```
 
--   **Note:** the last command will say failure but it did actually work.
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
+  ```
+
+- **Note:** the last command will say failure but it did actually work.
+
+- **Note:** the last command will say failure but it did actually work.
 
 ## Authors
 

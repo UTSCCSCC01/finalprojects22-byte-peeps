@@ -25,7 +25,7 @@ async function startPipeline() {
     /* Get stored Instagram Accounts (API) */
     let instagramApis = await InstagramApi.findAll({ include: FacebookApi });
     if (instagramApis.length == 0) return;
-  
+
     /* Get boundary dates */
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -34,18 +34,18 @@ async function startPipeline() {
       Math.round(yesterday.getTime() / 1000),
       Math.round(today.getTime() / 1000),
     ];
-  
+
     /* Update data for each IG account */
     instagramApis.forEach(async (api) => {
       /* Get IG account data */
       const accessToken = api.facebookApi.token;
-  
+
       /* Fetch and update media */
       await updateAccountMedia(accessToken, api, dates);
-  
+
       /* Fetch and update tags */
       await updateAccountTags(accessToken, api);
-  
+
       /* Fetch and update comments */
       const media = await InstagramMedia.findAll({
         where: { apiId: api.id },

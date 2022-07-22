@@ -22,7 +22,7 @@ import {
   selectPages,
   selectStage,
   setCurrentPage,
-  setStage
+  setStage,
 } from '../../Redux/Slices/facebookSetup/facebookSetupSlice';
 import useNotification, {
   NotificationState,

@@ -56,7 +56,7 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
                 textAnchor={x > cx ? 'start' : 'end'}
                 dominantBaseline="central"
               >
-                {`${data[index].name} ${(value / total * 100).toFixed(1)}%`}
+                {`${data[index].name} ${((value / total) * 100).toFixed(1)}%`}
               </text>
             ) : null;
           }}

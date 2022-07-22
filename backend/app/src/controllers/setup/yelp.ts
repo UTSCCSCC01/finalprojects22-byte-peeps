@@ -6,7 +6,7 @@ import User from '../../models/user/user';
 
 enum status {
   NOT_SET = 'yelp-not-set-up',
-  ACTIVE = 'active',
+  ACTIVE = 'active'
 }
 
 export const getSettings: RequestHandler = async (req, res, next) => {
@@ -43,13 +43,8 @@ export const searchBusiness: RequestHandler = async (req, res, next) => {
       : "The business you provided doesn't exist";
     const searchResults = rawSearchResults
       ? rawSearchResults.map((result: any) => {
-          return {
-            id: result.id,
-            name: result.name,
-            address: result.location.address1,
-            zip_code: result.location.zip_code,
-          };
-        })
+        return { id: result.id, name: result.name }
+      })
       : null;
 
     return res.send({ status, searchResults, message });

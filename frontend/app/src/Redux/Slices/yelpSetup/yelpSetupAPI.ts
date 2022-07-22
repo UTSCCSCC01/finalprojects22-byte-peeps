@@ -13,19 +13,14 @@ export async function searchBusiness(params: {
   location: string;
 }): Promise<{
   status: 'yelp-not-set-up' | 'choose-business';
-  searchResults:
-    | { id: string; name: string; address: string; zip_code: string }[]
-    | null;
+  searchResults: { id: string; name: string }[] | null;
   message: string;
 }> {
   const response = await HTTP.get('/setup/yelp/search', { params });
   return response.data;
 }
 
-export async function saveBusiness(business: {
-  id: string;
-  name: string;
-}): Promise<{
+export async function saveBusiness(business: { id: string; name: string }): Promise<{
   business: string | null;
   status: 'yelp-not-set-up' | 'active';
   message: string;
