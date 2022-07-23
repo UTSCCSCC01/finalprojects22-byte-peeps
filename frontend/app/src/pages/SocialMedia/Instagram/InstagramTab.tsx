@@ -45,7 +45,7 @@ const InstagramTab: React.FC<Props> = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <CardCharts name={'Comments'}>
+        <CardCharts name={'Comments & Tags'}>
           <CommentsTable appName={AppNames.Instagram} />
         </CardCharts>
       </Grid>

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  getComments,
+  getCommentsAndTags,
   getCommentsSubjectivityAnalysis,
   getCommentsSentimentAnalysis,
   getWordCloudData,
@@ -8,7 +8,7 @@ import {
 
 const commentRouter = Router();
 
-commentRouter.get('/', getComments);
+commentRouter.get('/', getCommentsAndTags);
 commentRouter.get('/sentiment_analysis', getCommentsSentimentAnalysis);
 commentRouter.get('/subjectivity_analysis', getCommentsSubjectivityAnalysis);
 commentRouter.get('/wordCloud', getWordCloudData);
