@@ -7,11 +7,17 @@ import twitterRoutes from './twitter/routes';
 import redditRoutes from './reddit/routes';
 import setupRoutes from './setup/routes';
 import authenticateUser from '../middlewares/validateAuth';
+import googleReviewsRouter from './googleReviews/routes';
+import yelpRouter from './yelp/routes';
 
 const requestRouter = Router();
 
 /* User Routes */
 requestRouter.use('/user', userRoutes);
+
+/* Review Apps Routing */
+requestRouter.use('/yelp', authenticateUser, yelpRouter);
+requestRouter.use('/googleReviews', authenticateUser, googleReviewsRouter);
 
 /* Social Media Routing */
 requestRouter.use('/instagram', authenticateUser, instagramRoutes);

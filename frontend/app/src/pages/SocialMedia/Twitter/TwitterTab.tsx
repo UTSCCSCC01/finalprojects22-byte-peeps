@@ -8,6 +8,7 @@ import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWord
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 
 interface Props {}
 
@@ -20,42 +21,42 @@ const TwitterTab: React.FC<Props> = () => {
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
       <Grid item xs={12}>
-        <CardsHeader />
+        <CardsHeader appName={AppNames.Twitter} />
       </Grid>
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Word Cloud'}>
-          <CommentsWordCloud />
+          <CommentsWordCloud appName={AppNames.Twitter} />
         </CardCharts>
       </Grid>
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Sentiment Analysis'}>
-          <SentimentPieChartWrapper />
+          <SentimentPieChartWrapper appName={AppNames.Twitter} />
         </CardCharts>
       </Grid>
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Subjectivity Analysis'}>
-          <SubjectivityPieChartWrapper />
+          <SubjectivityPieChartWrapper appName={AppNames.Twitter} />
         </CardCharts>
       </Grid>
 
       <Grid item xs={12}>
         <CardCharts name={'Comments'}>
-          <CommentsTable />
+          <CommentsTable appName={AppNames.Twitter} />
         </CardCharts>
       </Grid>
 
       <Grid item xs={12}>
         <CardCharts name={'Comments Sentiment Analysis By Post'}>
           {/* <TimeSeriesChart /> */}
-          <GeneralTimeSeriesChart />
+          <GeneralTimeSeriesChart appName={AppNames.Twitter} />
         </CardCharts>
       </Grid>
 
       <Grid item xs={12}>
-        <PostAnalysis />
+        <PostAnalysis appName={AppNames.Twitter} />
       </Grid>
     </Grid>
   );
