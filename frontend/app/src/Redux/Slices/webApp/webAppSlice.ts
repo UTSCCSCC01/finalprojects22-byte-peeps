@@ -10,7 +10,7 @@ interface GlobalState {
 
 const initialState: GlobalState = {
   pageName: RouteNames.SignIn,
-  appName: AppNames.Facebook,
+  appName: AppNames.default,
 };
 
 export const globalSlice = createSlice({
@@ -29,6 +29,7 @@ export const globalSlice = createSlice({
 // selectors
 export const selectPageName = (state: RootState) => state.global.pageName;
 export const selectAppName = (state: RootState) => state.global.appName;
+// ! this is not used anymore - be careful that it doesn't change when first go onto a page consisting of tabs
 
 // actions
 export const { setPageName } = globalSlice.actions;

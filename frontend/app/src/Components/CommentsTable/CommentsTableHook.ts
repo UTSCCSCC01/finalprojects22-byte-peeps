@@ -7,7 +7,6 @@ import {
   selectStartDate,
 } from '../../Redux/Slices/dateSelector/dateSelectorSlice';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { selectAppName } from '../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../utils/enums';
 import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
@@ -64,9 +63,10 @@ export type UseCommentsTable = {
   error: string | null;
 };
 
-function useCommentsTable(postId?: number): UseCommentsTable {
-  const appName = useAppSelector(selectAppName);
-
+function useCommentsTable(
+  appName: AppNames,
+  postId?: number
+): UseCommentsTable {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
