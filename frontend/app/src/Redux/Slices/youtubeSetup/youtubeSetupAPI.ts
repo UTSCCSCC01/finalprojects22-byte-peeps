@@ -8,13 +8,16 @@ export async function fetchSettings(): Promise<{
   return response.data;
 }
 
-export async function saveChannel(
-  channel: string
-): Promise<{
+export async function saveChannel(channel: string): Promise<{
   channel: string | null;
   status: 'youtube-not-set-up' | 'active';
   message: string;
 }> {
   const response = await HTTP.post('/setup/youtube/connect', { channel });
+  return response.data;
+}
+
+export async function populateFirstTime(): Promise<string> {
+  const response = await HTTP.post('/setup/youtube/populate');
   return response.data;
 }

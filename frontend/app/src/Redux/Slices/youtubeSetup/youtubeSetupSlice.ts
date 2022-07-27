@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getYouTubeSetupNotification } from '../../../Components/YoutubeSetup/YoutubeSetup';
 import { RootState } from '../../store';
-import { fetchSettings, saveChannel } from './youtubeSetupAPI';
+import {
+  fetchSettings,
+  populateFirstTime,
+  saveChannel,
+} from './youtubeSetupAPI';
 
 export interface youtubeSetupState {
   status: 'loading' | 'youtube-not-set-up' | 'active' | 'change';
@@ -24,8 +28,17 @@ export const getSettingsAsync = createAsyncThunk(
 
 export const connectChannelAsync = createAsyncThunk(
   'youtubeSetup/saveChannel',
-  async (newChannel: string) => {
-    return await saveChannel(newChannel);
+  async (newChannel: string, thunkApi) => {
+    const response = await saveChannel(newChannel);
+    thunkApi.dispatch(populateFirstTimeAsync());
+    return response;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'youtubeSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
@@ -58,16 +71,15 @@ export const youtubeSetupSlice = createSlice({
 
         const notification = getYouTubeSetupNotification();
         notification.setMessage(action.payload.message);
-        notification.setType(action.payload.status === 'active' ? 'success' : 'error');
+        notification.setType(
+          action.payload.status === 'active' ? 'success' : 'error'
+        );
         notification.setShown(true);
       });
   },
 });
 
-export const {
-  setStatus,
-  setNewChannel
-} = youtubeSetupSlice.actions;
+export const { setStatus, setNewChannel } = youtubeSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.youtubeSetup.status;
 export const selectChannel = (state: RootState) => state.youtubeSetup.channel;

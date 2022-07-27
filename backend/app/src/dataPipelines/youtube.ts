@@ -19,7 +19,7 @@ const YouTubeApiEndPoint = google.youtube({
  * 3. Update all comments
  * @returns {Promise<void>} - Promise that resolves when the function is complete
  */
-async function startPipeline(): Promise<void> {
+export async function startPipeline(firstTime = false): Promise<void> {
   try {
     let youtubeChannels = await YouTubeChannel.findAll();
     if (youtubeChannels.length == 0) return;
@@ -37,13 +37,19 @@ async function startPipeline(): Promise<void> {
       const oauth = youtubeChannel.oauth;
 
       /* Last day that a YouTube video was published */
-      let lastDate: Date = await YouTubeVideo.findOne({
-        where: { channelId: channelIdKey },
-        order: [['date', 'DESC']],
-      }).then((video) => {
-        if (video) return video.date;
-        return new Date(0);
-      });
+      let lastDate: Date;
+      if (firstTime) {
+        lastDate = new Date();
+        lastDate.setDate(lastDate.getDate() - 7);
+      } else {
+        lastDate = await YouTubeVideo.findOne({
+          where: { channelId: channelIdKey },
+          order: [['date', 'DESC']],
+        }).then((video) => {
+          if (video) return video.date;
+          return new Date(0);
+        });
+      }
 
       updateVideosWorkFlow.push(
         ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
