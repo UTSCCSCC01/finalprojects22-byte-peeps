@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getInstagramSetupNotification } from '../../../Components/InstagramSetup/InstagramSetup';
 import { RootState } from '../../store';
-import { fetchSettings, savePage } from './instagramSetupAPI';
+import {
+  fetchSettings,
+  populateFirstTime,
+  savePage,
+} from './instagramSetupAPI';
 
 export interface InstagramSetupState {
   status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive';
@@ -24,8 +28,17 @@ export const getSettingsAsync = createAsyncThunk(
 
 export const connectPageAsync = createAsyncThunk(
   'instagramSetup/savePage',
+  async (params, thunkApi) => {
+    const response = await savePage();
+    thunkApi.dispatch(populateFirstTimeAsync());
+    return response;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'instagramSetup/populateFirstTime',
   async () => {
-    return await savePage();
+    return await populateFirstTime();
   }
 );
 
