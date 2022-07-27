@@ -70,6 +70,7 @@ function usePostsTable(appName: AppNames, postId?: number): UsePostsTable {
   const [pageSize, setPageSize] = useState(5);
 
   const appData = postsTables[appName];
+
   const getPostsData = async (
     startDate: String,
     endDate: String,

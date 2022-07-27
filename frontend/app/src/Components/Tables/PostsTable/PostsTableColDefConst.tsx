@@ -59,20 +59,14 @@ const redditColDef: MetricsTableColDef = [
     ...defaultColumnStyle,
   },
   {
-    field: 'retweets',
-    headerName: 'Retweets',
-    type: 'number',
-    ...defaultColumnStyle,
-  },
-  {
     field: 'score',
-    headerName: 'Score',
+    headerName: 'Upvoted',
     type: 'number',
     ...defaultColumnStyle,
   },
   {
     field: 'numComments',
-    headerName: 'Comments',
+    headerName: 'Replies',
     type: 'number',
     ...defaultColumnStyle,
   },
