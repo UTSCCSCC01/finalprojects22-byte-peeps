@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getTwitterSetupNotification } from '../../../Components/TwitterSetup/TwitterSetup';
 import { RootState } from '../../store';
-import { fetchSettings, saveUsername } from './twitterSetupAPI';
+import {
+  fetchSettings,
+  populateFirstTime,
+  saveUsername,
+} from './twitterSetupAPI';
 
 export interface TwitterSetupState {
   status: 'loading' | 'twitter-not-set-up' | 'active' | 'change';
@@ -12,7 +16,7 @@ export interface TwitterSetupState {
 const initialState: TwitterSetupState = {
   status: 'loading',
   username: null,
-  newUsername: ''
+  newUsername: '',
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -24,8 +28,17 @@ export const getSettingsAsync = createAsyncThunk(
 
 export const connectUsernameAsync = createAsyncThunk(
   'twitterSetup/saveUsername',
-  async (newUsername: string) => {
-    return await saveUsername(newUsername);
+  async (newUsername: string, thunkApi) => {
+    const response = await saveUsername(newUsername);
+    thunkApi.dispatch(populateFirstTimeAsync());
+    return response;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'twitterSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
@@ -58,16 +71,15 @@ export const twitterSetupSlice = createSlice({
 
         const notification = getTwitterSetupNotification();
         notification.setMessage(action.payload.message);
-        notification.setType(action.payload.status === 'active' ? 'success' : 'error');
-        notification.setShown(true);          
+        notification.setType(
+          action.payload.status === 'active' ? 'success' : 'error'
+        );
+        notification.setShown(true);
       });
   },
 });
 
-export const {
-  setStatus,
-  setNewUsername
-} = twitterSetupSlice.actions;
+export const { setStatus, setNewUsername } = twitterSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.twitterSetup.status;
 export const selectUsername = (state: RootState) => state.twitterSetup.username;

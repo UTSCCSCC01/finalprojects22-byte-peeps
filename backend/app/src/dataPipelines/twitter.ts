@@ -13,23 +13,24 @@ import TwitterConversation from '../models/twitter/conversation';
  *           related to this Twitter User, and for each one
  *           fetches and updates the conversation.
  */
-async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     /* Get stored Twitter Users */
     let twitterUsers = await TwitterUser.findAll();
     if (twitterUsers.length == 0) return;
-  
+
     /* Get boundary dates */
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const initial = new Date();
+    const daysToFetch = firstTime ? 7 : 1;
+    initial.setDate(initial.getDate() - daysToFetch);
     const today = new Date();
-    const dates: string[] = [yesterday.toISOString(), today.toISOString()];
-  
+    const dates: string[] = [initial.toISOString(), today.toISOString()];
+
     /* Update data for each Twitter user */
     twitterUsers.forEach(async (twitterUser) => {
       /* Fetch and update posts */
       await updateUserTweets(twitterUser, dates);
-  
+
       /* Fetch and update conversations */
       const tweets = await TwitterTweet.findAll({
         where: { twitterUserId: twitterUser.id },
@@ -91,9 +92,7 @@ async function updateUserTweets(twitterUser: TwitterUser, dates: string[]) {
  * to the conversation belonging to the provided tweet
  * @param {TwitterTweet} tweet The TwitterTweet object that's linked to the conversation
  */
-async function updateTweetConversation(
-  tweet: TwitterTweet
-) {
+async function updateTweetConversation(tweet: TwitterTweet) {
   /* Perform request */
   const data: any[] = await getTweetConversation(tweet.conversationId);
   if (data === null) return;
