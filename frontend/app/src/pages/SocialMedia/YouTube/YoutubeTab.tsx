@@ -5,8 +5,8 @@ import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
-import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
+import CommentsTable from '../../../Components/Tables/CommentsTable/CommentsTable';
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 

@@ -1,23 +1,26 @@
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useAppSelector } from '../../Redux/hooks';
+import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
-} from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../utils/enums';
-import HTTP from '../../utils/http';
-import { extractBackendError } from '../../utils/httpHelpers';
+} from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { ErrorResponse } from '../../../utils/enums';
+import HTTP from '../../../utils/http';
+import { extractBackendError } from '../../../utils/httpHelpers';
+import {
+  MetricsTableColDef,
+  MetricsTables,
+} from '../MetricsTable/MetricsTableQueryTypes';
 import { CommentsTableColDefConst } from './CommentsTableColDefConst';
-import { CommentsTableColDef, CommentTables } from './CommentsTableQueryTypes';
 import {
   CommentsTableResponse,
   CommentsTableUrlRequest,
 } from './CommentsTableUrlConst';
 
-const commentsTables: CommentTables = {
+const commentsTables: MetricsTables = {
   [AppNames.Facebook]: {
     url: CommentsTableUrlRequest.Facebook,
     colDef: CommentsTableColDefConst.Facebook,
@@ -53,7 +56,7 @@ const commentsTables: CommentTables = {
 };
 
 export type UseCommentsTable = {
-  colDef: CommentsTableColDef;
+  colDef: MetricsTableColDef;
   data: CommentsTableResponse | undefined | null;
   isLoading: boolean;
   page: number;
@@ -83,7 +86,7 @@ function useCommentsTable(
     const params = postId
       ? { startDate, endDate, page, pageSize, postId }
       : { startDate, endDate, page, pageSize };
-    return await HTTP.get(appData.url, { params }).then((res) => res.data);
+    return await HTTP.get(appData.url, { params }).then((res: any) => res.data);
   };
 
   const query = useQuery<

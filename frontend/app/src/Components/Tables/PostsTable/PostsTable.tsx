@@ -1,12 +1,9 @@
-import useCommentsTable from './CommentsTableHook';
+import usePostsTable from './PostsTableHook';
 import MetricsTable from '../MetricsTable/MetricsTable';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 
-export default function CommentsTable(props: {
-  appName: AppNames;
-  postId?: number;
-}) {
-  const query = useCommentsTable(props.appName, props.postId);
+export default function PostsTable(props: { appName: AppNames }) {
+  const query = usePostsTable(props.appName);
 
   return (
     <div style={{ height: 350.5, width: '100%' }}>

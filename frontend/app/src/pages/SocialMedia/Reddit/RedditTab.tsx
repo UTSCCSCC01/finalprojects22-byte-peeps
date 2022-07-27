@@ -5,10 +5,11 @@ import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
-import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
+import CommentsTable from '../../../Components/Tables/CommentsTable/CommentsTable';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import PostsTable from '../../../Components/Tables/PostsTable/PostsTable';
 
 interface Props {}
 
@@ -45,6 +46,12 @@ const RedditTab: React.FC<Props> = () => {
       <Grid item xs={12}>
         <CardCharts name={'Comments'}>
           <CommentsTable appName={AppNames.Reddit} />
+        </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CardCharts name={'Listings'}>
+          <PostsTable appName={AppNames.Reddit} />
         </CardCharts>
       </Grid>
 

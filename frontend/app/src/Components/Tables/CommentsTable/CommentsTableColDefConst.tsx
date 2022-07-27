@@ -1,7 +1,7 @@
 import {
-  CommentsTableColDef,
   DefaultColumnStyleType,
-} from './CommentsTableQueryTypes';
+  MetricsTableColDef,
+} from '../MetricsTable/MetricsTableQueryTypes';
 
 const defaultColumnStyle: DefaultColumnStyleType = {
   sortable: false,
@@ -10,7 +10,7 @@ const defaultColumnStyle: DefaultColumnStyleType = {
   align: 'left',
 };
 
-const defaultColDef: CommentsTableColDef = [
+const defaultColDef: MetricsTableColDef = [
   {
     field: 'userName',
     headerName: 'Name',
@@ -45,7 +45,7 @@ const defaultColDef: CommentsTableColDef = [
   },
 ];
 
-const redditColDef: CommentsTableColDef = [
+const redditColDef: MetricsTableColDef = [
   {
     field: 'text',
     headerName: 'Comment',
@@ -81,7 +81,7 @@ const redditColDef: CommentsTableColDef = [
   },
 ];
 
-const twitterColDef: CommentsTableColDef = [
+const twitterColDef: MetricsTableColDef = [
   {
     field: 'text',
     headerName: 'Comment',
