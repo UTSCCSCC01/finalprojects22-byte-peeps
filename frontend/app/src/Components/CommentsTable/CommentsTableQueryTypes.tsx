@@ -1,4 +1,9 @@
-import { GridAlignment, GridColDef } from '@mui/x-data-grid';
+import {
+  GridAlignment,
+  GridColDef,
+  GridFilterItem,
+  GridFilterOperator,
+} from '@mui/x-data-grid';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 
 export type DefaultColumnStyleType = {
@@ -8,9 +13,13 @@ export type DefaultColumnStyleType = {
   align: GridAlignment;
 };
 
+export type DefaultColumnFilterStyleType = {
+  filterOperators: GridFilterOperator<any, string | number | null, any>[];
+};
+
 export type CommentsTableColDef = GridColDef[];
 
-type CommentsTableQueryType = { 
+type CommentsTableQueryType = {
   url: string;
   colDef: CommentsTableColDef;
 };
@@ -18,3 +27,5 @@ type CommentsTableQueryType = {
 export type CommentTables = {
   [key in AppNames]: CommentsTableQueryType;
 };
+
+export type CommentsFilter = GridFilterItem | undefined;
