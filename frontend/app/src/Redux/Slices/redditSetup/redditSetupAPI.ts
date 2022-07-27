@@ -8,13 +8,16 @@ export async function fetchSettings(): Promise<{
   return response.data;
 }
 
-export async function saveSubreddit(
-  subreddit: string
-): Promise<{
+export async function saveSubreddit(subreddit: string): Promise<{
   subreddit: string | null;
   status: 'reddit-not-set-up' | 'active';
   message: string;
 }> {
   const response = await HTTP.post('/setup/reddit/connect', { subreddit });
+  return response.data;
+}
+
+export async function populateFirstTime(): Promise<string> {
+  const response = await HTTP.post('/setup/reddit/populate');
   return response.data;
 }

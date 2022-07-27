@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getRedditSetupNotification } from '../../../Components/RedditSetup/RedditSetup';
 import { RootState } from '../../store';
-import { fetchSettings, saveSubreddit } from './redditSetupAPI';
+import {
+  fetchSettings,
+  populateFirstTime,
+  saveSubreddit,
+} from './redditSetupAPI';
 
 export interface redditSetupState {
   status: 'loading' | 'reddit-not-set-up' | 'active' | 'change';
@@ -12,7 +16,7 @@ export interface redditSetupState {
 const initialState: redditSetupState = {
   status: 'loading',
   subreddit: null,
-  newSubreddit: ''
+  newSubreddit: '',
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -24,8 +28,17 @@ export const getSettingsAsync = createAsyncThunk(
 
 export const connectSubredditAsync = createAsyncThunk(
   'redditSetup/saveSubreddit',
-  async (newSubreddit: string) => {
-    return await saveSubreddit(newSubreddit);
+  async (newSubreddit: string, thunkApi) => {
+    const response = await saveSubreddit(newSubreddit);
+    thunkApi.dispatch(populateFirstTimeAsync());
+    return response;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'redditSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
@@ -58,16 +71,15 @@ export const redditSetupSlice = createSlice({
 
         const notification = getRedditSetupNotification();
         notification.setMessage(action.payload.message);
-        notification.setType(action.payload.status === 'active' ? 'success' : 'error');
-        notification.setShown(true);          
+        notification.setType(
+          action.payload.status === 'active' ? 'success' : 'error'
+        );
+        notification.setShown(true);
       });
   },
 });
 
-export const {
-  setStatus,
-  setNewSubreddit
-} = redditSetupSlice.actions;
+export const { setStatus, setNewSubreddit } = redditSetupSlice.actions;
 
 export const selectStatus = (state: RootState) => state.redditSetup.status;
 export const selectSubreddit = (state: RootState) =>
