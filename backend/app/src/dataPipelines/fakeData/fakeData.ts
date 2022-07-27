@@ -437,6 +437,7 @@ async function addTwitterData(registeredUser: RegisteredUser): Promise<void> {
 async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
   Array.from({ length: numberOfPosts }).forEach(async () => {
     let date = faker.date.betweens(startDate, endDate, 1)[0];
+    const randomSentimentData = fakeData[randomIndex()];
 
     // Create a listing
     let redditListingId = await RedditListing.create({
@@ -447,6 +448,9 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
       score: parseInt(faker.random.numeric(1, { bannedDigits: ['0'] })),
       numComments: numberOfComments,
       permalink: faker.internet.url(),
+      sentimentAnalysis: randomSentimentData.sentiment,
+      subjectivityAnalysis: randomSentimentData.sentiment,
+      topicClassification: randomSentimentData.sentiment,
       subredditId: registeredUser.redditSubredditId,
     }).then((listing) => {
       return listing.id;

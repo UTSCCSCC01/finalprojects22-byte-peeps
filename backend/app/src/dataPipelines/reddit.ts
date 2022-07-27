@@ -3,6 +3,8 @@ import fetch from 'node-fetch';
 import Subreddit from '../models/reddit/subreddit';
 import RedditListing from '../models/reddit/listing';
 import RedditComment from '../models/reddit/comment';
+import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 
 const RedditBaseUrl = 'https://www.reddit.com';
 /**
@@ -69,6 +71,10 @@ const updateListings = async (subreddit: Subreddit) => {
             const listing = element['data'];
 
             try {
+              let textAnalysis: DatumAPICallResult = await DatumBoxAPICall(
+                listing['selftext']
+              );
+
               await RedditListing.findOrCreate({
                 where: {
                   dataid: listing['id'],
@@ -80,6 +86,9 @@ const updateListings = async (subreddit: Subreddit) => {
                   score: listing['score'],
                   numComments: listing['num_comments'],
                   permalink: listing['permalink'],
+                  sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                  subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                  topicClassification: textAnalysis.TopicClassification,
                   subredditId: subreddit.id,
                 },
               });
