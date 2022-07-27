@@ -19,13 +19,18 @@ export async function startPipeline() {
   try {
     /* Get stored subreddits*/
     let subreddits = await Subreddit.findAll();
+
     if (subreddits.length == 0) return;
 
     /* Update data for each subreddit */
-    subreddits.forEach(async (subreddit) => {
-      /* Fetch and update listings */
-      await updateListings(subreddit);
-    });
+    for (let i = 0; i < subreddits.length; i++) {
+      await updateListings(subreddits[i]);
+    }
+    // subreddits.forEach(async (subreddit) => {
+
+    //   /* Fetch and update listings */
+    //   await updateListings(subreddit);
+    // });
   } catch (err) {
     console.error(err);
   }
@@ -36,9 +41,12 @@ export async function startPipeline() {
     if (redditListings.length == 0) return;
 
     /* Update comment for each listing */
-    redditListings.forEach(async (listing) => {
-      await updateComment(listing);
-    });
+    for (let i = 0; i < redditListings.length; i++) {
+      await updateComment(redditListings[i]);
+    }
+    // redditListings.forEach(async (listing) => {
+    //   await updateComment(listing);
+    // });
   } catch (err) {
     console.error(err);
   }
@@ -68,6 +76,7 @@ const updateListings = async (subreddit: Subreddit) => {
         data['data']['children'].forEach(
           async (element: { [key: string]: any }) => {
             const listing = element['data'];
+
             const create_date = new Date(listing['created'] * 1000);
             try {
               await RedditListing.findOrCreate({
@@ -80,7 +89,7 @@ const updateListings = async (subreddit: Subreddit) => {
                   date: create_date,
                   score: listing['score'],
                   numComments: listing['num_comments'],
-                  permalink: listing['permalink'],
+                  permalink: 'https://www.reddit.com' + listing['permalink'],
                   subredditId: subreddit.id,
                 },
               });
@@ -111,7 +120,7 @@ const updateListings = async (subreddit: Subreddit) => {
                     date: create_date,
                     score: listing['score'],
                     numComments: listing['num_comments'],
-                    permalink: listing['permalink'],
+                    permalink: 'https://www.reddit.com' + listing['permalink'],
                     subredditId: subreddit.id,
                   },
                 });
@@ -132,7 +141,7 @@ const updateListings = async (subreddit: Subreddit) => {
                 date: create_date,
                 score: listing['score'],
                 numComments: listing['num_comments'],
-                permalink: listing['permalink'],
+                permalink: 'https://www.reddit.com' + listing['permalink'],
                 subredditId: subreddit.id,
               },
             });
@@ -165,7 +174,7 @@ const updateListings = async (subreddit: Subreddit) => {
                 date: create_date,
                 score: listing['score'],
                 numComments: listing['num_comments'],
-                permalink: listing['permalink'],
+                permalink: 'https://www.reddit.com' + listing['permalink'],
                 subredditId: subreddit.id,
               },
             });
@@ -186,7 +195,9 @@ const updateListings = async (subreddit: Subreddit) => {
  * @param {listing} the reddit listing object
  */
 const updateComment = async (listing: RedditListing) => {
-  const commentUrl = 'https://www.reddit.com' + listing.permalink + '.json';
+  // const commentUrl = 'https://www.reddit.com' + listing.permalink + '.json';
+  const commentUrl = listing.permalink + '.json';
+
 
   let response = await fetch(commentUrl);
   let data = await response.json();
