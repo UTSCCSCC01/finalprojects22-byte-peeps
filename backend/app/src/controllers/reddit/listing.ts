@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-const { sequelize, Op } = require('sequelize');
+const { Op } = require('sequelize');
 import {
   resourceNotFound,
   unknownError,
@@ -46,6 +46,63 @@ export const getListings: RequestHandler = async (req, res, next) => {
   });
 
   res.send(posts);
+};
+
+/**
+ * Provides the page number and size, provides comments of any Reddit listings related to the user API
+ */
+export const getListingTable: RequestHandler = async (req, res, next) => {
+  try {
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
+      return res.status(400).send();
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: RedditSubreddit,
+    });
+    const pageNumber = parseInt(req.query.page?.toString() ?? '0');
+    const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
+
+    const start: string = req.query.startDate.toString();
+    const end: string = req.query.endDate.toString();
+    const dates = getDates(start, end);
+
+    if (!user?.subreddit) return res.send({ count: 0, data: [] });
+
+    const listings = await RedditListing.findAll({
+      where: {
+        subredditId: user!.subreddit.id,
+        date: {
+          [Op.between]: [dates.startDate, dates.endDate],
+        },
+      },
+      order: [['date', 'DESC']],
+      attributes: [
+        'id',
+        'title',
+        'text',
+        'score',
+        'numComments',
+        'sentimentAnalysis',
+        'topicClassification',
+        'subjectivityAnalysis',
+      ],
+    });
+
+    const filteredListings = listings.slice(
+      pageNumber * pageSize,
+      pageNumber * pageSize + pageSize
+    );
+    res.send({ count: listings.length, data: filteredListings });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError });
+  }
 };
 
 /**
