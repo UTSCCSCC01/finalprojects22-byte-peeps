@@ -1,5 +1,7 @@
 import e, { RequestHandler } from 'express';
 import * as api from '../../apis/facebook';
+import { startPipeline } from '../../dataPipelines/facebook';
+import startPipelines from '../../dataPipelines/startPipelines';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
@@ -112,6 +114,15 @@ export const getCurrentPage: RequestHandler = async (req, res, next) => {
       user.facebookApi.save();
       return res.status(400).send();
     }
+    return res.status(500).send(err);
+  }
+};
+
+export const populateFirstTime: RequestHandler = async (req, res, next) => {
+  try {
+    await startPipeline(true);
+    return res.send('Facebook data has been pulled');
+  } catch (err: any) {
     return res.status(500).send(err);
   }
 };

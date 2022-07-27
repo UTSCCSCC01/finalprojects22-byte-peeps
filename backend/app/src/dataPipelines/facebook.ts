@@ -13,18 +13,19 @@ import { getAccountPosts, getPostComments } from '../apis/facebook';
  *           related to this Facebook account, and for each one
  *           fetches and updates the comments.
  */
-async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     /* Get stored Facebook Accounts (API) */
     let facebookApis = await FacebookApi.findAll();
     if (facebookApis.length == 0) return;
 
     /* Get boundary dates */
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const initial = new Date();
+    const daysToFetch = firstTime ? 7 : 1;
+    initial.setDate(initial.getDate() - daysToFetch);
     const today = new Date();
     const dates = [
-      Math.round(yesterday.getTime() / 1000),
+      Math.round(initial.getTime() / 1000),
       Math.round(today.getTime() / 1000),
     ];
 

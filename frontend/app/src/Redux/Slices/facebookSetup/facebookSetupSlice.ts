@@ -5,6 +5,7 @@ import { getSettingsAsync } from '../instagramSetup/instagramSetupSlice';
 import {
   fetchCurrentPage,
   fetchPages,
+  populateFirstTime,
   saveCurrentPage,
 } from './facebookSetupAPI';
 
@@ -32,7 +33,15 @@ export const saveCurrentPageAsync = createAsyncThunk(
   async (pageToken: string, thunkApi) => {
     const status = await saveCurrentPage(pageToken);
     thunkApi.dispatch(getSettingsAsync());
+    thunkApi.dispatch(populateFirstTimeAsync());
     return status;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'facebookSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
