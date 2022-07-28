@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { invalidDateRangeResponse } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
@@ -22,20 +22,15 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       include: YelpBusiness,
     });
 
-    if (!user?.yelpBusiness)
-      return res.send({
-        totalReviews: null,
-        avgReview: null,
-      });
+    if (!user?.yelpBusiness) return res.send([]);
 
-    const comments = await await YelpReview.findAll({
+    const comments = await YelpReview.findAll({
       where: {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        businessId: user!.yelpBusiness.id,
       },
-      attributes: ['text'], //need to double check
+      attributes: ['text'],
     });
 
     function getText(acc: string, comment: { text: string }) {
