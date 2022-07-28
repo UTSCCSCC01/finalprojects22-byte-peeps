@@ -4,8 +4,8 @@ import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
 
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
-import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
-
+import SentimentTimeSeries from '../../../Components/TimeSeriesChart/Sentiment/SentimentTimeSeries';
+import SubjectivityTimeSeries from '../../../Components/TimeSeriesChart/Subjectivity/SubjectivityTimeSeries';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
@@ -61,7 +61,13 @@ const FacebookTab: React.FC<Props> = () => {
 
       <Grid item xs={12}>
         <CardCharts name={'Comments Sentiment Analysis By Post'}>
-          <GeneralTimeSeriesChart appName={AppNames.Facebook} />
+          <SentimentTimeSeries appName={AppNames.Facebook} />
+        </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CardCharts name={'Comments Subjectivity Analysis By Post'}>
+          <SubjectivityTimeSeries appName={AppNames.Facebook} />
         </CardCharts>
       </Grid>
 

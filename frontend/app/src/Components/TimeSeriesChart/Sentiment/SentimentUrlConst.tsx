@@ -8,7 +8,7 @@ export interface TimeSeriesResponse {
   }[];
 }
 
-export enum TimeSeriesUrlRequest {
+export enum SentimentUrlRequest {
   Facebook = '/facebook/posts/sentiment_analysis',
   Instagram = '/instagram/media/sentiment_analysis',
   Twitter = '/twitter/tweets/sentiment_analysis',
