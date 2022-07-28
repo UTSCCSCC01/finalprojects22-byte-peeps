@@ -2,7 +2,10 @@ import { RequestHandler } from 'express';
 import {
   resourceNotFound,
   unknownError,
+  SentimentAnalysisStatus,
+  SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
+
 import { getDates } from '../../globalHelpers/globalHelpers';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
@@ -93,21 +96,21 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
           const positive = await FacebookComment.count({
             where: {
               postId: post.id,
-              sentimentAnalysis: 'positive',
+              sentimentAnalysis: SentimentAnalysisStatus.Positive,
             },
           });
 
           const negative = await FacebookComment.count({
             where: {
               postId: post.id,
-              sentimentAnalysis: 'negative',
+              sentimentAnalysis: SentimentAnalysisStatus.Negative,
             },
           });
 
           const neutral = await FacebookComment.count({
             where: {
               postId: post.id,
-              sentimentAnalysis: 'neutral',
+              sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             },
           });
 
@@ -118,6 +121,82 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
             positive: (positive / total) * 100,
             negative: (negative / total) * 100,
             neutral: (neutral / total) * 100,
+          });
+        }
+
+        res.send({ data: data });
+      } else {
+        res.status(404).json({ message: resourceNotFound });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: resourceNotFound });
+  }
+};
+/**
+ * Provides the % of comments that are labeled as subjective and objective for post within a specific datetime range
+ */
+
+export const getSubjectivityAnalysisForTimeSeries: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: FacebookApi,
+    });
+    if (!user?.facebookApi)
+      return res.send({
+        data: [],
+      });
+    const startDateParam = req.query.start;
+    const endDateParam = req.query.end;
+    let startDate: Date;
+    let endDate: Date;
+    if (startDateParam && endDateParam) {
+      if (startDateParam.length === 8 && endDateParam.length === 8) {
+        // parse
+        [startDate, endDate] = getStartEndDate(
+          startDateParam.toString(),
+          endDateParam.toString()
+        );
+
+        const postArray = await FacebookPost.findAll({
+          where: {
+            apiId: user!.facebookApi.id,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+          order: [['date', 'ASC']],
+        });
+
+        const data: any[] = [];
+
+        for (const post of postArray) {
+          const subjective = await FacebookComment.count({
+            where: {
+              postId: post.id,
+              subjectivityAnalysis: SubjectivityAnalysis.Subjective,
+            },
+          });
+
+          const objective = await FacebookComment.count({
+            where: {
+              postId: post.id,
+              subjectivityAnalysis: SubjectivityAnalysis.Objective,
+            },
+          });
+          const total = subjective + objective;
+          data.push({
+            date: post.date.toLocaleDateString(),
+            time: post.date.toLocaleTimeString('it-IT'),
+            subjective: (subjective / total) * 100,
+            objective: (objective / total) * 100,
+
           });
         }
 
