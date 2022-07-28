@@ -1,0 +1,5 @@
+.wrapper-chart {
+  /* min-height: 325px; */
+  display: flex;
+  /* flex-direction: row; */
+}
