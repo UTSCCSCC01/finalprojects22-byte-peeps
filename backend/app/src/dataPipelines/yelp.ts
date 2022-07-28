@@ -9,6 +9,7 @@ import axios from 'axios';
  *        a. Fetches all comments created on the previous day.
  **/
 export async function startPipeline() {
+
     try {
         // Get stored yelp businesses
         let businesses = await YelpBusiness.findAll();
@@ -17,6 +18,7 @@ export async function startPipeline() {
 
         // Update data for each review
         for (let i = 0; i < businesses.length; i++) {
+            console.log('update comment')
             await updateComment(businesses[i]);
         }
     } catch (err) {
@@ -24,16 +26,30 @@ export async function startPipeline() {
     }
 }
 const updateComment = async (business: YelpBusiness) => {
-    const initialUrl = 'https://www.yelp.com/biz/' + business.id + '/review_feed?rl=en&start=0';
     try {
-        const response = await axios
-            .get(initialUrl)
-        let data = await response.data;
-        console.log(data)
-        if (data['reviews'] === undefined || data['reviews'].length == 0) return;
+        while (true) {
+            // go through the pages
+            let page = 0;
 
-        data['reviews'].forEach(
-            async (review: { [key: string]: any }) => {
+            const url = 'https://www.yelp.com/biz/' + business.businessId + '/review_feed?rl=en&sort_by=date_desc&start=' + page.toString();
+
+            const response = await axios
+                .get(url)
+            let data = await response.data;
+            // stop if there are no reviews left
+            if (data['reviews'] === undefined || data['reviews'].length == 0) return;
+            const reviews = data['reviews']
+
+            for (let i = 0; i < reviews.length; i++) {
+                const review = reviews[i];
+
+                let reviewDate = review['localizedDate'];
+                reviewDate = new Date(reviewDate);
+                const today = new Date();
+                const diffTime = Math.abs(today.getTime() - reviewDate.getTime());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                // stop if the review is from more than 1 days ago
+                if (diffDays > 1) return;
                 try {
                     await YelpReview.findOrCreate({
                         where: {
@@ -41,9 +57,9 @@ const updateComment = async (business: YelpBusiness) => {
                         },
                         defaults: {
                             rating: review['rating'],
-                            text: review['text'],
-                            date: review['time_created'],
-                            userName: review['user']['name'],
+                            text: review['comment']['text'],
+                            date: reviewDate,
+                            userName: review['user']['markupDisplayName'],
                             businessId: business.id
                         }
                     })
@@ -52,7 +68,11 @@ const updateComment = async (business: YelpBusiness) => {
                 }
 
             }
-        )
+
+
+            page += 1;
+
+        }
     } catch (err) {
         console.error(err);
     }
