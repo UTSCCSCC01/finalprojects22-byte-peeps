@@ -52,6 +52,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const comments = await TwitterConversation.findAll({
       where: {
         tweetId: tweetIds,
+        ...res.locals.getFilterCondition(),
         date: {
           [Op.between]: [dates.startDate, dates.endDate],
         },

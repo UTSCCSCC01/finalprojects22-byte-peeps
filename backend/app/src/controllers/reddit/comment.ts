@@ -54,6 +54,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const comments = await RedditComment.findAll({
       where: {
         listingId: listingIds,
+        ...res.locals.getFilterCondition(),
         date: {
           [Op.between]: [dates.startDate, dates.endDate],
         },

@@ -53,6 +53,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const comments = await FacebookComment.findAll({
       where: {
         postId: postIds,
+        ...res.locals.getFilterCondition(),
         date: {
           [Op.between]: [dates.startDate, dates.endDate],
         },

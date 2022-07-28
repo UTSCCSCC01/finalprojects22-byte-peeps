@@ -54,6 +54,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const comments = await InstagramComment.findAll({
       where: {
         mediaId: mediaIds,
+        ...res.locals.getFilterCondition(),
         date: {
           [Op.between]: [dates.startDate, dates.endDate],
         },
