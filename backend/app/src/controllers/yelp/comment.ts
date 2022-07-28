@@ -3,9 +3,9 @@ import { Op, Sequelize } from 'sequelize';
 import { invalidDateRangeResponse } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
-import GoogleReviewsAccount from '../../models/googleReviews/account';
-import GoogleReviewsReview from '../../models/googleReviews/review';
 import User from '../../models/user/user';
+import YelpBusiness from '../../models/yelp/business';
+import YelpReview from '../../models/yelp/review';
 
 export const getWordCloudData: RequestHandler = async (req, res, next) => {
   try {
@@ -19,22 +19,27 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
 
     const user = await User.findOne({
       where: { username: req.session.username },
-      include: GoogleReviewsAccount,
+      include: YelpBusiness,
     });
 
-    if (!user?.googleReviewAccount) return res.send([]);
+    if (!user?.yelpBusiness)
+      return res.send({
+        totalReviews: null,
+        avgReview: null,
+      });
 
-    const comments = await GoogleReviewsReview.findAll({
+    const comments = await await YelpReview.findAll({
       where: {
         date: {
           [Op.between]: [startDate, endDate],
         },
+        businessId: user!.yelpBusiness.id,
       },
-      attributes: ['review'],
+      attributes: ['text'], //need to double check
     });
 
-    function getText(acc: string, comment: { review: string }) {
-      return acc.concat(' ', comment.review);
+    function getText(acc: string, comment: { text: string }) {
+      return acc.concat(' ', comment.text);
     }
     const getKeywords = comments.reduce(getText, ' ');
     res.send(keywordExtraction(getKeywords));
