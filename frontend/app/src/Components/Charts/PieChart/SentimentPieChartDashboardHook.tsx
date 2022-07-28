@@ -1,24 +1,17 @@
-import { AxiosError } from 'axios';
-import { useState } from 'react';
-import { useQuery, useQueries } from 'react-query';
+import { useQueries } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
 import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
-import { extractBackendError } from '../../../utils/httpHelpers';
-// import { DictPieChartQuery } from './PieChartQueryTypes';
 import { UsePieChartQuery } from './SentimentPieChartQueryTypes';
 import {
   SentimentAnalysisResponse,
   SentimentUrlRequest,
 } from './SentimentUrlConst';
-// import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-// import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
+import { AppNames } from '../DonutChart/SentimentPerformanceHook';
 
 type PieChartQueryType = {
   pieChartQuery: string;
@@ -58,20 +51,12 @@ const SentimentPieChartDashboardQuery: DictPieChartQuery = {
     pieChartQuery: '',
     appName: AppNames.Yelp,
   },
-  [AppNames.default]: {
-    pieChartQuery: '',
-    appName: AppNames.default,
-  },
 };
 const useSentimentPieChartDashboard = (): UsePieChartQuery => {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
-  //   const [isLoading, setIsLoading] = useState<boolean>(false);
-  //   const [error, setError] = useState<string | null>(null);
   let isLoading: boolean = false;
   let error: string = '';
-
-  // const { pieChartQuery } = SentimentPieChartQuery[appName];
 
   const getCommentsSentimentAnalysis = async (
     startDate: String,
@@ -86,11 +71,10 @@ const useSentimentPieChartDashboard = (): UsePieChartQuery => {
       return res.data;
     });
   };
-  // const arrayOfObj = Object.entries(SentimentPieChartQuery).map((e) => ( { [e[0]]: e[1] } ));
-  const arrayOfObj = Object.values(SentimentPieChartDashboardQuery);
+  const queries = Object.values(SentimentPieChartDashboardQuery);
 
   const query = useQueries(
-    arrayOfObj.map((app) => {
+    queries.map((app) => {
       return {
         queryKey: [
           'SentimentAnalysisData',
@@ -104,7 +88,6 @@ const useSentimentPieChartDashboard = (): UsePieChartQuery => {
       };
     })
   );
-  console.log(query);
   let pieChartdata: SentimentAnalysis = {
     positive: 0,
     neutral: 0,
@@ -117,7 +100,6 @@ const useSentimentPieChartDashboard = (): UsePieChartQuery => {
       pieChartdata.neutral += item.data.neutral;
     } else {
       isLoading = item.isLoading;
-      //   error = extractBackendError(item.error as AxiosError<ErrorResponse>);
       if (item.error) {
         const itemError: any = item.error;
         error = itemError?.message as string;
@@ -126,7 +108,6 @@ const useSentimentPieChartDashboard = (): UsePieChartQuery => {
   });
 
   //   pieChartdata: error !== null ? null : pieChartdata,
-
   return {
     pieChartdata: pieChartdata,
     isLoading: isLoading,

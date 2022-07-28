@@ -1,25 +1,25 @@
 import React from 'react';
-import { AxiosError } from 'axios';
-import { useState } from 'react';
-import { useQuery, useQueries } from 'react-query';
+import { useQueries } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
-import { extractBackendError } from '../../../utils/httpHelpers';
-// import { DictPieChartQuery } from './PieChartQueryTypes';
-import { UsePieChartQuery } from '.././PieChart/SentimentPieChartQueryTypes';
 import {
   SentimentAnalysisResponse,
   SentimentUrlRequest,
 } from '../PieChart/SentimentUrlConst';
-import SentimentPieChartDashboard from '../PieChart/SentimentPieChartDashboard';
-import { totalmem } from 'os';
+
+export enum AppNames {
+  Facebook = 'Facebook',
+  Instagram = 'Instagram',
+  Twitter = 'Twitter',
+  YouTube = 'YouTube',
+  Reddit = 'Reddit',
+  GoogleReviews = 'Google Reviews',
+  Yelp = 'Yelp',
+}
 
 type PieChartQueryType = {
   pieChartQuery: string;
@@ -59,10 +59,6 @@ const SentimentPerformanceQuery: DictPieChartQuery = {
     pieChartQuery: '',
     appName: AppNames.Yelp,
   },
-  [AppNames.default]: {
-    pieChartQuery: '',
-    appName: AppNames.default,
-  },
 };
 
 const useSentimentPerformance = () => {
@@ -86,10 +82,10 @@ const useSentimentPerformance = () => {
     });
   };
 
-  const arrayOfObj = Object.values(SentimentPerformanceQuery);
+  const queries = Object.values(SentimentPerformanceQuery);
 
   const query = useQueries(
-    arrayOfObj.map((app) => {
+    queries.map((app) => {
       return {
         queryKey: [
           'SentimentAnalysisData',
@@ -104,7 +100,6 @@ const useSentimentPerformance = () => {
     })
   );
 
-  console.log(query);
   const result: number[] = [];
   let resultCount = 0;
   query.forEach((item) => {

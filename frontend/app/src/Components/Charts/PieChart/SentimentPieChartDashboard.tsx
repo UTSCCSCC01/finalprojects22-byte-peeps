@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import useSentimentPieChart from './SentimentPieChartHook';
+import React from 'react';
 import PieChart from './PieChartAnalysis';
 import useSentimentPieChartDashboard from './SentimentPieChartDashboardHook';
 
@@ -10,26 +8,8 @@ const SentimentPieChartDashboard = () => {
     { name: 'Negative', value: 0 },
     { name: 'Neutral', value: 0 },
   ];
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
   const COLORS = ['#7ed472', '#203d1c', '#8bab87'];
   const { pieChartdata, isLoading, error } = useSentimentPieChartDashboard();
-  // const { pieChartdata, isLoading, error } =
-  //   useSentimentPieChart(AppNames.Facebook);
-  console.log('error:', error);
-  console.log('PieChartData:', pieChartdata);
-
-  // for (const appName in AppNames) {
-  //   const currappName: AppNames = AppNames[appName as keyof typeof AppNames];
-  //   setError(error);
-  //   setIsLoading(isLoading);
-
-  //   if (pieChartdata) {
-  //     data[0].value += pieChartdata.positive;
-  //     data[1].value += pieChartdata.negative;
-  //     data[2].value += pieChartdata.neutral;
-  //   }
-  // }
 
   if (pieChartdata) {
     data[0].value += pieChartdata.positive;

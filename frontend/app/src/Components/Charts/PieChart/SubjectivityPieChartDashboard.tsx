@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import useSentimentPieChart from './SentimentPieChartHook';
+import React from 'react';
 import PieChart from './PieChartAnalysis';
 import useSubjectivityPieChartDashboard from './SubjectivityPieChartDashboardHook';
 
@@ -13,8 +11,6 @@ const SubjectivityPieChartDashboard = () => {
   const COLORS = ['#7ed472', '#203d1c'];
   const { pieChartdata, isLoading, error } = useSubjectivityPieChartDashboard();
 
-  console.log('Subjectivity pieChartData:', pieChartdata);
-  console.log('Subjectivity Error:', error);
   let isDataPresent: Boolean | null = null;
 
   if (pieChartdata) {

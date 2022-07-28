@@ -1,8 +1,7 @@
 import React from 'react';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { AppNames } from './SentimentPerformanceHook';
 import useSentimentPerformance from './SentimentPerformanceHook';
 import CircularProgressChart from './CircularProgressChart';
-import { Percent } from '@mui/icons-material';
 import './SentimentPerformanceChart.css';
 import Loader from '../../Loader/Loader';
 import NoData from '../../NoData/NoData';
@@ -12,8 +11,6 @@ const SentimentPerformanceChart = () => {
   const { sentimentPerformanceData, resultCount, isLoading, error } =
     useSentimentPerformance();
 
-  console.log('performance:', sentimentPerformanceData);
-  console.log('keys:', Object.keys(AppNames));
   return isLoading ? (
     <Loader />
   ) : resultCount !== 0 ? (
