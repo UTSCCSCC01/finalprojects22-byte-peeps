@@ -24,13 +24,9 @@ export async function startPipeline() {
 
     /* Update data for each subreddit */
     for (let i = 0; i < subreddits.length; i++) {
+      /* Fetch and update listings */
       await updateListings(subreddits[i]);
     }
-    // subreddits.forEach(async (subreddit) => {
-
-    //   /* Fetch and update listings */
-    //   await updateListings(subreddit);
-    // });
   } catch (err) {
     console.error(err);
   }
@@ -44,9 +40,6 @@ export async function startPipeline() {
     for (let i = 0; i < redditListings.length; i++) {
       await updateComment(redditListings[i]);
     }
-    // redditListings.forEach(async (listing) => {
-    //   await updateComment(listing);
-    // });
   } catch (err) {
     console.error(err);
   }
@@ -153,7 +146,6 @@ const updateListings = async (subreddit: Subreddit) => {
     );
     // get the listings on the next few pages
     while (data['data']['after'] != null) {
-      console.log(data['data']['after']);
       listingsUrl = listingsUrl + '&after=' + data['data']['after'];
       response = await fetch(listingsUrl);
       data = await response.json();
@@ -195,7 +187,6 @@ const updateListings = async (subreddit: Subreddit) => {
  * @param {listing} the reddit listing object
  */
 const updateComment = async (listing: RedditListing) => {
-  // const commentUrl = 'https://www.reddit.com' + listing.permalink + '.json';
   const commentUrl = listing.permalink + '.json';
 
 
