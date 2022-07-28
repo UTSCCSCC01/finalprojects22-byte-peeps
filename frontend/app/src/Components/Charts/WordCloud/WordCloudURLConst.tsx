@@ -8,6 +8,6 @@ export enum CommentsWordCloudUrlRequest {
   YouTube = '/youtube/comments/wordCloud',
   Twitter = '/twitter/comments/wordCloud',
   Reddit = '/reddit/comments/wordCloud',
-  GoogleReviews = 'googleReviews/comments/wordCloud',
-  Yelp = 'yelp/comments/wordCloud',
+  GoogleReviews = '/googleReviews/comments/wordCloud',
+  Yelp = '/yelp/comments/wordCloud',
 }
