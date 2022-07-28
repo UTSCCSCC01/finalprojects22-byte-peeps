@@ -19,11 +19,11 @@ const YelpTab: React.FC<Props> = () => {
         <CardsHeader appName={AppNames.Yelp} />
       </Grid>
 
-    <Grid item xs={2} sm={4} md={4}>
+      <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Word Cloud'}>
-        <CommentsWordCloud appName={AppNames.Instagram} />
-    </CardCharts>
-    </Grid>
+          <CommentsWordCloud appName={AppNames.Yelp} />
+        </CardCharts>
+      </Grid>
     </Grid>
   );
 };

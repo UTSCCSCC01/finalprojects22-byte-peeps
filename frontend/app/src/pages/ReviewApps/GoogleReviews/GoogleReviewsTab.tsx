@@ -19,13 +19,12 @@ const GoogleReviewsTab: React.FC<Props> = () => {
         <CardsHeader appName={AppNames.GoogleReviews} />
       </Grid>
 
-        <Grid item xs={2} sm={4} md={4}>
-            <CardCharts name={'Word Cloud'}>
-            <CommentsWordCloud appName={AppNames.Instagram} />
+      <Grid item xs={2} sm={4} md={4}>
+        <CardCharts name={'Word Cloud'}>
+          <CommentsWordCloud appName={AppNames.GoogleReviews} />
         </CardCharts>
-        </Grid>
+      </Grid>
     </Grid>
-    
   );
 };
 
