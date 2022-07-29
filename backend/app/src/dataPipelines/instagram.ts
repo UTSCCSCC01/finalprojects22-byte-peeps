@@ -1,14 +1,15 @@
 import { CronJob } from 'cron';
-import FacebookApi from '../models/facebook/api';
-import InstagramApi from '../models/instagram/api';
-import InstagramMedia from '../models/instagram/media';
-import InstagramTag from '../models/instagram/tag';
-import InstagramComment from '../models/instagram/comment';
 import {
   getAccountMedia,
   getAccountTags,
   getMediaComments,
 } from '../apis/instagram';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
+import FacebookApi from '../models/facebook/api';
+import InstagramApi from '../models/instagram/api';
+import InstagramComment from '../models/instagram/comment';
+import InstagramMedia from '../models/instagram/media';
+import InstagramTag from '../models/instagram/tag';
 
 /**
  * Updates the database as follows:
@@ -121,20 +122,30 @@ async function updateAccountTags(accessToken: string, api: InstagramApi) {
   data.forEach(async (tag: { [key: string]: any }) => {
     InstagramTag.findOne({
       where: { dataId: tag['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
+      let caption: string = tag['caption'];
+      let textAnalysis = await DatumBoxAPICall(caption);
+
       if (obj) {
         obj.update({
           likes: Number(tag['like_count']),
           numComments: Number(tag['comments_count']),
+          caption,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       } else {
         InstagramTag.create({
           dataId: tag['id'],
           date: tag['timestamp'],
           username: tag['username'],
-          caption: tag['caption'],
+          caption,
           likes: Number(tag['like_count']),
           numComments: Number(tag['comments_count']),
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
           apiId: api.id,
         });
       }
@@ -157,7 +168,10 @@ async function updateMediaComments(accessToken: string, media: InstagramMedia) {
   data.forEach(async (comment: { [key: string]: any }) => {
     InstagramComment.findOne({
       where: { dataId: comment['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
+      let message = comment['text'];
+      let textAnalysis = await DatumBoxAPICall(message);
+
       if (obj) {
         obj.update({ likes: Number(comment['like_count']) });
       } else {
@@ -165,9 +179,12 @@ async function updateMediaComments(accessToken: string, media: InstagramMedia) {
           dataId: comment['id'],
           date: comment['timestamp'],
           userName: comment['username'],
-          message: comment['text'],
+          message,
           likes: Number(comment['like_count']),
           mediaId: media.id,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       }
     });

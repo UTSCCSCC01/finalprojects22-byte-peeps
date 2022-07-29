@@ -1,8 +1,9 @@
 import { CronJob } from 'cron';
 import { getTweetConversation, getUserTweets } from '../apis/twitter';
-import TwitterUser from '../models/twitter/user';
-import TwitterTweet from '../models/twitter/tweet';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 import TwitterConversation from '../models/twitter/conversation';
+import TwitterTweet from '../models/twitter/tweet';
+import TwitterUser from '../models/twitter/user';
 
 /**
  * Updates the database as follows:
@@ -101,23 +102,34 @@ async function updateTweetConversation(tweet: TwitterTweet) {
   data.forEach(async (comment: { [key: string]: any }) => {
     TwitterConversation.findOne({
       where: { twitterId: comment['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
+      let text = comment['text'];
+
+      let textAnalysis = await DatumBoxAPICall(text);
+
       if (obj) {
         obj.update({
           retweets: comment['public_metrics']['retweet_count'],
           replies: comment['public_metrics']['reply_count'],
           likes: comment['public_metrics']['like_count'],
+          text,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       } else {
         TwitterConversation.create({
           twitterId: comment['id'],
           conversationId: comment['conversation_id'],
-          text: comment['text'],
+          text,
           date: comment['created_at'],
           retweets: comment['public_metrics']['retweet_count'],
           replies: comment['public_metrics']['reply_count'],
           likes: comment['public_metrics']['like_count'],
           tweetId: tweet.id,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       }
     });

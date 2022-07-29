@@ -13,8 +13,8 @@ export type ErrorResponse = {
 
 export enum SentimentAnalysisColors {
   Positive = '#0088FE',
-  Negative = '#71a6de',
-  Neutral = '#09213b',
+  Negative = '#09213b',
+  Neutral = '#71a6de',
 }
 
 export enum SubjectivityAnalysisColors {

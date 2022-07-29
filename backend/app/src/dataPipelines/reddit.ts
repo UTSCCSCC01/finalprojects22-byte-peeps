@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import Subreddit from '../models/reddit/subreddit';
 import RedditListing from '../models/reddit/listing';
 import RedditComment from '../models/reddit/comment';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 
 const RedditBaseUrl = 'https://www.reddit.com';
 /**
@@ -19,13 +20,14 @@ export async function startPipeline(firstTime = false) {
   try {
     /* Get stored subreddits*/
     let subreddits = await Subreddit.findAll();
+
     if (subreddits.length == 0) return;
 
     /* Update data for each subreddit */
-    subreddits.forEach(async (subreddit) => {
+    for (const subreddit of subreddits) {
       /* Fetch and update listings */
       await updateListings(subreddit, firstTime);
-    });
+    }
   } catch (err) {
     console.error(err);
   }
@@ -36,9 +38,9 @@ export async function startPipeline(firstTime = false) {
     if (redditListings.length == 0) return;
 
     /* Update comment for each listing */
-    redditListings.forEach(async (listing) => {
-      await updateComment(listing);
-    });
+    for (let i = 0; i < redditListings.length; i++) {
+      await updateComment(redditListings[i]);
+    }
   } catch (err) {
     console.error(err);
   }
@@ -66,6 +68,7 @@ const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
     data['data']['children'].forEach(
       async (element: { [key: string]: any }) => {
         const listing = element['data'];
+        const create_date = new Date(listing['created'] * 1000);
         let response = await fetch(listingsUrl);
         let data = await response.json();
         if (data['data'] === undefined || data['data'].length == 0) return;
@@ -73,20 +76,27 @@ const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
         data['data']['children'].forEach(
           async (element: { [key: string]: any }) => {
             const listing = element['data'];
+            let listingText = listing['selftext'];
 
+            let textAnalysis = await DatumBoxAPICall(listingText);
+
+            const create_date = new Date(listing['created'] * 1000);
             try {
               await RedditListing.findOrCreate({
                 where: {
-                  dataid: listing['id'],
+                  dataId: listing['id'],
                 },
                 defaults: {
                   title: listing['title'],
                   text: listing['selftext'],
-                  date: listing['created'],
+                  date: create_date,
                   score: listing['score'],
                   numComments: listing['num_comments'],
-                  permalink: listing['permalink'],
+                  permalink: 'https://www.reddit.com' + listing['permalink'],
                   subredditId: subreddit.id,
+                  sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                  subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                  topicClassification: textAnalysis.TopicClassification,
                 },
               });
             } catch (err) {
@@ -104,19 +114,28 @@ const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
           data['data']['children'].forEach(
             async (element: { [key: string]: any }) => {
               const listing = element['data'];
+              let listingText = listing['selftext'];
+
+              let textAnalysis = await DatumBoxAPICall(listingText);
+
+              const create_date = new Date(listing['created'] * 1000);
+
               try {
                 await RedditListing.findOrCreate({
                   where: {
-                    dataid: listing['id'],
+                    dataId: listing['id'],
                   },
                   defaults: {
                     title: listing['title'],
                     text: listing['selftext'],
-                    date: listing['created'],
+                    date: create_date,
                     score: listing['score'],
                     numComments: listing['num_comments'],
-                    permalink: listing['permalink'],
+                    permalink: 'https://www.reddit.com' + listing['permalink'],
                     subredditId: subreddit.id,
+                    sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                    subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                    topicClassification: textAnalysis.TopicClassification,
                   },
                 });
               } catch (err) {
@@ -126,18 +145,25 @@ const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
           );
 
           try {
+            let listingText = listing['selftext'];
+
+            let textAnalysis = await DatumBoxAPICall(listingText);
+
             await RedditListing.findOrCreate({
               where: {
-                dataid: listing['id'],
+                dataId: listing['id'],
               },
               defaults: {
                 title: listing['title'],
-                text: listing['selftext'],
-                date: listing['created'],
+                text: listingText,
+                date: create_date,
                 score: listing['score'],
                 numComments: listing['num_comments'],
-                permalink: listing['permalink'],
+                permalink: 'https://www.reddit.com' + listing['permalink'],
                 subredditId: subreddit.id,
+                sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                topicClassification: textAnalysis.TopicClassification,
               },
             });
           } catch (err) {
@@ -156,19 +182,26 @@ const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
       data['data']['children'].forEach(
         async (element: { [key: string]: any }) => {
           const listing = element['data'];
+          const create_date = new Date(listing['created'] * 1000);
+          let listingText = listing['selftext'];
+          let textAnalysis = await DatumBoxAPICall(listingText);
+
           try {
             await RedditListing.findOrCreate({
               where: {
-                dataid: listing['id'],
+                dataId: listing['id'],
               },
               defaults: {
                 title: listing['title'],
                 text: listing['selftext'],
-                date: listing['created'],
+                date: create_date,
                 score: listing['score'],
                 numComments: listing['num_comments'],
-                permalink: listing['permalink'],
+                permalink: 'https://www.reddit.com' + listing['permalink'],
                 subredditId: subreddit.id,
+                sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                topicClassification: textAnalysis.TopicClassification,
               },
             });
           } catch (err) {
@@ -188,31 +221,39 @@ const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
  * @param {listing} the reddit listing object
  */
 const updateComment = async (listing: RedditListing) => {
-  const commentUrl = 'https://www.reddit.com' + listing.permalink + '.json';
+  const commentUrl = listing.permalink + '.json';
 
   let response = await fetch(commentUrl);
   let data = await response.json();
   if (data === undefined || data.length == 0) return;
   const comments = data[1]['data']['children'];
+
   comments.forEach(async (element: { [key: string]: any }) => {
     const comment: { [key: string]: any } = element['data'];
+    const create_date = new Date(comment['created'] * 1000);
     if (comment['body'] == undefined) return;
     let num_replies = 0;
 
     if (comment['replies'] != '') {
       num_replies = comment['replies']['data']['children'].length;
     }
+    let commentText = comment['body'];
+    let textAnalysis = await DatumBoxAPICall(commentText);
+
     try {
       await RedditComment.findOrCreate({
         where: {
-          dataid: comment['id'],
+          dataId: comment['id'],
         },
         defaults: {
-          text: comment['body'],
-          date: comment['created'],
+          text: commentText,
+          date: create_date,
           score: comment['score'],
           replies: num_replies,
           listingId: listing.id,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         },
       });
     } catch (err) {
