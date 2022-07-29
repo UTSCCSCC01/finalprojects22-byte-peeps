@@ -100,6 +100,12 @@ export const facebookSetupSlice = createSlice({
       .addCase(retrievePagesAsync.fulfilled, (state, action) => {
         state.pages = action.payload;
         state.stage = 'selectPage';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
+        const notification = getFacebookSetupNotification();
+        notification.setMessage(action.payload);
+        notification.setType('success');
+        notification.setShown(true);
       });
   },
 });

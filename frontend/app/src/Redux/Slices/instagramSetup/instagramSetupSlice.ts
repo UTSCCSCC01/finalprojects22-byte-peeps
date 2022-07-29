@@ -69,6 +69,12 @@ export const instagramSetupSlice = createSlice({
         );
         notification.setType('success');
         notification.setShown(true);
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
+        const notification = getInstagramSetupNotification();
+        notification.setMessage(action.payload);
+        notification.setType('success');
+        notification.setShown(true);
       });
   },
 });

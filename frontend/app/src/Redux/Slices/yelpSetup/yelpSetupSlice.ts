@@ -112,6 +112,12 @@ export const yelpSetupSlice = createSlice({
           action.payload.status === 'active' ? 'success' : 'error'
         );
         notification.setShown(true);
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
+        const notification = getYelpSetupNotification();
+        notification.setMessage(action.payload);
+        notification.setType('success');
+        notification.setShown(true);
       });
   },
 });
