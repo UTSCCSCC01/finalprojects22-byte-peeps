@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQueries } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
 import {
@@ -99,7 +98,6 @@ const useSentimentPerformance = () => {
       };
     })
   );
-  console.log(query);
   const result: number[] = [];
   let resultCount = 0;
   query.forEach((item) => {
