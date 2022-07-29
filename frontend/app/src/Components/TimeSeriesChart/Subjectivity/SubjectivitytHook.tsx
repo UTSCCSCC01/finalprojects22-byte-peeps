@@ -1,15 +1,18 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
-import { useAppSelector } from '../../Redux/hooks';
+import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
-} from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../utils/enums';
-import HTTP from '../../utils/http';
-import { extractBackendError } from '../../utils/httpHelpers';
-import { TimeSeriesResponse, TimeSeriesUrlRequest } from './TimeSeriesUrlConst';
+} from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { ErrorResponse } from '../../../utils/enums';
+
+import { extractBackendError } from '../../../utils/httpHelpers';
+import {
+  TimeSeriesResponse,
+  SubjectivityUrlRequest,
+} from './SubjectivityUrlConst';
 
 export type UseTimeSeriesTable = {
   data: TimeSeriesResponse;
@@ -19,32 +22,37 @@ export type UseTimeSeriesTable = {
 };
 const timeSeriesTable = {
   [AppNames.Facebook]: {
-    url: TimeSeriesUrlRequest.Facebook,
+    url: SubjectivityUrlRequest.Facebook,
   },
   [AppNames.Instagram]: {
-    url: TimeSeriesUrlRequest.Instagram,
+    url: SubjectivityUrlRequest.Instagram,
   },
   [AppNames.Twitter]: {
-    url: TimeSeriesUrlRequest.Twitter,
+    url: SubjectivityUrlRequest.Twitter,
   },
   [AppNames.Reddit]: {
-    url: TimeSeriesUrlRequest.Reddit,
+    url: SubjectivityUrlRequest.Reddit,
   },
   [AppNames.YouTube]: {
-    url: TimeSeriesUrlRequest.YouTube,
+    url: SubjectivityUrlRequest.YouTube,
   },
   [AppNames.GoogleReviews]: {
-    url: TimeSeriesUrlRequest.Empty,
+    url: SubjectivityUrlRequest.Empty,
   },
   [AppNames.Yelp]: {
-    url: TimeSeriesUrlRequest.Empty,
+    url: SubjectivityUrlRequest.Empty,
   },
   [AppNames.default]: {
-    url: TimeSeriesUrlRequest.Empty,
+    url: SubjectivityUrlRequest.Empty,
   },
 };
-
-export function useTimeSeriesTable(appName: AppNames): UseTimeSeriesTable {
+const HTTP = axios.create({
+  baseURL: process.env.REACT_APP_BACKEND_ENDPOINT,
+  withCredentials: true,
+});
+export function useTimeSeriesSubjectivity(
+  appName: AppNames
+): UseTimeSeriesTable {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
@@ -63,7 +71,7 @@ export function useTimeSeriesTable(appName: AppNames): UseTimeSeriesTable {
     TimeSeriesResponse,
     AxiosError<ErrorResponse>,
     TimeSeriesResponse | null
-  >([startDate, endDate], getAnalysis);
+  >([startDate, endDate, 'subjectivity'], getAnalysis);
   return {
     data: query.data || { data: [] },
     isLoading: query.isLoading,

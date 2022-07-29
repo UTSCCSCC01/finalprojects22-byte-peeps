@@ -7,7 +7,8 @@ import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/Sub
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import CommentsTable from '../../../Components/Tables/CommentsTable/CommentsTable';
-import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
+import SentimentTimeSeries from '../../../Components/TimeSeriesChart/Sentiment/SentimentTimeSeries';
+import SubjectivityTimeSeries from '../../../Components/TimeSeriesChart/Subjectivity/SubjectivityTimeSeries';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 
 interface Props {}
@@ -51,7 +52,13 @@ const TwitterTab: React.FC<Props> = () => {
       <Grid item xs={12}>
         <CardCharts name={'Comments Sentiment Analysis By Post'}>
           {/* <TimeSeriesChart /> */}
-          <GeneralTimeSeriesChart appName={AppNames.Twitter} />
+          <SentimentTimeSeries appName={AppNames.Twitter} />
+        </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CardCharts name={'Comments Subjectivity Analysis By Post'}>
+          <SubjectivityTimeSeries appName={AppNames.Facebook} />
         </CardCharts>
       </Grid>
 

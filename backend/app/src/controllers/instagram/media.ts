@@ -1,4 +1,7 @@
-import { unknownError } from './../../globalHelpers/globalConstants';
+import {
+  unknownError, SentimentAnalysisStatus,
+  SubjectivityAnalysis,
+} from './../../globalHelpers/globalConstants';
 import { RequestHandler } from 'express';
 import InstagramMedia from '../../models/instagram/media';
 import InstagramComment from '../../models/instagram/comment';
@@ -89,21 +92,21 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
           const positive = await InstagramComment.count({
             where: {
               mediaId: media.id,
-              sentimentAnalysis: 'positive',
+              sentimentAnalysis: SentimentAnalysisStatus.Positive,
             },
           });
 
           const negative = await InstagramComment.count({
             where: {
               mediaId: media.id,
-              sentimentAnalysis: 'negative',
+              sentimentAnalysis: SentimentAnalysisStatus.Negative,
             },
           });
 
           const neutral = await InstagramComment.count({
             where: {
               mediaId: media.id,
-              sentimentAnalysis: 'neutral',
+              sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             },
           });
 
@@ -127,3 +130,80 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
     res.status(500).json({ message: unknownError });
   }
 };
+
+/**
+ * Provides the % of comments that are labeled as subjective and objective for media within a specific datetime range
+ */
+export const getSubjectivityAnalysisForTimeSeries: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: InstagramApi,
+    });
+    if (!user?.instagramApi)
+      return res.send({
+        data: [],
+      });
+    const startDateParam = req.query.start;
+    const endDateParam = req.query.end;
+    let startDate: Date;
+    let endDate: Date;
+    if (startDateParam && endDateParam) {
+      if (startDateParam.length === 8 && endDateParam.length === 8) {
+        // parse
+        [startDate, endDate] = getStartEndDate(
+          startDateParam.toString(),
+          endDateParam.toString()
+        );
+
+        const mediaArray = await InstagramMedia.findAll({
+          where: {
+            apiId: user?.instagramApi.id,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+          order: [['date', 'ASC']],
+        });
+        const data: any[] = [];
+
+        for (const media of mediaArray) {
+          const subjective = await InstagramComment.count({
+            where: {
+              mediaId: media.id,
+              subjectivityAnalysis: SubjectivityAnalysis.Subjective,
+            },
+          });
+
+          const objective = await InstagramComment.count({
+            where: {
+              mediaId: media.id,
+              subjectivityAnalysis: SubjectivityAnalysis.Objective,
+            },
+          });
+
+
+          const total = subjective + objective;
+          data.push({
+            date: media.date.toLocaleDateString(),
+            time: media.date.toLocaleTimeString('it-IT'),
+            subjective: (subjective / total) * 100,
+            objective: (objective / total) * 100,
+          });
+        }
+
+        res.send({ data: data });
+      } else {
+        res.status(404).json({ message: resourceNotFound });
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError });
+  }
+};
+

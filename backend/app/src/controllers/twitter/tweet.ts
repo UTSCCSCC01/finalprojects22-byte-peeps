@@ -1,3 +1,5 @@
+import { SentimentAnalysisStatus } from './../enums';
+import { SubjectivityAnalysis } from './../../globalHelpers/globalConstants';
 import { RequestHandler } from 'express';
 const { sequelize, Op } = require('sequelize');
 import {
@@ -90,19 +92,19 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
           const positive = await TwitterConversation.count({
             where: {
               tweetId: tweet.id,
-              sentimentAnalysis: 'positive',
+              sentimentAnalysis: SentimentAnalysisStatus.Positive,
             },
           });
           const negative = await TwitterConversation.count({
             where: {
               tweetId: tweet.id,
-              sentimentAnalysis: 'negative',
+              sentimentAnalysis: SentimentAnalysisStatus.Negative,
             },
           });
           const neutral = await TwitterConversation.count({
             where: {
               tweetId: tweet.id,
-              sentimentAnalysis: 'neutral',
+              sentimentAnalysis: SentimentAnalysisStatus.Neutral,
             },
           });
 
@@ -113,6 +115,78 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
             positive: (positive / total) * 100,
             negative: (negative / total) * 100,
             neutral: (neutral / total) * 100,
+          });
+        }
+        res.send({ data: data });
+      } else {
+        res.status(404).json({ message: resourceNotFound });
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError });
+  }
+};
+export const getSubjectivityAnalysisForTimeSeries: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: TwitterUser,
+    });
+    if (!user?.twitterUser)
+      return res.send({
+        data: [],
+      });
+
+    const startDateParam = req.query.start;
+    const endDateParam = req.query.end;
+    let startDate: Date;
+    let endDate: Date;
+    if (startDateParam && endDateParam) {
+      if (startDateParam.length === 8 && endDateParam.length === 8) {
+        // parse
+        [startDate, endDate] = getStartEndDate(
+          startDateParam.toString(),
+          endDateParam.toString()
+        );
+
+        const tweetArray = await TwitterTweet.findAll({
+          where: {
+            twitterUserId: user?.twitterUser.id,
+            date: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+          order: [['date', 'ASC']],
+        });
+        const data: any[] = [];
+
+        for (const tweet of tweetArray) {
+          const subjective = await TwitterConversation.count({
+            where: {
+              tweetId: tweet.id,
+              subjectivityAnalysis: SubjectivityAnalysis.Subjective,
+            },
+          });
+          const objective = await TwitterConversation.count({
+            where: {
+              tweetId: tweet.id,
+              subjectivityAnalysis: SubjectivityAnalysis.Objective,
+            },
+          });
+
+
+          const total = subjective + objective;
+          data.push({
+            date: tweet.date.toLocaleDateString(),
+            time: tweet.date.toLocaleTimeString('it-IT'),
+            subjective: (subjective / total) * 100,
+            objective: (objective / total) * 100,
+
           });
         }
         res.send({ data: data });
