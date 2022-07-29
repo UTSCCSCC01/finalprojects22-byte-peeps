@@ -1,4 +1,5 @@
 import React from 'react';
+import { SentimentAnalysisColors } from '../../../utils/enums';
 import PieChart from './PieChartAnalysis';
 import useSentimentPieChartDashboard from './SentimentPieChartDashboardHook';
 
@@ -8,7 +9,11 @@ const SentimentPieChartDashboard = () => {
     { name: 'Negative', value: 0 },
     { name: 'Neutral', value: 0 },
   ];
-  const COLORS = ['#7ed472', '#203d1c', '#8bab87'];
+  const COLORS = [
+    SentimentAnalysisColors.Positive,
+    SentimentAnalysisColors.Negative,
+    SentimentAnalysisColors.Neutral,
+  ];
   const { pieChartdata, isLoading, error } = useSentimentPieChartDashboard();
 
   if (pieChartdata) {

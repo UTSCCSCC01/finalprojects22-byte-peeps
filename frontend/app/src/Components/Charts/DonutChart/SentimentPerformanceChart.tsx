@@ -15,10 +15,11 @@ const SentimentPerformanceChart = () => {
     <Loader />
   ) : resultCount !== 0 ? (
     <div className="wrapper-chart">
-      {Object.keys(AppNames).map((item, idx) => {
+      {Object.values(AppNames).map((item, idx) => {
         if (sentimentPerformanceData[idx] !== -1) {
           return (
             <CircularProgressChart
+              key={idx}
               appName={item}
               percentage={sentimentPerformanceData[idx]}
             />

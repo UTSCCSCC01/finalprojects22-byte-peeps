@@ -43,11 +43,11 @@ const SubjectivityPieChartDashboardQuery: DictPieChartQuery = {
     appName: AppNames.Reddit,
   },
   [AppNames.GoogleReviews]: {
-    pieChartQuery: '',
+    pieChartQuery: SubjectivityUrlRequest.GoogleReviews,
     appName: AppNames.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    pieChartQuery: '',
+    pieChartQuery: SubjectivityUrlRequest.Yelp,
     appName: AppNames.Yelp,
   },
 };
@@ -109,11 +109,10 @@ const useSubjectivityPieChartDashboard = () => {
     }
   });
 
-  //   pieChartdata: error !== null ? null : pieChartdata,
   return {
     pieChartdata: pieChartdata,
     isLoading: isLoading,
-    error: error,
+    error: error === '' ? null : error,
   };
 };
 

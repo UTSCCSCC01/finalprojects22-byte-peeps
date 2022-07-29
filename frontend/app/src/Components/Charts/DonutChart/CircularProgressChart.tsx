@@ -18,7 +18,7 @@ const CircularProgressChart = ({ percentage, appName }: ProgressChartProps) => {
           background
           backgroundPadding={6}
           styles={buildStyles({
-            backgroundColor: '#3e98c7',
+            backgroundColor: '#09213b',
             textColor: '#fff',
             pathColor: '#fff',
             trailColor: 'transparent',

@@ -52,11 +52,11 @@ const SentimentPerformanceQuery: DictPieChartQuery = {
     appName: AppNames.Reddit,
   },
   [AppNames.GoogleReviews]: {
-    pieChartQuery: '',
+    pieChartQuery: SentimentUrlRequest.GoogleReviews,
     appName: AppNames.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    pieChartQuery: '',
+    pieChartQuery: SentimentUrlRequest.Yelp,
     appName: AppNames.Yelp,
   },
 };
@@ -99,14 +99,18 @@ const useSentimentPerformance = () => {
       };
     })
   );
-
+  console.log(query);
   const result: number[] = [];
   let resultCount = 0;
   query.forEach((item) => {
     if (item.data) {
-      const total = item.data.positive + item.data.negative;
+      let total = item.data.positive + item.data.negative;
+      if (total === 0) {
+        total = 1;
+      } else {
+        resultCount += 1;
+      }
       result.push(+((item.data.positive / total) * 100).toFixed(2));
-      resultCount += 1;
     } else {
       result.push(-1);
       isLoading = item.isLoading;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { SubjectivityAnalysisColors } from '../../../utils/enums';
 import PieChart from './PieChartAnalysis';
 import useSubjectivityPieChartDashboard from './SubjectivityPieChartDashboardHook';
 
@@ -8,7 +9,10 @@ const SubjectivityPieChartDashboard = () => {
     { name: 'Objective', value: 0 },
   ];
 
-  const COLORS = ['#7ed472', '#203d1c'];
+  const COLORS = [
+    SubjectivityAnalysisColors.Subjective,
+    SubjectivityAnalysisColors.Objective,
+  ];
   const { pieChartdata, isLoading, error } = useSubjectivityPieChartDashboard();
 
   let isDataPresent: Boolean | null = null;
@@ -23,6 +27,7 @@ const SubjectivityPieChartDashboard = () => {
         ? false
         : null;
   }
+  
 
   return (
     <PieChart
