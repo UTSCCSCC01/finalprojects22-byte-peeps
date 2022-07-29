@@ -38,7 +38,7 @@ export async function startPipeline(firstTime = false) {
     ];
 
     /* Update data for each IG account */
-    instagramApis.forEach(async (api) => {
+    for (const api of instagramApis) {
       /* Get IG account data */
       const accessToken = api.facebookApi.token;
 
@@ -49,14 +49,14 @@ export async function startPipeline(firstTime = false) {
       await updateAccountTags(accessToken, api);
 
       /* Fetch and update comments */
-      const media = await InstagramMedia.findAll({
+      const posts = await InstagramMedia.findAll({
         where: { apiId: api.id },
       });
-      if (media.length == 0) return;
-      media.forEach(async (media) => {
+      if (posts.length == 0) return;
+      for (const media of posts) {
         await updateMediaComments(accessToken, media);
-      });
-    });
+      }
+    }
   } catch (err) {
     console.log(err);
   }
@@ -84,17 +84,17 @@ async function updateAccountMedia(
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (media: { [key: string]: any }) => {
-    InstagramMedia.findOne({
+  for (const media of data) {
+    await InstagramMedia.findOne({
       where: { dataId: media['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
       if (obj) {
-        obj.update({
+        await obj.update({
           likes: Number(media['like_count']),
           numComments: Number(media['comments_count']),
         });
       } else {
-        InstagramMedia.create({
+        await InstagramMedia.create({
           dataId: media['id'],
           date: media['timestamp'],
           caption: media['caption'],
@@ -104,7 +104,7 @@ async function updateAccountMedia(
         });
       }
     });
-  });
+  }
 }
 
 /**
@@ -119,15 +119,15 @@ async function updateAccountTags(accessToken: string, api: InstagramApi) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (tag: { [key: string]: any }) => {
-    InstagramTag.findOne({
+  for (const tag of data) {
+    await InstagramTag.findOne({
       where: { dataId: tag['id'] },
     }).then(async function (obj) {
       let caption: string = tag['caption'];
       let textAnalysis = await DatumBoxAPICall(caption);
 
       if (obj) {
-        obj.update({
+        await obj.update({
           likes: Number(tag['like_count']),
           numComments: Number(tag['comments_count']),
           caption,
@@ -136,7 +136,7 @@ async function updateAccountTags(accessToken: string, api: InstagramApi) {
           topicClassification: textAnalysis.TopicClassification,
         });
       } else {
-        InstagramTag.create({
+        await InstagramTag.create({
           dataId: tag['id'],
           date: tag['timestamp'],
           username: tag['username'],
@@ -150,7 +150,7 @@ async function updateAccountTags(accessToken: string, api: InstagramApi) {
         });
       }
     });
-  });
+  }
 }
 
 /**
@@ -165,17 +165,17 @@ async function updateMediaComments(accessToken: string, media: InstagramMedia) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (comment: { [key: string]: any }) => {
-    InstagramComment.findOne({
+  for (const comment of data) {
+    await InstagramComment.findOne({
       where: { dataId: comment['id'] },
     }).then(async function (obj) {
       let message = comment['text'];
       let textAnalysis = await DatumBoxAPICall(message);
 
       if (obj) {
-        obj.update({ likes: Number(comment['like_count']) });
+        await obj.update({ likes: Number(comment['like_count']) });
       } else {
-        InstagramComment.create({
+        await InstagramComment.create({
           dataId: comment['id'],
           date: comment['timestamp'],
           userName: comment['username'],
@@ -188,7 +188,7 @@ async function updateMediaComments(accessToken: string, media: InstagramMedia) {
         });
       }
     });
-  });
+  }
 }
 
 /**

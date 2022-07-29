@@ -25,11 +25,11 @@ async function startPipeline() {
     const today = new Date();
 
     /* Update data for each account */
-    accounts.forEach(async (account) => {
+    for (const account of accounts) {
       /* Update reviews */
       const locationIds = await getLocations(account.token, account.accountId);
       await updateLocationReviews(account.id, locationIds, today, yesterday);
-    });
+    }
   } catch (err) {
     console.log(err);
   }

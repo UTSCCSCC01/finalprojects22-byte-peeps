@@ -27,10 +27,8 @@ export async function startPipeline(firstTime = false): Promise<void> {
     /* Get the last day that a You dates */
     const updateVideosWorkFlow: Promise<[YouTubeVideo, boolean | null]>[] = [];
 
-    // for looop over youtube channel and do the same thing as below
-    for (let i = 0; i < youtubeChannels.length; i++) {
-      const youtubeChannel = youtubeChannels[i];
-
+    // Loop over youtube channel and do the same thing as below
+    for (const youtubeChannel of youtubeChannels) {
       /* Get channel id */
       const channelIdKey = youtubeChannel.id;
       const channelId = youtubeChannel.channelId;

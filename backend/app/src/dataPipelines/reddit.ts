@@ -34,12 +34,12 @@ export async function startPipeline(firstTime = false) {
 
   try {
     /* Get stored reddit listings*/
-    let redditListings = await RedditListing.findAll();
-    if (redditListings.length == 0) return;
+    let listings = await RedditListing.findAll();
+    if (listings.length == 0) return;
 
     /* Update comment for each listing */
-    for (let i = 0; i < redditListings.length; i++) {
-      await updateComment(redditListings[i]);
+    for (const listing of listings) {
+      await updateComment(listing);
     }
   } catch (err) {
     console.error(err);
