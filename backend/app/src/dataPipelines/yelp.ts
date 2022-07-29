@@ -16,9 +16,8 @@ export async function startPipeline() {
 
         if (businesses.length == 0) return;
 
-        // Update data for each review
+        // Update reviews for each business
         for (let i = 0; i < businesses.length; i++) {
-            console.log('update comment')
             await updateComment(businesses[i]);
         }
     } catch (err) {
@@ -37,12 +36,12 @@ const updateComment = async (business: YelpBusiness) => {
                 .get(url)
             let data = await response.data;
             // stop if there are no reviews left
-            if (data['reviews'] === undefined || data['reviews'].length == 0) return;
             const reviews = data['reviews']
+            if (reviews === undefined || reviews.length == 0) return;
+
 
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
-
                 let reviewDate = review['localizedDate'];
                 reviewDate = new Date(reviewDate);
                 const today = new Date();
