@@ -1,14 +1,19 @@
 import React from 'react';
-import PieChart, { PieChartAnalysisProps } from './PieChartAnalysis';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import { SentimentAnalysisColors } from '../../../utils/enums';
+import PieChart from './PieChartAnalysis';
 import useSentimentPieChart from './SentimentPieChartHook';
 
 interface Props {
+  appName: AppNames;
   postId?: number;
 }
 
 const PieChartWrapper: React.FC<Props> = (props) => {
-  const { pieChartdata, isLoading, error } = useSentimentPieChart(props.postId);
+  const { pieChartdata, isLoading, error } = useSentimentPieChart(
+    props.appName,
+    props.postId
+  );
 
   const data = [
     { name: 'Positve', value: 0 },

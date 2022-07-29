@@ -1,16 +1,15 @@
+import { AxiosError } from 'axios';
+import { useQuery } from 'react-query';
 import { useAppSelector } from '../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
 } from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { selectAppName } from '../../Redux/Slices/webApp/webAppSlice';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { TimeSeriesResponse, TimeSeriesUrlRequest } from './TimeSeriesUrlConst';
-import HTTP from '../../utils/http';
-import { useQuery } from 'react-query';
-import { AxiosError } from 'axios';
 import { ErrorResponse } from '../../utils/enums';
+import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
+import { TimeSeriesResponse, TimeSeriesUrlRequest } from './TimeSeriesUrlConst';
 
 export type UseTimeSeriesTable = {
   data: TimeSeriesResponse;
@@ -44,8 +43,8 @@ const timeSeriesTable = {
     url: TimeSeriesUrlRequest.Empty,
   },
 };
-export function useTimeSeriesTable(): UseTimeSeriesTable {
-  const appName = useAppSelector(selectAppName);
+
+export function useTimeSeriesTable(appName: AppNames): UseTimeSeriesTable {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 

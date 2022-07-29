@@ -7,17 +7,21 @@ import {
   TextField,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 import CardCharts from '../Cards/CardCharts';
+import CardsHeader from '../CardsHeader/CardsHeader';
+import SentimentPieChartWrapper from '../Charts/PieChart/SentimentPieChartWrapper';
+import SubjectivityPieChartWrapper from '../Charts/PieChart/SubjectivityPieChartWrapper';
 import CommentsTable from '../CommentsTable/CommentsTable';
 import Loader from '../Loader/Loader';
-import usePlatformPosts from './PostAnalysisHook';
 import './PostAnalysis.css';
-import SubjectivityPieChartWrapper from '../Charts/PieChart/SubjectivityPieChartWrapper';
-import SentimentPieChartWrapper from '../Charts/PieChart/SentimentPieChartWrapper';
-import ToBeImplemented from '../ToBeImplemented/ToBeImplemented';
-import CardsHeader from '../CardsHeader/CardsHeader';
+import usePlatformPosts from './PostAnalysisHook';
 
-export default function PostAnalysis() {
+interface Props {
+  appName: AppNames;
+}
+
+const PostAnalysis: React.FC<Props> = (props) => {
   const query = usePlatformPosts();
   const [postId, setPostId] = useState<number | ''>('');
   const [postTitle, setPostTitle] = useState<string>('');
@@ -29,7 +33,7 @@ export default function PostAnalysis() {
     setPostTitle(query.data?.at(0)?.label ?? '');
     setPostDate(query.data?.at(0)?.date ?? '');
     setPostPid(query.data?.at(0)?.pid ?? '');
-  }, [query.data?.at(0)?.id]);
+  }, [query.data]);
 
   return (
     <CardCharts
@@ -40,7 +44,7 @@ export default function PostAnalysis() {
             disableClearable
             blurOnSelect
             options={query.data ?? []}
-            value={query.data?.find((item) => item.id == postId)}
+            value={query.data?.find((item) => item.id === postId)}
             onChange={(e, val) => {
               if (val) {
                 setPostId(val.id);
@@ -84,7 +88,8 @@ export default function PostAnalysis() {
           <Grid item xs={2} sm={4} md={4}>
             <CardCharts name={'Sentiment Analysis'} variant="outlined">
               <SentimentPieChartWrapper
-                postId={typeof postId == 'number' ? postId : undefined}
+                appName={AppNames.Instagram}
+                postId={typeof postId === 'number' ? postId : undefined}
               />
             </CardCharts>
           </Grid>
@@ -92,22 +97,25 @@ export default function PostAnalysis() {
           <Grid item xs={2} sm={4} md={4}>
             <CardCharts name={'Subjectivity Analysis'} variant="outlined">
               <SubjectivityPieChartWrapper
-                postId={typeof postId == 'number' ? postId : undefined}
+                appName={AppNames.Instagram}
+                postId={typeof postId === 'number' ? postId : undefined}
               />
             </CardCharts>
           </Grid>
 
           <Grid item xs={12}>
             <CardsHeader
+              appName={props.appName}
               variant="outlined"
-              postId={typeof postId == 'number' ? postId : undefined}
+              postId={typeof postId === 'number' ? postId : undefined}
             />
           </Grid>
 
           <Grid item xs={12}>
             <CardCharts name={'Comments'} variant="outlined">
               <CommentsTable
-                postId={typeof postId == 'number' ? postId : undefined}
+                appName={AppNames.Instagram}
+                postId={typeof postId === 'number' ? postId : undefined}
               />
             </CardCharts>
           </Grid>
@@ -115,4 +123,6 @@ export default function PostAnalysis() {
       )}
     </CardCharts>
   );
-}
+};
+
+export default PostAnalysis;

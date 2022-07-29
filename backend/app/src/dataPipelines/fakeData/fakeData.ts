@@ -17,6 +17,8 @@ import TwitterConversation from '../../models/twitter/conversation';
 import TwitterTweet from '../../models/twitter/tweet';
 import TwitterUser from '../../models/twitter/user';
 import User from '../../models/user/user';
+import YelpBusiness from '../../models/yelp/business';
+import YelpReview from '../../models/yelp/review';
 import YouTubeChannel from '../../models/youtube/channel';
 import YouTubeComment from '../../models/youtube/comment';
 import YouTubeVideo from '../../models/youtube/video';
@@ -30,6 +32,7 @@ type RegisteredUser = {
   instagramApiId: number;
   redditSubredditId: number;
   twitterUserId: number;
+  yelpBusinessId: number;
   googleReviewsAccountId: number;
 };
 
@@ -122,6 +125,9 @@ async function deleteAllData(): Promise<void> {
   await RedditListing.destroy({ where: {} });
   await RedditSubreddit.destroy({ where: {} });
 
+  await YelpReview.destroy({ where: {} });
+  await YelpBusiness.destroy({ where: {} });
+
   await GoogleReviewsReview.destroy({ where: {} });
   await GoogleReviewsLocation.destroy({ where: {} });
   await GoogleReviewsAccount.destroy({ where: {} });
@@ -201,10 +207,20 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     return 1;
   });
 
+  // Add Yelp Business  user
+  const yelpBusinessId = await YelpBusiness.create({
+    businessId: faker.datatype.uuid(),
+    name: faker.company.companyName(),
+    userId,
+  }).then((account) => {
+    if (account) return account.id;
+    return 1;
+  });
+
   // Add Google Reviews user
   const googleReviewsAccountId = await GoogleReviewsAccount.create({
-    token: 'xxxxxx',
-    accountId: 'xxxxxx',
+    token: faker.datatype.uuid(),
+    accountId: faker.datatype.uuid(),
     isActive: true,
     userId,
   }).then((account) => {
@@ -219,6 +235,7 @@ async function userAndAPIs(): Promise<RegisteredUser> {
     instagramApiId,
     twitterUserId,
     redditSubredditId,
+    yelpBusinessId,
     googleReviewsAccountId,
   };
 }
@@ -456,6 +473,35 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
 }
 
 /**
+ * Adds fake yelp data to the database
+ * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
+ * @return {Promise<void>}
+ */
+async function addYelpData(registeredUser: RegisteredUser): Promise<void> {
+  Array.from({ length: numberOfPosts }).forEach(async () => {
+    let date = faker.date.betweens(startDate, endDate, 1)[0];
+    let randomSentimentData = fakeData[randomIndex()];
+
+    // Create a yelp review
+    YelpReview.create({
+      rating: parseInt(
+        faker.random.numeric(1, { bannedDigits: ['9', '8', '7', '6', '0'] })
+      ),
+      text: randomSentimentData.review,
+      dataId: faker.datatype.uuid(),
+      userName: faker.internet.userName(),
+      date: faker.date.between(date, endDate),
+      sentimentAnalysis: randomSentimentData.sentiment,
+      subjectivityAnalysis: randomSubjectivity(),
+      topicClassification: randomTopicClassification(),
+      businessId: registeredUser.yelpBusinessId,
+    }).then((video) => {
+      return video.id;
+    });
+  });
+}
+
+/**
  * Adds fake Google Reviews data to the database
  * @param {RegisteredUser} registeredUser - Object that has the database IDs of the user and their APIs
  * @return {Promise<void>}
@@ -506,6 +552,7 @@ async function addFakeData(): Promise<void> {
   await addInstagramData(registeredUser);
   await addTwitterData(registeredUser);
   await addRedditData(registeredUser);
+  await addYelpData(registeredUser);
   await addGoogleReviewsData(registeredUser);
   console.log('Fake data added.');
 }
