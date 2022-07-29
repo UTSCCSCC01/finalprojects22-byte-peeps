@@ -7,7 +7,8 @@ import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/Sub
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
-import GeneralTimeSeriesChart from '../../../Components/TimeSeriesChart/GeneralTimeSeriesChart';
+import SentimentTimeSeries from '../../../Components/TimeSeriesChart/Sentiment/SentimentTimeSeries';
+import SubjectivityTimeSeries from '../../../Components/TimeSeriesChart/Subjectivity/SubjectivityTimeSeries';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 
 interface Props {}
@@ -51,7 +52,13 @@ const YoutubeTab: React.FC<Props> = () => {
       <Grid item xs={12}>
         <CardCharts name={'Comments Sentiment Analysis By Post'}>
           {/* <TimeSeriesChart /> */}
-          <GeneralTimeSeriesChart appName={AppNames.YouTube} />
+          <SentimentTimeSeries appName={AppNames.YouTube} />
+        </CardCharts>
+      </Grid>
+
+      <Grid item xs={12}>
+        <CardCharts name={'Comments Subjectivity Analysis By Post'}>
+          <SubjectivityTimeSeries appName={AppNames.Facebook} />
         </CardCharts>
       </Grid>
 
