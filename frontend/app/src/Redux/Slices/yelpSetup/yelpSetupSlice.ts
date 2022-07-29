@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getYelpSetupNotification } from '../../../Components/YelpSetup/YelpSetup';
 import { RootState } from '../../store';
-import { fetchSettings, saveBusiness, searchBusiness } from './yelpSetupAPI';
+import {
+  fetchSettings,
+  populateFirstTime,
+  saveBusiness,
+  searchBusiness,
+} from './yelpSetupAPI';
 
 export interface YelpSetupState {
   status:
@@ -40,8 +45,17 @@ export const searchBusinessAsync = createAsyncThunk(
 
 export const connectBusinessAsync = createAsyncThunk(
   'yelpSetup/saveBusiness',
-  async (newBusiness: { id: string; name: string }) => {
-    return await saveBusiness(newBusiness);
+  async (newBusiness: { id: string; name: string }, thunkApi) => {
+    const response = await saveBusiness(newBusiness);
+    thunkApi.dispatch(populateFirstTimeAsync());
+    return response;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'twitterSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
