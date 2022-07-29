@@ -2,7 +2,6 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
-import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/SubjectivityPieChartWrapper';
