@@ -28,6 +28,7 @@ jobs:
         run: |
           touch .env
           echo REACT_APP_BACKEND_ENDPOINT=${{ secrets.REACT_APP_BACKEND_ENDPOINT }} >> .env
+          echo REACT_APP_FACEBOOK_APP_ID=${{ secrets.REACT_APP_FACEBOOK_APP_ID }} >> .env
 
       - name: Build image
         run: docker build . --file Dockerfile --tag frontend-bytepeeps
