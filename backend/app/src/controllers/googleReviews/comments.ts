@@ -118,7 +118,6 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     });
 
     if (!user?.googleReviewAccount) {
-      console.log('HERE');
       return res.send({
         subjective: 0,
         objective: 0,

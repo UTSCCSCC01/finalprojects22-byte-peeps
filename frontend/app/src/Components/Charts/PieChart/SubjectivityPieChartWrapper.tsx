@@ -38,8 +38,6 @@ const SubjectivityPieChartWrapper: React.FC<Props> = (props) => {
     SubjectivityAnalysisColors.Objective,
   ];
 
-  console.log(data);
-
   return (
     <>
       <PieChart
