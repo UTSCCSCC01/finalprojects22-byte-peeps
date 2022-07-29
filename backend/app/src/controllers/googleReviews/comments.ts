@@ -205,5 +205,3 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     next(e);
   }
 };
-
-    });
