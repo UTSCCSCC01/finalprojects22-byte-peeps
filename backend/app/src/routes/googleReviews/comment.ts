@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getWordCloudData } from '../../controllers/googleReviews/comment';
+import { getWordCloudData } from '../../controllers/googleReviews/comments';
 
 const googleReviewsCommentRouter = Router();
 

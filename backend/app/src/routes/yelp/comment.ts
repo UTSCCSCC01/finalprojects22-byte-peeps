@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getWordCloudData } from '../../controllers/yelp/comment';
+import { getWordCloudData } from '../../controllers/yelp/comments';
 
 const yelpCommentRoutes = Router();
 
