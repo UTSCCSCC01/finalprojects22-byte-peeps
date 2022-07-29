@@ -12,6 +12,7 @@ import {
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
 const { Op } = require('sequelize');
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 export const getCommentsSentimentAnalysis: RequestHandler = async (
   req,
@@ -132,3 +133,41 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     next(error);
   }
 };
+
+
+export const getWordCloudData: RequestHandler = async (req, res, next) => {
+  try {
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+
+    const { startDate, endDate } = getDates(startDateParam, endDateParam);
+
+    if (!startDate || !endDate)
+      return res.status(400).send(invalidDateRangeResponse);
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: YelpBusiness,
+    });
+
+    if (!user?.yelpBusiness) return res.send([]);
+
+    const comments = await YelpReview.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      attributes: ['text'],
+    });
+
+    function getText(acc: string, comment: { text: string }) {
+      return acc.concat(' ', comment.text);
+    }
+    const getKeywords = comments.reduce(getText, ' ');
+    res.send(keywordExtraction(getKeywords));
+  } catch (e) {
+    next(e);
+  }
+};
+

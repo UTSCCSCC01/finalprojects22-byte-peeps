@@ -10,6 +10,7 @@ import GoogleReviewsAccount from '../../models/googleReviews/account';
 import GoogleReviewsLocation from '../../models/googleReviews/location';
 import GoogleReviewsReview from '../../models/googleReviews/review';
 const { Op } = require('sequelize');
+import { keywordExtraction } from '../../middlewares/keywordExtraction';
 
 export const getCommentsSentimentAnalysis: RequestHandler = async (
   req,
@@ -168,3 +169,41 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
     next(error);
   }
 };
+
+export const getWordCloudData: RequestHandler = async (req, res, next) => {
+  try {
+    const startDateParam = req.query.startDate?.toString();
+    const endDateParam = req.query.endDate?.toString();
+
+    const { startDate, endDate } = getDates(startDateParam, endDateParam);
+
+    if (!startDate || !endDate)
+      return res.status(400).send(invalidDateRangeResponse);
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: GoogleReviewsAccount,
+    });
+
+    if (!user?.googleReviewAccount) return res.send([]);
+
+    const comments = await GoogleReviewsReview.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      attributes: ['review'],
+    });
+
+    function getText(acc: string, comment: { review: string }) {
+      return acc.concat(' ', comment.review);
+    }
+    const getKeywords = comments.reduce(getText, ' ');
+    res.send(keywordExtraction(getKeywords));
+  } catch (e) {
+    next(e);
+  }
+};
+
+    });

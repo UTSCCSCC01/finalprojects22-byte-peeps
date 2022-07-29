@@ -23,7 +23,7 @@ const GoogleReviewsTab: React.FC<Props> = () => {
 
       <Grid item xs={2} sm={4} md={4}>
         <CardCharts name={'Word Cloud'}>
-          <CommentsWordCloud appName={AppNames.Facebook} />
+          <CommentsWordCloud appName={AppNames.GoogleReviews} />
         </CardCharts>
       </Grid>
 
