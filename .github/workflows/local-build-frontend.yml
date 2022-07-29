@@ -54,7 +54,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d && docker rmi $(docker images | grep '')
+            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d && yes | docker image prune -a
 
-      # Command
-      # act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
+    # Command
+    # act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
