@@ -79,7 +79,6 @@ function useCommentsTable(
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [filter, setFilter] = useState<CommentsFilter>();
-  console.log(filter);
 
   const appData = commentsTables[appName];
   const getCommentsData = async (
