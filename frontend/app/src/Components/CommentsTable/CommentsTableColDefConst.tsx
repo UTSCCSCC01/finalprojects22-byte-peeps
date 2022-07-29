@@ -77,38 +77,45 @@ const instagramColDef: CommentsTableColDef = [
     field: 'userName',
     headerName: 'Name',
     ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
   },
   {
     field: 'type',
     headerName: 'Type',
     ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
   },
   {
     field: 'message',
     headerName: 'Message',
     flex: 1,
     ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
   },
   {
     field: 'likes',
     headerName: 'Likes',
     type: 'number',
     ...defaultColumnStyle,
+    ...defaultNumberFilterStyle,
   },
   {
     field: 'sentimentAnalysis',
     headerName: 'Sentiment',
     ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
   },
   {
     field: 'subjectivityAnalysis',
     headerName: 'Subjectivity',
     ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
   },
   {
     field: 'topicClassification',
     headerName: 'Topic',
     ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
   },
 ];
 
