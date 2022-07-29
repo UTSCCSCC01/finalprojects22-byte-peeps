@@ -15,11 +15,13 @@ import {
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import InstagramTag from '../../models/instagram/tag';
+import { Sequelize } from 'sequelize-typescript';
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
  */
-export const getComments: RequestHandler = async (req, res, next) => {
+export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
   try {
     if (
       !req.query.startDate ||
@@ -61,19 +63,41 @@ export const getComments: RequestHandler = async (req, res, next) => {
       order: [['date', 'DESC']],
       attributes: [
         'id',
+        'date',
         'userName',
         'message',
+        [Sequelize.literal("'Comment'"), 'type'],
         'likes',
         'sentimentAnalysis',
         'topicClassification',
         'subjectivityAnalysis',
       ],
     });
-    const filteredComments = comments.slice(
+
+    const tags = await InstagramTag.findAll({
+      where: { apiId: user!.instagramApi.id },
+      order: [['date', 'DESC']],
+      attributes: [
+        'id',
+        'date',
+        ['username', 'userName'],
+        ['caption', 'message'],
+        [Sequelize.literal("'Tag'"), 'type'],
+        'likes',
+        'sentimentAnalysis',
+        'topicClassification',
+        'subjectivityAnalysis',
+      ],
+    });
+
+    const commentsAndTags = [...comments, ...tags];
+    commentsAndTags.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+    const filteredCommentsAndTags = commentsAndTags.slice(
       pageNumber * pageSize,
       pageNumber * pageSize + pageSize
     );
-    res.send({ count: comments.length, data: filteredComments });
+    res.send({ count: commentsAndTags.length, data: filteredCommentsAndTags });
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: unknownError });

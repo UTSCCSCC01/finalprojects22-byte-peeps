@@ -1,8 +1,13 @@
 import { Router } from 'express';
+import {
+  getCommentsSentimentAnalysis, getCommentsSubjectivityAnalysis,
+} from '../../controllers/yelp/comments';
 import { getWordCloudData } from '../../controllers/yelp/comments';
 
-const yelpCommentRoutes = Router();
+const commentRouter = Router();
 
-yelpCommentRoutes.get('/wordCloud', getWordCloudData);
+commentRouter.get('/sentiment_analysis', getCommentsSentimentAnalysis);
+commentRouter.get('/subjectivity_analysis', getCommentsSubjectivityAnalysis);
+commentRoutes.get('/wordCloud', getWordCloudData);
 
-export default yelpCommentRoutes;
+export default commentRouter;

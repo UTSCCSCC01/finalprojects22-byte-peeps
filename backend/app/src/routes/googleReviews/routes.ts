@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import googleReviewsStatsRoutes from './stats';
-import googleReviewsCommentRouter from './comment';
+import googleReviewsCommentRoutes from './comments';
 
 const googleReviewsRouter = Router();
 
 googleReviewsRouter.use('/stats', googleReviewsStatsRoutes);
-googleReviewsRouter.use('/comments', googleReviewsCommentRouter);
+googleReviewsRouter.use('/comments', googleReviewsCommentRoutes);
 
 export default googleReviewsRouter;

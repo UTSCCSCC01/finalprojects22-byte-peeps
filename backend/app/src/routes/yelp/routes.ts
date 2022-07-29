@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import yelpStatsRoutes from './stats';
-import yelpCommentRoutes from './comment';
-
+import yelpCommentRoutes from './comments';
 const yelpRouter = Router();
 
 yelpRouter.use('/stats', yelpStatsRoutes);
