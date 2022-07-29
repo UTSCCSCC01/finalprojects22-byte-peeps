@@ -1,4 +1,9 @@
-import { DataGrid, GridColumns, GridFilterModel } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColumns,
+  GridFilterModel,
+  GridToolbar,
+} from '@mui/x-data-grid';
 
 export interface MetricsTableProps {
   rowsPerPageOptions?: number[];
@@ -32,6 +37,9 @@ export default function MetricsTable(props: MetricsTableProps) {
       filterMode="server"
       filterModel={props.filterModel}
       onFilterModelChange={props.setFilterModel}
+      components={{
+        Toolbar: GridToolbar,
+      }}
     />
   );
 }
