@@ -45,6 +45,46 @@ const defaultColDef: MetricsTableColDef = [
   },
 ];
 
+const instagramColDef: MetricsTableColDef = [
+  {
+    field: 'userName',
+    headerName: 'Name',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'type',
+    headerName: 'Type',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'message',
+    headerName: 'Message',
+    flex: 1,
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'likes',
+    headerName: 'Likes',
+    type: 'number',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'sentimentAnalysis',
+    headerName: 'Sentiment',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'subjectivityAnalysis',
+    headerName: 'Subjectivity',
+    ...defaultColumnStyle,
+  },
+  {
+    field: 'topicClassification',
+    headerName: 'Topic',
+    ...defaultColumnStyle,
+  },
+];
+
 const redditColDef: MetricsTableColDef = [
   {
     field: 'text',
@@ -125,7 +165,7 @@ const twitterColDef: MetricsTableColDef = [
 
 export const CommentsTableColDefConst = {
   Facebook: defaultColDef,
-  Instagram: defaultColDef,
+  Instagram: instagramColDef,
   Twitter: twitterColDef,
   YouTube: defaultColDef,
   Reddit: redditColDef,
