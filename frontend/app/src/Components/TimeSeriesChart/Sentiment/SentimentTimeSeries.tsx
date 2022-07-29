@@ -1,12 +1,12 @@
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import HTTP from '../../../utils/http';
 import NoData from '../../NoData/NoData';
 import SentimentChart from '../InnerComponents/SentimentChart';
-import './TimeSeriesChart.css';
-import { useTimeSeriesTable } from './SentimentHook';
+import '../TimeSeriesChart.css';
+import { useTimeSeriesSentiment } from './SentimentHook';
 
 export default function GeneralTimeSeriesChart(props: { appName: AppNames }) {
-  const query = useTimeSeriesTable(props.appName);
-
+  const query = useTimeSeriesSentiment(props.appName);
   return query.isSuccess && query.data.data.length ? (
     <SentimentChart data={query.data.data} />
   ) : (

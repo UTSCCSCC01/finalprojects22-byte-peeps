@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
 import {
@@ -7,7 +7,7 @@ import {
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import { ErrorResponse } from '../../../utils/enums';
-import HTTP from '../../../utils/http';
+
 import { extractBackendError } from '../../../utils/httpHelpers';
 import { TimeSeriesResponse, SentimentUrlRequest } from './SentimentUrlConst';
 
@@ -43,13 +43,16 @@ const timeSeriesTable = {
     url: SentimentUrlRequest.Empty,
   },
 };
-
-export function useTimeSeriesTable(appName: AppNames): UseTimeSeriesTable {
+const HTTP = axios.create({
+  baseURL: process.env.REACT_APP_BACKEND_ENDPOINT,
+  withCredentials: true,
+});
+export function useTimeSeriesSentiment(appName: AppNames): UseTimeSeriesTable {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 
   const appData = timeSeriesTable[appName];
-
+  console.log(appData.url);
   const getAnalysis = async (): Promise<TimeSeriesResponse> => {
     return await HTTP.get(appData.url, {
       params: {
@@ -63,7 +66,7 @@ export function useTimeSeriesTable(appName: AppNames): UseTimeSeriesTable {
     TimeSeriesResponse,
     AxiosError<ErrorResponse>,
     TimeSeriesResponse | null
-  >([startDate, endDate], getAnalysis);
+  >([startDate, endDate, 'sentiment'], getAnalysis);
   return {
     data: query.data || { data: [] },
     isLoading: query.isLoading,

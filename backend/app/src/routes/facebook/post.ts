@@ -7,7 +7,8 @@ import {
 const postRouter = Router();
 
 postRouter.get('/', getPosts);
-postRouter.get('/sentiment_analysis', getSentimentAnalysisForTimeSeries);
 postRouter.get('/subjectivity_analysis', getSubjectivityAnalysisForTimeSeries)
+postRouter.get('/sentiment_analysis', getSentimentAnalysisForTimeSeries);
+
 
 export default postRouter;

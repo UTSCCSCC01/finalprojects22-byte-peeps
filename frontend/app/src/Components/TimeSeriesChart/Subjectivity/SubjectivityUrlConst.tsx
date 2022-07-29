@@ -2,9 +2,8 @@ export interface TimeSeriesResponse {
   data: {
     date: string;
     time: string;
-    positive: number;
-    negative: number;
-    neutral: number;
+    subjective: number;
+    objective: number;
   }[];
 }
 
