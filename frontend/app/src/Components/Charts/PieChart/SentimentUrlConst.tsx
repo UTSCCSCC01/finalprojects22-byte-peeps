@@ -8,4 +8,6 @@ export enum SentimentUrlRequest {
   Twitter = '/twitter/comments/sentiment_analysis',
   YouTube = '/youtube/comments/sentiment_analysis',
   Reddit = '/reddit/comments/sentiment_analysis',
+  GoogleReviews = '/googleReviews/comments/sentiment_analysis',
+  Yelp = '/yelp/comments/sentiment_analysis',
 }
