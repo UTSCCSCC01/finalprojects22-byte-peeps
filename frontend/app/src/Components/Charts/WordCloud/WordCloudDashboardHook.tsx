@@ -69,7 +69,7 @@ const wordCloudQuery: DictWordCloudQuery = {
 const useCommentsWordCloud = (): UseWordCloudrQuery => {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
-  var keywords: WordCloudData = [];
+  let result: WordCloudData = [];
   let isLoading: boolean = false;
   let error: string = '';
 
@@ -106,8 +106,8 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   query.forEach((item) => {
     if (item.data) {
-      console.log('item:' + JSON.stringify(item)); //data: []????
-      //   keywords.push(item.data.WordCloudData); //to fix
+      result.push(item.data[0]);
+      console.log('result length:' + JSON.stringify(result.length));
     } else {
       isLoading = item.isLoading;
       if (item.error) {
@@ -118,7 +118,7 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
   });
 
   return {
-    data: keywords,
+    data: result,
     isLoading: isLoading,
     error: error === '' ? null : error,
   };
