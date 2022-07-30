@@ -185,7 +185,7 @@ npm run start
 
 Due to github actions being displayed, we will be running the github actions locally using [act](https://github.com/nektos/act) to deploy.
 
-Currently, the website is deployed at: https://datalytic.ml/
+Currently, the website is deployed at: https://www.datalytic.ml/
 
 - Installation:
 
@@ -207,19 +207,11 @@ Currently, the website is deployed at: https://datalytic.ml/
   act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
   ```
 
-```
-act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-backend.yml
-```
+  2. Frontend Deployment:
 
-    ```
-    act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
-    ```
-
-```
-act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
-```
-
-- **Note:** the last command will say failure but it did actually work.
+  ```
+  act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
+  ```
 
 - **Note:** the last command will say failure but it did actually work.
 
@@ -228,7 +220,6 @@ act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/loca
 - [Mohamed Tayeh](https://github.com/mohamed-tayeh)
 - [Bassel Ashi](https://github.com/BasselAshi)
 - [Connie Lin](https://github.com/connieJ-lin)
-- [Mohammad Qadir](https://github.com/DomiVesalius)
 - [Karandeep Lubana](https://github.com/KarandeepLubana)
 - [Jiaming Yang](https://github.com/Jiaming-Yang-20)
 - [Juan Camilo Corral](https://github.com/Wikisaqui)
