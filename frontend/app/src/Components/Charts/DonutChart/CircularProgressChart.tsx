@@ -14,7 +14,7 @@ const CircularProgressChart = ({ percentage, appName }: ProgressChartProps) => {
       <div style={{ width: '38%' }}>
         <CircularProgressbar
           value={percentage}
-          text={`${percentage}%`}
+          text={percentage === 0 ? 'N/A' : `${percentage}%`}
           background
           backgroundPadding={6}
           styles={buildStyles({

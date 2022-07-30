@@ -23,11 +23,10 @@ const SubjectivityPieChartDashboard = () => {
     isDataPresent =
       data[0].value > 0 || data[1].value > 0
         ? true
-        : data[0].value === 0 || data[1].value === 0 || data[2].value === 0
+        : data[0].value === 0 || data[1].value === 0
         ? false
         : null;
   }
-  
 
   return (
     <PieChart
