@@ -77,6 +77,7 @@ export const signOut = createAsyncThunk<
 
     return response.data;
   } catch (error: any) {
+    AuthStorage.removeSession();
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
