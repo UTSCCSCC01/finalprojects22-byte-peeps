@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import {
   invalidDateRangeResponse,
+  invalidInput,
   unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
@@ -26,13 +27,13 @@ export const getComments: RequestHandler = async (req, res, next) => {
       !req.query.endDate ||
       req.query.endDate.length !== 8
     )
-      return res.status(400).send();
+      return res.status(400).send(invalidInput);
 
     const user = await User.findOne({
       where: { username: req.session.username },
       include: GoogleReviewsAccount,
     });
-    const reviewId = req.query.reviewId ?? null;
+    const locationId = req.query.locationId ?? null;
     const pageNumber = parseInt(req.query.page?.toString() ?? '0');
     const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
 
@@ -42,9 +43,9 @@ export const getComments: RequestHandler = async (req, res, next) => {
 
     if (!user?.googleReviewAccount) return res.send({ count: 0, data: [] });
 
-    const locations = reviewId
+    const locations = locationId
       ? await GoogleReviewsLocation.findAll({
-          where: { accountId: user!.googleReviewAccount.id, id: reviewId },
+          where: { accountId: user!.googleReviewAccount.id, id: locationId },
         })
       : await GoogleReviewsLocation.findAll({
           where: { accountId: user!.googleReviewAccount.id },

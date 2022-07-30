@@ -43,12 +43,12 @@ const commentsTables: MetricsTables = {
     colDef: CommentsTableColDefConst.YouTube,
   },
   [AppNames.GoogleReviews]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.GoogleReviews,
+    colDef: CommentsTableColDefConst.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.Yelp,
+    colDef: CommentsTableColDefConst.Yelp,
   },
   [AppNames.default]: {
     url: '',

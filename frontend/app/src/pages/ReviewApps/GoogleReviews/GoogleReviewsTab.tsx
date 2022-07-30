@@ -6,7 +6,7 @@ import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/Sub
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
-import ReviewsTable from '../../../Components/Tables/ReviewsTable/ReviewsTable';
+import CommentsTable from '../../../Components/Tables/CommentsTable/CommentsTable';
 
 interface Props {}
 
@@ -42,7 +42,7 @@ const GoogleReviewsTab: React.FC<Props> = () => {
 
       <Grid item xs={12}>
         <CardCharts name={'Reviews'}>
-          <ReviewsTable appName={AppNames.GoogleReviews} />
+          <CommentsTable appName={AppNames.GoogleReviews} />
         </CardCharts>
       </Grid>
     </Grid>
