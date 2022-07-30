@@ -28,6 +28,7 @@ jobs:
         run: |
           touch .env
           echo REACT_APP_BACKEND_ENDPOINT=${{ secrets.REACT_APP_BACKEND_ENDPOINT }} >> .env
+          echo REACT_APP_FACEBOOK_APP_ID=${{ secrets.REACT_APP_FACEBOOK_APP_ID }} >> .env
 
       - name: Build image
         run: docker build . --file Dockerfile --tag frontend-bytepeeps
@@ -54,7 +55,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d && docker rmi $(docker images | grep '')
+            docker load < ~/images/frontend-bytepeeps.tar && docker compose up -d && yes | docker image prune -a
 
-      # Command
-      # act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
+    # Command
+    # act -s KEY="$(< ssh-key.txt)" --rebuild --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
