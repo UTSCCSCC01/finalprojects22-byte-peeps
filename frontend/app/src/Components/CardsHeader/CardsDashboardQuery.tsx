@@ -6,29 +6,45 @@ import {
   selectEndDate,
   selectStartDate,
 } from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+// import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 import { ErrorResponse } from '../../utils/enums';
 import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
 import { CardData } from '../Cards/CardInfo';
 import CardHeaderIcons from './CardsHeaderIconConst';
 import CardHeaderNames from './CardsHeaderNameConst';
-import {
-  DictCardHeaderQuery,
-  UseCardsHeaderQuery,
-} from './CardsHeaderQueryTypes';
+import { UseCardsHeaderQuery } from './CardsHeaderQueryTypes';
 import {
   CardHeaderResponse,
   CardHeaderURLRequest,
 } from './CardsHeaderURLConst';
 
-/**
- * @summary Formats the return of the card header data to match the CardDate[] type otherwise null if there is no correct response
- * @param { { [key: string]: string }} cardNames
- * @param {{ [key: string]: number } | null} cardData - null if response fails
- * @param {{ [key: string]: React.ReactElement }} cardIcons
- * @return {CardData[] | null} - null if response fails
- */
+// /**
+//  * @summary Formats the return of the card header data to match the CardDate[] type otherwise null if there is no correct response
+//  * @param { { [key: string]: string }} cardNames
+//  * @param {{ [key: string]: number } | null} cardData - null if response fails
+//  * @param {{ [key: string]: React.ReactElement }} cardIcons
+//  * @return {CardData[] | null} - null if response fails
+//  */
+export enum AppNames {
+  Facebook = 'Facebook',
+  Instagram = 'Instagram',
+  Twitter = 'Twitter',
+  YouTube = 'YouTube',
+  Reddit = 'Reddit',
+  GoogleReviews = 'Google Reviews',
+  Yelp = 'Yelp',
+}
+type CardHeaderQueryType = {
+  cardQuery: string;
+  cardNames: { [key: string]: string };
+  cardIcons: { [key: string]: React.ReactElement };
+  cardLength: number;
+};
+
+type DictCardHeaderQuery = {
+  [key in AppNames]: CardHeaderQueryType;
+};
 function formatData(
   cardNames: { [key: string]: string },
   cardData: { [key: string]: number } | null,
@@ -49,7 +65,7 @@ function formatData(
   return fromattedCardStatsData;
 }
 
-const AppCardHeaderQuery: DictCardHeaderQuery = {
+const AppCardDashboardQuery: DictCardHeaderQuery = {
   [AppNames.Facebook]: {
     cardQuery: CardHeaderURLRequest.FacebookCardHeader,
     cardNames: CardHeaderNames.FacebookCardNames,
@@ -92,56 +108,81 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
     cardLength: Object.keys(CardHeaderNames.GoogleReviewsCardNames).length,
     cardIcons: CardHeaderIcons.GoogleReviewsCardIcons,
   },
-  [AppNames.default]: {
-    cardQuery: '',
-    cardNames: {},
-    cardLength: 0,
-    cardIcons: {},
-  },
 };
 
-/**
- * Custom hook to get the card header data depending on the platform using useQuery()
- * @return {UseCardsHeaderQuery} useQuery() hook types alongside other extensions
+// /**
+//  * Custom hook to get the card header data depending on the platform using useQuery()
+//  * @return {UseCardsHeaderQuery} useQuery() hook types alongside other extensions
 //  */
-// function useCardsDashboardQuery(): UseCardsHeaderQuery {
-//   const startDate = useAppSelector(selectStartDate);
-//   const endDate = useAppSelector(selectEndDate);
+function useCardsDashboardQuery(): UseCardsHeaderQuery {
+  const startDate = useAppSelector(selectStartDate);
+  const endDate = useAppSelector(selectEndDate);
 
-//   const getHeaderCardsData = async (
-//     startDate: string,
-//     endDate: string,
-//     cardQuery: string,
-//     postId?: number
-//   ): Promise<CardHeaderResponse> => {
-//     const params = postId
-//       ? { startDate, endDate, postId }
-//       : { startDate, endDate };
-//     return await HTTP.get(cardQuery, { params }).then((res) => res.data);
-//   };
+  const getHeaderCardsData = async (
+    startDate: string,
+    endDate: string,
+    cardQuery: string,
+    postId?: number
+  ): Promise<any> => {
+    const params = postId
+      ? { startDate, endDate, postId }
+      : { startDate, endDate };
+    return await HTTP.get(cardQuery, { params }).then((res) => res.data);
+  };
 
-//   const queries = Object.values(AppCardHeaderQuery);
-//   const query = useQuery<
-//     CardHeaderResponse,
-//     AxiosError<ErrorResponse>,
-//     CardData[] | null
-//   >(
-//     ['headerCardsData', appName, startDate, endDate, postId], // the states that change the query go here
-//     () => getHeaderCardsData(startDate, endDate, postId),
-//     {
-//       select: React.useCallback(
-//         (data: CardHeaderResponse) => formatData(cardNames, data, cardIcons),
-//         [cardNames, cardIcons]
-//       ),
-//     }
-//   );
+  const queries = Object.values(AppCardDashboardQuery);
 
-//   return {
-//     data: query.data,
-//     isLoading: query.isLoading,
-//     dataLength: cardLength,
-//     error: extractBackendError(query.error),
-//   };
-// }
+  //   const query = useQuery<
+  //     CardHeaderResponse,
+  //     AxiosError<ErrorResponse>,
+  //     CardData[] | null
+  //   >(
+  //     ['headerCardsData', appName, startDate, endDate, postId], // the states that change the query go here
+  //     () => getHeaderCardsData(startDate, endDate, postId),
+  //     {
+  //       select: React.useCallback(
+  //         (data: CardHeaderResponse) => formatData(cardNames, data, cardIcons),
+  //         [cardNames, cardIcons]
+  //       ),
+  //     }
+  //   );
 
-// export default useCardsDashboardQuery;
+  const query = useQuery(
+    queries.map((app) => {
+      return {
+        queryKey: [
+          'headerCardsData',
+          app.cardNames,
+          startDate,
+          endDate,
+          app.cardQuery,
+        ],
+        queryFn: () => getHeaderCardsData(startDate, endDate, app.cardQuery),
+      };
+    })
+  );
+
+  //   query.forEach((item) => {
+  //     if (item.data) {
+  //       //#posts
+  //       //#likes
+  //       //#mentions
+  //       //avg
+  //     } else {
+  //       isLoading = item.isLoading;
+  //       if (item.error) {
+  //         const itemError: any = item.error;
+  //         error = itemError?.message as string;
+  //       }
+  //     }
+  //   });
+
+  return {
+    data: null,
+    isLoading: false,
+    dataLength: 0,
+    error: null,
+  };
+}
+
+export default useCardsDashboardQuery;
