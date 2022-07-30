@@ -1,5 +1,6 @@
 import {
 <<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableColDefConst.tsx
+<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableColDefConst.tsx
   defaultColumnStyle,
   defaultNumberFilterStyle,
   defaultStringFilterStyle,
@@ -8,6 +9,8 @@ import { MetricsTableColDef } from '../MetricsTable/MetricsTableQueryTypes';
 
 const defaultColDef: MetricsTableColDef = [
 =======
+=======
+>>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableColDefConst.tsx
   getGridNumericOperators,
   getGridStringOperators,
 } from '@mui/x-data-grid';
