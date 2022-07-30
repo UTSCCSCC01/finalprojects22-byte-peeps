@@ -13,12 +13,14 @@ export interface FacebookSetupState {
   stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive' | 'change';
   pages: { id: string; name: string; access_token: string }[];
   currentPage: string | null;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: FacebookSetupState = {
   stage: 'loading',
   pages: [],
   currentPage: null,
+  fetchState: null,
 };
 
 export const getCurrentPageAsync = createAsyncThunk(
@@ -101,11 +103,11 @@ export const facebookSetupSlice = createSlice({
         state.pages = action.payload;
         state.stage = 'selectPage';
       })
-      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
-        const notification = getFacebookSetupNotification();
-        notification.setMessage(action.payload);
-        notification.setType('success');
-        notification.setShown(true);
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -116,5 +118,7 @@ export const selectStage = (state: RootState) => state.facebookSetup.stage;
 export const selectPages = (state: RootState) => state.facebookSetup.pages;
 export const selectCurrentPage = (state: RootState) =>
   state.facebookSetup.currentPage;
+export const selectFetchState = (state: RootState) =>
+  state.facebookSetup.fetchState;
 
 export default facebookSetupSlice.reducer;

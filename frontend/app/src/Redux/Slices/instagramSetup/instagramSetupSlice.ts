@@ -11,12 +11,14 @@ export interface InstagramSetupState {
   status: 'loading' | 'fb-not-set-up' | 'ig-not-set-up' | 'active' | 'inactive';
   page: { id: string; name: string } | null;
   connectedPageId: string | null;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: InstagramSetupState = {
   status: 'loading',
   page: null,
   connectedPageId: null,
+  fetchState: null,
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -70,11 +72,11 @@ export const instagramSetupSlice = createSlice({
         notification.setType('success');
         notification.setShown(true);
       })
-      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
-        const notification = getInstagramSetupNotification();
-        notification.setMessage(action.payload);
-        notification.setType('success');
-        notification.setShown(true);
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -83,5 +85,7 @@ export const selectStatus = (state: RootState) => state.instagramSetup.status;
 export const selectPage = (state: RootState) => state.instagramSetup.page;
 export const selectConnectedPageId = (state: RootState) =>
   state.instagramSetup.connectedPageId;
+export const selectFetchState = (state: RootState) =>
+  state.instagramSetup.fetchState;
 
 export default instagramSetupSlice.reducer;

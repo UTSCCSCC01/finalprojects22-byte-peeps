@@ -11,12 +11,14 @@ export interface TwitterSetupState {
   status: 'loading' | 'twitter-not-set-up' | 'active' | 'change';
   username: string | null;
   newUsername: string;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: TwitterSetupState = {
   status: 'loading',
   username: null,
   newUsername: '',
+  fetchState: null,
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -76,11 +78,11 @@ export const twitterSetupSlice = createSlice({
         );
         notification.setShown(true);
       })
-      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
-        const notification = getTwitterSetupNotification();
-        notification.setMessage(action.payload);
-        notification.setType('success');
-        notification.setShown(true);
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -91,5 +93,7 @@ export const selectStatus = (state: RootState) => state.twitterSetup.status;
 export const selectUsername = (state: RootState) => state.twitterSetup.username;
 export const selectNewUsername = (state: RootState) =>
   state.twitterSetup.newUsername;
+export const selectFetchState = (state: RootState) =>
+  state.twitterSetup.fetchState;
 
 export default twitterSetupSlice.reducer;

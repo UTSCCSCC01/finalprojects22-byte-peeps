@@ -11,12 +11,14 @@ export interface youtubeSetupState {
   status: 'loading' | 'youtube-not-set-up' | 'active' | 'change';
   channel: string | null;
   newChannel: string;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: youtubeSetupState = {
   status: 'loading',
   channel: null,
   newChannel: '',
+  fetchState: null,
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -76,11 +78,11 @@ export const youtubeSetupSlice = createSlice({
         );
         notification.setShown(true);
       })
-      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
-        const notification = getYouTubeSetupNotification();
-        notification.setMessage(action.payload);
-        notification.setType('success');
-        notification.setShown(true);
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -91,5 +93,7 @@ export const selectStatus = (state: RootState) => state.youtubeSetup.status;
 export const selectChannel = (state: RootState) => state.youtubeSetup.channel;
 export const selectNewChannel = (state: RootState) =>
   state.youtubeSetup.newChannel;
+export const selectFetchState = (state: RootState) =>
+  state.youtubeSetup.fetchState;
 
 export default youtubeSetupSlice.reducer;

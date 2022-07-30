@@ -19,6 +19,7 @@ export interface YelpSetupState {
   newBusiness: { id: string; name: string };
   searchObject: { term: string; location: string };
   searchResults: { id: string; name: string }[] | null;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: YelpSetupState = {
@@ -27,6 +28,7 @@ const initialState: YelpSetupState = {
   newBusiness: { id: '', name: '' },
   searchObject: { term: '', location: '' },
   searchResults: null,
+  fetchState: null,
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -113,11 +115,11 @@ export const yelpSetupSlice = createSlice({
         );
         notification.setShown(true);
       })
-      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
-        const notification = getYelpSetupNotification();
-        notification.setMessage(action.payload);
-        notification.setType('success');
-        notification.setShown(true);
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -133,5 +135,7 @@ export const selectSearchObject = (state: RootState) =>
   state.yelpSetup.searchObject;
 export const selectSearchResults = (state: RootState) =>
   state.yelpSetup.searchResults;
+export const selectFetchState = (state: RootState) =>
+  state.yelpSetup.fetchState;
 
 export default yelpSetupSlice.reducer;

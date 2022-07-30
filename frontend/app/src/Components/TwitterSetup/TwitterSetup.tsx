@@ -11,6 +11,8 @@ import {
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
+import SyncIcon from '@mui/icons-material/Sync';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
@@ -21,6 +23,7 @@ import {
   selectNewUsername,
   setStatus,
   setNewUsername,
+  selectFetchState,
 } from '../../Redux/Slices/twitterSetup/twitterSetupSlice';
 import { Notification } from '../Notification/Notification';
 import useNotification, {
@@ -37,6 +40,7 @@ export function TwitterSetup() {
   const status = useAppSelector(selectStatus);
   const username = useAppSelector(selectUsername);
   const newUsername = useAppSelector(selectNewUsername);
+  const fetchState = useAppSelector(selectFetchState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -115,6 +119,26 @@ export function TwitterSetup() {
               Cancel
             </Button>
           </Box>
+        </Grid>
+      )}
+
+      {fetchState === 'fetching' && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="info" icon={<SyncIcon />}>
+            Pulling Twitter data from this week, please wait...
+          </Alert>
+        </Grid>
+      )}
+
+      {fetchState === 'fetched' && (
+        <Grid item xs={12}>
+          <Alert
+            variant="standard"
+            severity="success"
+            icon={<PublishedWithChangesIcon />}
+          >
+            Twitter data has been pulled
+          </Alert>
         </Grid>
       )}
 

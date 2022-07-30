@@ -13,12 +13,15 @@ import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import FacebookLogin from 'react-facebook-login';
+import SyncIcon from '@mui/icons-material/Sync';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getCurrentPageAsync,
   retrievePagesAsync,
   saveCurrentPageAsync,
   selectCurrentPage,
+  selectFetchState,
   selectPages,
   selectStage,
   setCurrentPage,
@@ -44,6 +47,7 @@ export function FacebookSetup() {
   let stage = useAppSelector(selectStage);
   let pages = useAppSelector(selectPages);
   let currentPage = useAppSelector(selectCurrentPage);
+  let fetchState = useAppSelector(selectFetchState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -169,6 +173,26 @@ export function FacebookSetup() {
             <DoDisturbIcon />
             Cancel
           </Button>
+        </Grid>
+      )}
+
+      {fetchState === 'fetching' && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="info" icon={<SyncIcon />}>
+            Pulling Facebook data from this week, please wait...
+          </Alert>
+        </Grid>
+      )}
+
+      {fetchState === 'fetched' && (
+        <Grid item xs={12}>
+          <Alert
+            variant="standard"
+            severity="success"
+            icon={<PublishedWithChangesIcon />}
+          >
+            Facebook data has been pulled
+          </Alert>
         </Grid>
       )}
 

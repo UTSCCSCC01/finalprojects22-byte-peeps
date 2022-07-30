@@ -17,6 +17,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SyncIcon from '@mui/icons-material/Sync';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
@@ -31,6 +33,7 @@ import {
   setSearchTerm,
   setSearchLocation,
   selectSearchResults,
+  selectFetchState,
 } from '../../Redux/Slices/yelpSetup/yelpSetupSlice';
 import { Notification } from '../Notification/Notification';
 import useNotification, {
@@ -49,6 +52,7 @@ export function YelpSetup() {
   const newBusiness = useAppSelector(selectNewBusiness);
   const searchObject = useAppSelector(selectSearchObject);
   const searchResults = useAppSelector(selectSearchResults);
+  const fetchState = useAppSelector(selectFetchState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -218,6 +222,26 @@ export function YelpSetup() {
               Cancel
             </Button>
           </Box>
+        </Grid>
+      )}
+
+      {fetchState === 'fetching' && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="info" icon={<SyncIcon />}>
+            Pulling Yelp data from this week, please wait...
+          </Alert>
+        </Grid>
+      )}
+
+      {fetchState === 'fetched' && (
+        <Grid item xs={12}>
+          <Alert
+            variant="standard"
+            severity="success"
+            icon={<PublishedWithChangesIcon />}
+          >
+            Yelp data has been pulled
+          </Alert>
         </Grid>
       )}
 

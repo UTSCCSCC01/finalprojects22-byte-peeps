@@ -11,12 +11,14 @@ export interface redditSetupState {
   status: 'loading' | 'reddit-not-set-up' | 'active' | 'change';
   subreddit: string | null;
   newSubreddit: string;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: redditSetupState = {
   status: 'loading',
   subreddit: null,
   newSubreddit: '',
+  fetchState: null,
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -76,11 +78,11 @@ export const redditSetupSlice = createSlice({
         );
         notification.setShown(true);
       })
-      .addCase(populateFirstTimeAsync.fulfilled, (state, action) => {
-        const notification = getRedditSetupNotification();
-        notification.setMessage(action.payload);
-        notification.setType('success');
-        notification.setShown(true);
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -92,5 +94,7 @@ export const selectSubreddit = (state: RootState) =>
   state.redditSetup.subreddit;
 export const selectNewSubreddit = (state: RootState) =>
   state.redditSetup.newSubreddit;
+export const selectFetchState = (state: RootState) =>
+  state.redditSetup.fetchState;
 
 export default redditSetupSlice.reducer;

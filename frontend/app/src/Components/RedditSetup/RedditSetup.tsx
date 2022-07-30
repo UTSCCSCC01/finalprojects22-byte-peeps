@@ -12,6 +12,8 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import SyncIcon from '@mui/icons-material/Sync';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
@@ -21,6 +23,7 @@ import {
   selectNewSubreddit,
   setStatus,
   setNewSubreddit,
+  selectFetchState,
 } from '../../Redux/Slices/redditSetup/redditSetupSlice';
 import { Notification } from '../Notification/Notification';
 import useNotification, {
@@ -37,6 +40,7 @@ export function RedditSetup() {
   const status = useAppSelector(selectStatus);
   const subreddit = useAppSelector(selectSubreddit);
   const newSubreddit = useAppSelector(selectNewSubreddit);
+  const fetchState = useAppSelector(selectFetchState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -115,6 +119,26 @@ export function RedditSetup() {
               Cancel
             </Button>
           </Box>
+        </Grid>
+      )}
+
+      {fetchState === 'fetching' && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="info" icon={<SyncIcon />}>
+            Pulling Reddit data from this week, please wait...
+          </Alert>
+        </Grid>
+      )}
+
+      {fetchState === 'fetched' && (
+        <Grid item xs={12}>
+          <Alert
+            variant="standard"
+            severity="success"
+            icon={<PublishedWithChangesIcon />}
+          >
+            Reddit data has been pulled
+          </Alert>
         </Grid>
       )}
 
