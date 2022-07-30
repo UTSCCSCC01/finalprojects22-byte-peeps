@@ -41,4 +41,4 @@ app.listen(PORT, () => {
 });
 
 startPipelines();
-// addFakeData();
+addFakeData();

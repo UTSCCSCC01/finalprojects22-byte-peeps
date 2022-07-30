@@ -85,7 +85,13 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
   const query = useQueries(
     queries.map((app) => {
       return {
-        queryKey: ['', app.appName, startDate, endDate, app.cloudQuery],
+        queryKey: [
+          'WordCloudData',
+          app.appName,
+          startDate,
+          endDate,
+          app.cloudQuery,
+        ],
         queryFn: () => getWordCloudData(startDate, endDate, app.cloudQuery),
       };
     })
@@ -93,7 +99,7 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   query.forEach((item) => {
     if (item.data) {
-      keywords.push(item.data.WordCloudData);
+      keywords.push(item.data.WordCloudData); //to fix
     } else {
       isLoading = item.isLoading;
       if (item.error) {

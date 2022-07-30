@@ -1,12 +1,14 @@
 import React from 'react';
 import SentimentPieChartDashboard from '../../Components/Charts/PieChart/SentimentPieChartDashboard';
 import SubjectivityPieChartDashboard from '../../Components/Charts/PieChart/SubjectivityPieChartDashboard';
+import CommentsWordCloud from '../../Components/Charts/WordCloud/WordCloudDashboard';
 import { Grid } from '@mui/material';
 import CardCharts from '../../Components/Cards/CardCharts';
 import CardsHeader from '../../Components/CardsHeader/CardsHeader';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 import CircularProgressChart from '../../Components/Charts/DonutChart/CircularProgressChart';
 import SentimentPerformanceChart from '../../Components/Charts/DonutChart/SentimentPerformanceChart';
+import CardsDashboard from '../../Components/CardsHeader/CardsDashboard';
 
 interface Props {}
 
@@ -20,12 +22,12 @@ const Dashboard: React.FunctionComponent<Props> = () => {
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
         <Grid item xs={12}>
-          <CardsHeader appName={AppNames.Instagram} />
+          <CardsDashboard />
         </Grid>
 
         <Grid item xs={2} sm={4} md={4}>
           <CardCharts name={'Word Cloud'}>
-            {/* <CommentsWordCloud appName={AppNames.Facebook} /> */}
+            <CommentsWordCloud />
           </CardCharts>
         </Grid>
 

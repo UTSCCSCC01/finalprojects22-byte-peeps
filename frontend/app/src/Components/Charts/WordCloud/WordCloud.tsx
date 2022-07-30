@@ -16,8 +16,8 @@ const WordCloud: React.FC<Props> = (props) => {
   const { data, isLoading, error } = props;
 
   if (isLoading) return <Loader />;
+  if (!data) return <NoData className="noData center" />;
   if (error) return <ErrorMessage error={error} />;
-  if (!data) return <NoData />;
 
   return (
     <TagCloud
