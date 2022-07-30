@@ -25,6 +25,7 @@ const SentimentPerformanceChart = () => {
             />
           );
         }
+        return null;
       })}
     </div>
   ) : resultCount === 0 && error === '' ? (
