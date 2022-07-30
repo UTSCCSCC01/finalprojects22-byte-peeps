@@ -15,50 +15,50 @@ import {
   MetricsTableColDef,
   MetricsTables,
 } from '../MetricsTable/MetricsTableQueryTypes';
-import { CommentsTableColDefConst } from './CommentsTableColDefConst';
+import { ReviewsTableColDefConst } from './ReviewsTableColDefConst';
 import {
-  CommentsTableResponse,
-  CommentsTableUrlRequest,
-} from './CommentsTableUrlConst';
+  ReviewsTableResponse,
+  ReviewsTableUrlRequest,
+} from './ReviewsTableUrlConst';
 
-const commentsTables: MetricsTables = {
+const reviewsTables: MetricsTables = {
   [AppNames.Facebook]: {
-    url: CommentsTableUrlRequest.Facebook,
-    colDef: CommentsTableColDefConst.Facebook,
+    url: '',
+    colDef: ReviewsTableColDefConst.Default,
   },
   [AppNames.Instagram]: {
-    url: CommentsTableUrlRequest.Instagram,
-    colDef: CommentsTableColDefConst.Instagram,
+    url: '',
+    colDef: ReviewsTableColDefConst.Default,
   },
   [AppNames.Twitter]: {
-    url: CommentsTableUrlRequest.Twitter,
-    colDef: CommentsTableColDefConst.Twitter,
+    url: '',
+    colDef: ReviewsTableColDefConst.Default,
   },
   [AppNames.Reddit]: {
-    url: CommentsTableUrlRequest.Reddit,
-    colDef: CommentsTableColDefConst.Reddit,
+    url: '',
+    colDef: ReviewsTableColDefConst.Default,
   },
   [AppNames.YouTube]: {
-    url: CommentsTableUrlRequest.YouTube,
-    colDef: CommentsTableColDefConst.YouTube,
+    url: '',
+    colDef: ReviewsTableColDefConst.Default,
   },
   [AppNames.GoogleReviews]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: ReviewsTableUrlRequest.GoogleReviews,
+    colDef: ReviewsTableColDefConst.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: ReviewsTableUrlRequest.Yelp,
+    colDef: ReviewsTableColDefConst.Yelp,
   },
   [AppNames.default]: {
     url: '',
-    colDef: CommentsTableColDefConst.Default,
+    colDef: ReviewsTableColDefConst.Default,
   },
 };
 
-export type UseCommentsTable = {
+export type UseReviewsTable = {
   colDef: MetricsTableColDef;
-  data: CommentsTableResponse | undefined | null;
+  data: ReviewsTableResponse | undefined | null;
   isLoading: boolean;
   page: number;
   setPage: (page: number) => void;
@@ -69,38 +69,38 @@ export type UseCommentsTable = {
   setFilterModel: (model: MetricsFilter) => void;
 };
 
-function useCommentsTable(
+function useReviewsTable(
   appName: AppNames,
-  postId?: number
-): UseCommentsTable {
+  reviewId?: number
+): UseReviewsTable {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [filter, setFilter] = useState<MetricsFilter>();
 
-  const appData = commentsTables[appName];
-  const getCommentsData = async (
+  const appData = reviewsTables[appName];
+  const getReviewsData = async (
     startDate: String,
     endDate: String,
     page: number,
     pageSize: number,
     filter: MetricsFilter,
-    postId?: number
-  ): Promise<CommentsTableResponse> => {
-    const params = postId
-      ? { startDate, endDate, page, pageSize, filter, postId }
+    reviewId?: number
+  ): Promise<ReviewsTableResponse> => {
+    const params = reviewId
+      ? { startDate, endDate, page, pageSize, filter, reviewId }
       : { startDate, endDate, page, pageSize, filter };
     return await HTTP.get(appData.url, { params }).then((res) => res.data);
   };
 
   const query = useQuery<
-    CommentsTableResponse,
+    ReviewsTableResponse,
     AxiosError<ErrorResponse>,
-    CommentsTableResponse | null
+    ReviewsTableResponse | null
   >(
-    ['commentsTableData', startDate, endDate, page, pageSize, filter, postId],
-    () => getCommentsData(startDate, endDate, page, pageSize, filter, postId)
+    ['reviewsTableData', startDate, endDate, page, pageSize, filter, reviewId],
+    () => getReviewsData(startDate, endDate, page, pageSize, filter, reviewId)
   );
 
   return {
@@ -117,4 +117,4 @@ function useCommentsTable(
   };
 }
 
-export default useCommentsTable;
+export default useReviewsTable;
