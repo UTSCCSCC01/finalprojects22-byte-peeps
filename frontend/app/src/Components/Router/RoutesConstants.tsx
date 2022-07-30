@@ -1,5 +1,5 @@
 export enum RoutePaths {
-  SignIn = '/sigin',
+  SignIn = '/signin',
   SignUp = '/signup',
   Dashboard = '/dashboard',
   // Surveys = '/surveys',
