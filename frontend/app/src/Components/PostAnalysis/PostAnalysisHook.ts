@@ -5,7 +5,7 @@ import {
   selectEndDate,
   selectStartDate,
 } from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { selectAppName } from '../../Redux/Slices/webApp/webAppSlice';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 import { ErrorResponse } from '../../utils/enums';
 import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
@@ -13,8 +13,7 @@ import { platformPostsUrls } from './PostAnalysisConst';
 
 type PostsResponse = { id: number; label: string; date: string; pid: string }[];
 
-function usePlatformPosts() {
-  const appName = useAppSelector(selectAppName);
+function usePlatformPosts(appName: AppNames) {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const appDataUrl = platformPostsUrls[appName];
