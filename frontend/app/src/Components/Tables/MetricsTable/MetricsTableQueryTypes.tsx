@@ -4,7 +4,7 @@ import {
   GridFilterItem,
   GridFilterOperator,
 } from '@mui/x-data-grid';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 
 export type DefaultColumnStyleType = {
   sortable: boolean;
@@ -17,15 +17,15 @@ export type DefaultColumnFilterStyleType = {
   filterOperators: GridFilterOperator<any, string | number | null, any>[];
 };
 
-export type CommentsTableColDef = GridColDef[];
+export type MetricsTableColDef = GridColDef[];
 
-type CommentsTableQueryType = {
+type MetricsTableQueryType = {
   url: string;
-  colDef: CommentsTableColDef;
+  colDef: MetricsTableColDef;
 };
 
-export type CommentTables = {
-  [key in AppNames]: CommentsTableQueryType;
+export type MetricsTables = {
+  [key in AppNames]: MetricsTableQueryType;
 };
 
-export type CommentsFilter = GridFilterItem | undefined;
+export type MetricsFilter = GridFilterItem | undefined;

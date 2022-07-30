@@ -12,7 +12,7 @@ import CardCharts from '../Cards/CardCharts';
 import CardsHeader from '../CardsHeader/CardsHeader';
 import SentimentPieChartWrapper from '../Charts/PieChart/SentimentPieChartWrapper';
 import SubjectivityPieChartWrapper from '../Charts/PieChart/SubjectivityPieChartWrapper';
-import CommentsTable from '../CommentsTable/CommentsTable';
+import CommentsTable from '../Tables/CommentsTable/CommentsTable';
 import Loader from '../Loader/Loader';
 import './PostAnalysis.css';
 import usePlatformPosts from './PostAnalysisHook';

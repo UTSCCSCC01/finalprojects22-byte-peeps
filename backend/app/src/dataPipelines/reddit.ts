@@ -87,10 +87,10 @@ const updateListings = async (subreddit: Subreddit) => {
                   score: listing['score'],
                   numComments: listing['num_comments'],
                   permalink: 'https://www.reddit.com' + listing['permalink'],
-                  subredditId: subreddit.id,
                   sentimentAnalysis: textAnalysis.SentimentAnalysis,
                   subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
                   topicClassification: textAnalysis.TopicClassification,
+                  subredditId: subreddit.id,
                 },
               });
             } catch (err) {

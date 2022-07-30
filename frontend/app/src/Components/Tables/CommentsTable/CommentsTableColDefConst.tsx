@@ -1,37 +1,11 @@
 import {
-  getGridNumericOperators,
-  getGridStringOperators,
-} from '@mui/x-data-grid';
-import {
-  CommentsTableColDef,
-  DefaultColumnFilterStyleType,
-  DefaultColumnStyleType,
-} from './CommentsTableQueryTypes';
+  defaultColumnStyle,
+  defaultNumberFilterStyle,
+  defaultStringFilterStyle,
+} from '../MetricsTable/MetricsTableColDefConst';
+import { MetricsTableColDef } from '../MetricsTable/MetricsTableQueryTypes';
 
-const defaultColumnStyle: DefaultColumnStyleType = {
-  sortable: false,
-  filterable: true,
-  headerAlign: 'left',
-  align: 'left',
-};
-
-// Filter operators for strings
-const filterStringOperators = getGridStringOperators().filter(({ value }) =>
-  ['contains'].includes(value)
-);
-const defaultStringFilterStyle: DefaultColumnFilterStyleType = {
-  filterOperators: filterStringOperators,
-};
-
-// Filter operators for numbers
-const filterNumberOperators = getGridNumericOperators().filter(({ value }) =>
-  ['='].includes(value)
-);
-const defaultNumberFilterStyle: DefaultColumnFilterStyleType = {
-  filterOperators: filterNumberOperators,
-};
-
-const defaultColDef: CommentsTableColDef = [
+const defaultColDef: MetricsTableColDef = [
   {
     field: 'userName',
     headerName: 'Name',
@@ -72,7 +46,7 @@ const defaultColDef: CommentsTableColDef = [
   },
 ];
 
-const instagramColDef: CommentsTableColDef = [
+const instagramColDef: MetricsTableColDef = [
   {
     field: 'userName',
     headerName: 'Name',
@@ -119,7 +93,7 @@ const instagramColDef: CommentsTableColDef = [
   },
 ];
 
-const redditColDef: CommentsTableColDef = [
+const redditColDef: MetricsTableColDef = [
   {
     field: 'text',
     headerName: 'Comment',
@@ -161,7 +135,7 @@ const redditColDef: CommentsTableColDef = [
   },
 ];
 
-const twitterColDef: CommentsTableColDef = [
+const twitterColDef: MetricsTableColDef = [
   {
     field: 'text',
     headerName: 'Comment',

@@ -2,8 +2,6 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import CardCharts from '../../../Components/Cards/CardCharts';
 import CardsHeader from '../../../Components/CardsHeader/CardsHeader';
-
-import CommentsTable from '../../../Components/CommentsTable/CommentsTable';
 import SentimentTimeSeries from '../../../Components/TimeSeriesChart/Sentiment/SentimentTimeSeries';
 import SubjectivityTimeSeries from '../../../Components/TimeSeriesChart/Subjectivity/SubjectivityTimeSeries';
 import SentimentPieChartWrapper from '../../../Components/Charts/PieChart/SentimentPieChartWrapper';
@@ -11,6 +9,7 @@ import SubjectivityPieChartWrapper from '../../../Components/Charts/PieChart/Sub
 import CommentsWordCloud from '../../../Components/Charts/WordCloud/CommentsWordCloud';
 import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import CommentsTable from '../../../Components/Tables/CommentsTable/CommentsTable';
 
 // todo not sure if this is necessary since mui theme takes care of dark mode
 // const Item = styled(Paper)(({ theme }) => ({
