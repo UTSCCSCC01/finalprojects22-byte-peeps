@@ -10,6 +10,7 @@ import Dashboard from '../../pages/Dashboard/Dashboard';
 import ReviewApps from '../../pages/ReviewApps/ReviewApps';
 import Settings from '../../pages/Settings/Settings';
 import SocialMedia from '../../pages/SocialMedia/SocialMedia';
+import AuthChecker from '../AuthStorage/AuthChecker';
 import Header from '../Header/Header';
 import ProtectedRoute from './ProtectedRoute';
 import { RoutePaths } from './RoutesConstants';
@@ -21,6 +22,7 @@ export const history = createBrowserHistory({ window });
 const RouterComponent: React.FC<Props> = () => {
   return (
     <HistoryRouter history={history}>
+      <AuthChecker />
       <Header />
       <Routes>
         <Route path={RoutePaths.SignIn} element={<SignIn />} />

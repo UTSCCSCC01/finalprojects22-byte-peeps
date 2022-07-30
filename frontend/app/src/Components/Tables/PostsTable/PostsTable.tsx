@@ -1,13 +1,10 @@
-import useCommentsTable from './CommentsTableHook';
+import usePostsTable from './PostsTableHook';
 import MetricsTable from '../MetricsTable/MetricsTable';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import { GridFilterModel } from '@mui/x-data-grid';
 
-export default function CommentsTable(props: {
-  appName: AppNames;
-  postId?: number;
-}) {
-  const query = useCommentsTable(props.appName, props.postId);
+export default function PostsTable(props: { appName: AppNames }) {
+  const query = usePostsTable(props.appName);
 
   const filterModel: GridFilterModel = {
     items: query.filterModel === undefined ? [] : [query.filterModel],

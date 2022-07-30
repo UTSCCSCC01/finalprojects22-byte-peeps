@@ -4,11 +4,12 @@ import RedditIcon from '@mui/icons-material/Reddit';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, Tab, Tabs } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { RouteNames } from '../../Components/Router/RoutesConstants';
 import TabPanel, { a11yProps } from '../../Components/TabPanel/TabPanel';
 import { useAppDispatch } from '../../Redux/hooks';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { setAppName } from '../../Redux/Slices/webApp/webAppSlice';
+import { setAppName, setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import FacebookTab from './Facebook/FacebookTab';
 import InstagramTab from './Instagram/InstagramTab';
 import RedditTab from './Reddit/RedditTab';
@@ -51,6 +52,10 @@ const tabAppNames: AppNames[] = [
 
 const SocialMedia: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setPageName(RouteNames.Socials));
+  }, [dispatch]);
 
   const [currTab, setCurrTab] = React.useState<number>(0);
 

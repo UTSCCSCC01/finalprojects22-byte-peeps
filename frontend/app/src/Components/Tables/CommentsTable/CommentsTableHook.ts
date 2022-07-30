@@ -2,27 +2,27 @@ import { GridFilterModel } from '@mui/x-data-grid';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useAppSelector } from '../../Redux/hooks';
+import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
-} from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../utils/enums';
-import HTTP from '../../utils/http';
-import { extractBackendError } from '../../utils/httpHelpers';
-import { CommentsTableColDefConst } from './CommentsTableColDefConst';
+} from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { ErrorResponse } from '../../../utils/enums';
+import HTTP from '../../../utils/http';
+import { extractBackendError } from '../../../utils/httpHelpers';
 import {
-  CommentsFilter,
-  CommentsTableColDef,
-  CommentTables,
-} from './CommentsTableQueryTypes';
+  MetricsFilter,
+  MetricsTableColDef,
+  MetricsTables,
+} from '../MetricsTable/MetricsTableQueryTypes';
+import { CommentsTableColDefConst } from './CommentsTableColDefConst';
 import {
   CommentsTableResponse,
   CommentsTableUrlRequest,
 } from './CommentsTableUrlConst';
 
-const commentsTables: CommentTables = {
+const commentsTables: MetricsTables = {
   [AppNames.Facebook]: {
     url: CommentsTableUrlRequest.Facebook,
     colDef: CommentsTableColDefConst.Facebook,
@@ -58,7 +58,7 @@ const commentsTables: CommentTables = {
 };
 
 export type UseCommentsTable = {
-  colDef: CommentsTableColDef;
+  colDef: MetricsTableColDef;
   data: CommentsTableResponse | undefined | null;
   isLoading: boolean;
   page: number;
@@ -66,8 +66,8 @@ export type UseCommentsTable = {
   pageSize: number;
   setPageSize: (size: number) => void;
   error: string | null;
-  filterModel: CommentsFilter;
-  setFilterModel: (model: CommentsFilter) => void;
+  filterModel: MetricsFilter;
+  setFilterModel: (model: MetricsFilter) => void;
 };
 
 function useCommentsTable(
@@ -78,7 +78,7 @@ function useCommentsTable(
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-  const [filter, setFilter] = useState<CommentsFilter>();
+  const [filter, setFilter] = useState<MetricsFilter>();
 
   const appData = commentsTables[appName];
   const getCommentsData = async (
@@ -86,7 +86,7 @@ function useCommentsTable(
     endDate: String,
     page: number,
     pageSize: number,
-    filter: CommentsFilter,
+    filter: MetricsFilter,
     postId?: number
   ): Promise<CommentsTableResponse> => {
     const params = postId

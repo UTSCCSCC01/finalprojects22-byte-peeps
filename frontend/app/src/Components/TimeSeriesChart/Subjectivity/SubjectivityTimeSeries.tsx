@@ -1,9 +1,8 @@
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import NoData from '../../NoData/NoData';
-import SubjectivityChart from './../InnerComponents/SubjectivityChart';
 import '../TimeSeriesChart.css';
+import SubjectivityChart from './../InnerComponents/SubjectivityChart';
 import { useTimeSeriesSubjectivity } from './SubjectivitytHook';
-import HTTP from '../../../utils/http';
 
 export default function GeneralTimeSeriesChart(props: { appName: AppNames }) {
   const query = useTimeSeriesSubjectivity(props.appName);

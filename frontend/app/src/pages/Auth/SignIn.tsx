@@ -1,19 +1,19 @@
 import { LockOutlined } from '@mui/icons-material';
 import { Avatar, Button, Stack, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGetSession } from '../../Components/AuthStorage/AuthStorage';
 import { Notification } from '../../Components/Notification/Notification';
 import { RoutePaths } from '../../Components/Router/RoutesConstants';
 import { useAppDispatch } from '../../Redux/hooks';
-import { signIn, signOut } from '../../Redux/Slices/user/userSlice';
+import { signIn } from '../../Redux/Slices/user/userSlice';
 import useNotification, {
   NotificationState,
 } from '../../utils/hooks/Notification';
 import './Auth.css';
 
 let notification: NotificationState;
-export function getSingInNotification(): NotificationState {
+export function getSignInNotifcation(): NotificationState {
   return notification;
 }
 
@@ -25,11 +25,12 @@ const SignIn: React.FC<Props> = () => {
   const [isSignedIn] = useGetSession();
 
   const dispatch = useAppDispatch();
-  const notification = useNotification({});
+  const navigate = useNavigate();
+  notification = useNotification({});
 
   useEffect(() => {
-    if (isSignedIn) dispatch(signOut({})); // user goes back to sign in page so sign out
-  }, [dispatch, isSignedIn]);
+    if (isSignedIn) navigate(RoutePaths.Dashboard);
+  }, [navigate, isSignedIn]);
 
   const handleLogin = () => {
     dispatch(signIn({ username: user, password: pwd }));
