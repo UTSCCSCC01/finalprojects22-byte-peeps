@@ -1,13 +1,6 @@
 import useCommentsTable from './CommentsTableHook';
 import MetricsTable from '../MetricsTable/MetricsTable';
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTable.tsx
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-=======
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTable.tsx
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTable.tsx
-=======
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTable.tsx
 import { GridFilterModel } from '@mui/x-data-grid';
 
 export default function CommentsTable(props: {

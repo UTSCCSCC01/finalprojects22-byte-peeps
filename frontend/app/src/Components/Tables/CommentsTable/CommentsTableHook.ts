@@ -17,20 +17,6 @@ import {
   MetricsTables,
 } from '../MetricsTable/MetricsTableQueryTypes';
 import { CommentsTableColDefConst } from './CommentsTableColDefConst';
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
-=======
-=======
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
-import {
-  CommentsFilter,
-  CommentsTableColDef,
-  CommentTables,
-} from './CommentsTableQueryTypes';
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
-=======
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
 import {
   CommentsTableResponse,
   CommentsTableUrlRequest,
@@ -80,18 +66,8 @@ export type UseCommentsTable = {
   pageSize: number;
   setPageSize: (size: number) => void;
   error: string | null;
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
   filterModel: MetricsFilter;
   setFilterModel: (model: MetricsFilter) => void;
-=======
-  filterModel: CommentsFilter;
-  setFilterModel: (model: CommentsFilter) => void;
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
-=======
-  filterModel: CommentsFilter;
-  setFilterModel: (model: CommentsFilter) => void;
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
 };
 
 function useCommentsTable(
@@ -102,15 +78,7 @@ function useCommentsTable(
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
   const [filter, setFilter] = useState<MetricsFilter>();
-=======
-  const [filter, setFilter] = useState<CommentsFilter>();
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
-=======
-  const [filter, setFilter] = useState<CommentsFilter>();
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
 
   const appData = commentsTables[appName];
   const getCommentsData = async (
@@ -118,15 +86,7 @@ function useCommentsTable(
     endDate: String,
     page: number,
     pageSize: number,
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
-<<<<<<< HEAD:frontend/app/src/Components/Tables/CommentsTable/CommentsTableHook.ts
     filter: MetricsFilter,
-=======
-    filter: CommentsFilter,
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
-=======
-    filter: CommentsFilter,
->>>>>>> development:frontend/app/src/Components/CommentsTable/CommentsTableHook.ts
     postId?: number
   ): Promise<CommentsTableResponse> => {
     const params = postId

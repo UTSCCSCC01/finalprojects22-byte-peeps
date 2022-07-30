@@ -91,9 +91,6 @@ const updateListings = async (subreddit: Subreddit) => {
                   subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
                   topicClassification: textAnalysis.TopicClassification,
                   subredditId: subreddit.id,
-                  sentimentAnalysis: textAnalysis.SentimentAnalysis,
-                  subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
-                  topicClassification: textAnalysis.TopicClassification,
                 },
               });
             } catch (err) {
