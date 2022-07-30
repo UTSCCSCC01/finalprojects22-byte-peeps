@@ -22,7 +22,7 @@ interface Props {
 }
 
 const PostAnalysis: React.FC<Props> = (props) => {
-  const query = usePlatformPosts();
+  const query = usePlatformPosts(props.appName);
   const [postId, setPostId] = useState<number | ''>('');
   const [postTitle, setPostTitle] = useState<string>('');
   const [postDate, setPostDate] = useState<string>('');

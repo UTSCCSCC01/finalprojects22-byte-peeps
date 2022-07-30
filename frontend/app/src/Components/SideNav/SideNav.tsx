@@ -12,8 +12,6 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../Redux/hooks';
-import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import { RouteNames, RoutePaths } from '../Router/RoutesConstants';
 
 interface Props {}
@@ -38,21 +36,15 @@ const SideNav: React.FC<Props> = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  function handlePageClick(link: RoutePaths, name: RouteNames) {
+  function handlePageClick(link: RoutePaths) {
     navigate(link);
-    dispatch(setPageName(name));
   }
 
   const getList = () => (
     <div style={{ width: 250 }} onClick={() => setOpen(true)}>
       {Pages.map((item, index, link) => (
-        <ListItem
-          button
-          key={index}
-          onClick={() => handlePageClick(item.link, item.name)}
-        >
+        <ListItem button key={index} onClick={() => handlePageClick(item.link)}>
           <ListItemIcon>{item.icon}</ListItemIcon>
           <ListItemText primary={item.name} />
         </ListItem>

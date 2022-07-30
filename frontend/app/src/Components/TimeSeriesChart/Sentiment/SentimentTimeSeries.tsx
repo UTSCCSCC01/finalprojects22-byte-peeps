@@ -1,5 +1,4 @@
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import HTTP from '../../../utils/http';
 import NoData from '../../NoData/NoData';
 import SentimentChart from '../InnerComponents/SentimentChart';
 import '../TimeSeriesChart.css';

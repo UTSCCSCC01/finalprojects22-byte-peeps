@@ -9,7 +9,7 @@ import { keyName } from './AuthStorageConstants';
  * @return {void}
  */
 function storeSession(username: string): void {
-  sessionStorage.setItem(keyName, username);
+  localStorage.setItem(keyName, username);
 }
 
 /**
@@ -17,7 +17,7 @@ function storeSession(username: string): void {
  * @return {void}
  */
 function removeSession(): void {
-  sessionStorage.removeItem(keyName);
+  localStorage.removeItem(keyName);
 }
 
 /**
@@ -25,7 +25,7 @@ function removeSession(): void {
  * @return {null | string}
  */
 function getSession(): null | string {
-  return sessionStorage.getItem(keyName);
+  return localStorage.getItem(keyName);
 }
 
 /**
@@ -39,6 +39,7 @@ export function useGetSession(): [boolean] {
   function checkForSession(): boolean {
     const username = getSession();
     if (!username) return false;
+
     dispatch(setUsername(username));
     return true;
   }

@@ -5,16 +5,19 @@ import StarIcon from '@mui/icons-material/Star';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, Tab, Tabs } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FacebookSetup } from '../../Components/FacebookSetup/FacebookSetup';
 import { InactiveApiChecker } from '../../Components/InactiveApiChecker/InactiveApiChecker';
 import { InstagramSetup } from '../../Components/InstagramSetup/InstagramSetup';
 import { RedditSetup } from '../../Components/RedditSetup/RedditSetup';
+import { RouteNames } from '../../Components/Router/RoutesConstants';
 import TabPanel, { a11yProps } from '../../Components/TabPanel/TabPanel';
 import { TwitterSetup } from '../../Components/TwitterSetup/TwitterSetup';
 import { YelpSetup } from '../../Components/YelpSetup/YelpSetup';
 import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
+import { useAppDispatch } from '../../Redux/hooks';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import './Settings.css';
 
 interface Props {}
@@ -50,6 +53,12 @@ const tabPanels: JSX.Element[] = [
 ];
 
 const Settings: React.FunctionComponent<Props> = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setPageName(RouteNames.Settings));
+  }, [dispatch]);
+
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
