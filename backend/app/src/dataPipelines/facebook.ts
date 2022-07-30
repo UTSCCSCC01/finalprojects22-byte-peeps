@@ -1,8 +1,9 @@
 import { CronJob } from 'cron';
-import FacebookApi from '../models/facebook/api';
-import FacebookPost from '../models/facebook/post';
-import FacebookComment from '../models/facebook/comment';
 import { getAccountPosts, getPostComments } from '../apis/facebook';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
+import FacebookApi from '../models/facebook/api';
+import FacebookComment from '../models/facebook/comment';
+import FacebookPost from '../models/facebook/post';
 
 /**
  * Updates the database as follows:
@@ -128,19 +129,29 @@ async function updatePostComments(accessToken: string, post: FacebookPost) {
   data.forEach(async (comment: { [key: string]: any }) => {
     FacebookComment.findOne({
       where: { dataId: comment['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
+      let message = comment['message'];
+      let textAnalysis = await DatumBoxAPICall(message);
+
       if (obj) {
         obj.update({
           likes: Number(comment['like_count']),
+          message,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       } else {
         FacebookPost.create({
           dataId: comment['id'],
           date: comment['created_time'],
           userName: comment['from']['name'],
-          message: comment['message'],
           likes: Number(comment['like_count']),
           postId: post.id,
+          message,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       }
     });

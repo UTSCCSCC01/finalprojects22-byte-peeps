@@ -34,10 +34,10 @@ const SentimentPieChartQuery: DictPieChartQuery = {
     pieChartQuery: SentimentUrlRequest.Reddit,
   },
   [AppNames.GoogleReviews]: {
-    pieChartQuery: '',
+    pieChartQuery: SentimentUrlRequest.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    pieChartQuery: '',
+    pieChartQuery: SentimentUrlRequest.Yelp,
   },
   [AppNames.default]: {
     pieChartQuery: '',
