@@ -225,9 +225,7 @@ async function updateComments(
 
       if (!commentMessage) continue;
 
-      let textAnalysis: DatumAPICallResult = await DatumBoxAPICall(
-        commentMessage
-      );
+      let textAnalysis = await DatumBoxAPICall(commentMessage);
 
       let dbCommentUpdateQuery = YouTubeComment.upsert({
         resourceId: commentId,

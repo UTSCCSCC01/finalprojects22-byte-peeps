@@ -5,11 +5,12 @@ import {
   getSentimentAnalysisForTimeSeries,
   getSubjectivityAnalysisForTimeSeries,
 } from '../../controllers/reddit/listing';
+import tableFilter from '../../middlewares/tableFilter';
 
 const listingRouter = Router();
 
 listingRouter.get('/', getListings);
-listingRouter.get('/table', getListingTable);
+listingRouter.get('/table', tableFilter, getListingTable);
 listingRouter.get('/sentiment_analysis', getSentimentAnalysisForTimeSeries);
 listingRouter.get(
   '/subjectivity_analysis',

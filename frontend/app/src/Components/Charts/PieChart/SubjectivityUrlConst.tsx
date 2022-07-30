@@ -11,4 +11,6 @@ export enum SubjectivityUrlRequest {
   Twitter = '/twitter/comments/subjectivity_analysis',
   YouTube = '/youtube/comments/subjectivity_analysis',
   Reddit = '/reddit/comments/subjectivity_analysis',
+  GoogleReviews = '/googleReviews/comments/subjectivity_analysis',
+  Yelp = '/yelp/comments/subjectivity_analysis',
 }

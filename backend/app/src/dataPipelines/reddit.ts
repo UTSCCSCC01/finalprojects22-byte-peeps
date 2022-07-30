@@ -3,7 +3,6 @@ import fetch from 'node-fetch';
 import Subreddit from '../models/reddit/subreddit';
 import RedditListing from '../models/reddit/listing';
 import RedditComment from '../models/reddit/comment';
-import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
 import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 
 const RedditBaseUrl = 'https://www.reddit.com';
@@ -71,13 +70,12 @@ const updateListings = async (subreddit: Subreddit) => {
         data['data']['children'].forEach(
           async (element: { [key: string]: any }) => {
             const listing = element['data'];
+            let listingText = listing['selftext'];
+
+            let textAnalysis = await DatumBoxAPICall(listingText);
 
             const create_date = new Date(listing['created'] * 1000);
             try {
-              let textAnalysis: DatumAPICallResult = await DatumBoxAPICall(
-                listing['selftext']
-              );
-
               await RedditListing.findOrCreate({
                 where: {
                   dataId: listing['id'],
@@ -110,7 +108,12 @@ const updateListings = async (subreddit: Subreddit) => {
           data['data']['children'].forEach(
             async (element: { [key: string]: any }) => {
               const listing = element['data'];
+              let listingText = listing['selftext'];
+
+              let textAnalysis = await DatumBoxAPICall(listingText);
+
               const create_date = new Date(listing['created'] * 1000);
+
               try {
                 await RedditListing.findOrCreate({
                   where: {
@@ -124,6 +127,9 @@ const updateListings = async (subreddit: Subreddit) => {
                     numComments: listing['num_comments'],
                     permalink: 'https://www.reddit.com' + listing['permalink'],
                     subredditId: subreddit.id,
+                    sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                    subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                    topicClassification: textAnalysis.TopicClassification,
                   },
                 });
               } catch (err) {
@@ -133,18 +139,25 @@ const updateListings = async (subreddit: Subreddit) => {
           );
 
           try {
+            let listingText = listing['selftext'];
+
+            let textAnalysis = await DatumBoxAPICall(listingText);
+
             await RedditListing.findOrCreate({
               where: {
                 dataId: listing['id'],
               },
               defaults: {
                 title: listing['title'],
-                text: listing['selftext'],
+                text: listingText,
                 date: create_date,
                 score: listing['score'],
                 numComments: listing['num_comments'],
                 permalink: 'https://www.reddit.com' + listing['permalink'],
                 subredditId: subreddit.id,
+                sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                topicClassification: textAnalysis.TopicClassification,
               },
             });
           } catch (err) {
@@ -164,6 +177,9 @@ const updateListings = async (subreddit: Subreddit) => {
         async (element: { [key: string]: any }) => {
           const listing = element['data'];
           const create_date = new Date(listing['created'] * 1000);
+          let listingText = listing['selftext'];
+          let textAnalysis = await DatumBoxAPICall(listingText);
+
           try {
             await RedditListing.findOrCreate({
               where: {
@@ -177,6 +193,9 @@ const updateListings = async (subreddit: Subreddit) => {
                 numComments: listing['num_comments'],
                 permalink: 'https://www.reddit.com' + listing['permalink'],
                 subredditId: subreddit.id,
+                sentimentAnalysis: textAnalysis.SentimentAnalysis,
+                subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+                topicClassification: textAnalysis.TopicClassification,
               },
             });
           } catch (err) {
@@ -212,6 +231,8 @@ const updateComment = async (listing: RedditListing) => {
     if (comment['replies'] != '') {
       num_replies = comment['replies']['data']['children'].length;
     }
+    let commentText = comment['body'];
+    let textAnalysis = await DatumBoxAPICall(commentText);
 
     try {
       await RedditComment.findOrCreate({
@@ -219,11 +240,14 @@ const updateComment = async (listing: RedditListing) => {
           dataId: comment['id'],
         },
         defaults: {
-          text: comment['body'],
+          text: commentText,
           date: create_date,
           score: comment['score'],
           replies: num_replies,
           listingId: listing.id,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         },
       });
     } catch (err) {

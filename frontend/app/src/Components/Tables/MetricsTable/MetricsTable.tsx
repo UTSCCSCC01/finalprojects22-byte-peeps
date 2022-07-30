@@ -1,4 +1,9 @@
-import { DataGrid, GridColumns } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColumns,
+  GridFilterModel,
+  GridToolbar,
+} from '@mui/x-data-grid';
 
 export interface MetricsTableProps {
   rowsPerPageOptions?: number[];
@@ -10,6 +15,8 @@ export interface MetricsTableProps {
   setPage: (page: number) => void;
   pageSize: number;
   setPageSize: (size: number) => void;
+  filterModel?: GridFilterModel;
+  setFilterModel?: (model: GridFilterModel) => void;
 }
 
 export default function MetricsTable(props: MetricsTableProps) {
@@ -23,10 +30,16 @@ export default function MetricsTable(props: MetricsTableProps) {
       pagination
       page={props.page}
       pageSize={props.pageSize}
-      onPageSizeChange={(newPageSize) => props.setPageSize(newPageSize)}
+      onPageSizeChange={props.setPageSize}
       paginationMode="server"
       onPageChange={(newPage) => props.setPage(newPage)}
       columns={props.colDef}
+      filterMode="server"
+      filterModel={props.filterModel}
+      onFilterModelChange={props.setFilterModel}
+      components={{
+        Toolbar: GridToolbar,
+      }}
     />
   );
 }

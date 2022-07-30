@@ -37,8 +37,8 @@ const PieChartWrapper: React.FC<Props> = (props) => {
 
   const COLORS = [
     SentimentAnalysisColors.Positive,
-    SentimentAnalysisColors.Neutral,
     SentimentAnalysisColors.Negative,
+    SentimentAnalysisColors.Neutral,
   ];
 
   return (

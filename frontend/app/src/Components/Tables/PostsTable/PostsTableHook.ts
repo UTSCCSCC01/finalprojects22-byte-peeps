@@ -11,6 +11,7 @@ import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
 import { extractBackendError } from '../../../utils/httpHelpers';
 import {
+  MetricsFilter,
   MetricsTableColDef,
   MetricsTables,
 } from '../MetricsTable/MetricsTableQueryTypes';
@@ -61,13 +62,16 @@ export type UsePostsTable = {
   pageSize: number;
   setPageSize: (size: number) => void;
   error: string | null;
+  filterModel: MetricsFilter;
+  setFilterModel: (model: MetricsFilter) => void;
 };
 
-function usePostsTable(appName: AppNames, postId?: number): UsePostsTable {
+function usePostsTable(appName: AppNames): UsePostsTable {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const [filter, setFilter] = useState<MetricsFilter>();
 
   const appData = postsTables[appName];
 
@@ -75,9 +79,10 @@ function usePostsTable(appName: AppNames, postId?: number): UsePostsTable {
     startDate: String,
     endDate: String,
     page: number,
-    pageSize: number
+    pageSize: number,
+    filter: MetricsFilter
   ): Promise<PostsTableResponse> => {
-    const params = { startDate, endDate, page, pageSize };
+    const params = { startDate, endDate, page, pageSize, filter };
     return await HTTP.get(appData.url, { params }).then((res: any) => res.data);
   };
 
@@ -85,8 +90,8 @@ function usePostsTable(appName: AppNames, postId?: number): UsePostsTable {
     PostsTableResponse,
     AxiosError<ErrorResponse>,
     PostsTableResponse | null
-  >(['postsTableData', startDate, endDate, page, pageSize], () =>
-    getPostsData(startDate, endDate, page, pageSize)
+  >(['postsTableData', startDate, endDate, page, pageSize, filter], () =>
+    getPostsData(startDate, endDate, page, pageSize, filter)
   );
 
   return {
@@ -98,6 +103,8 @@ function usePostsTable(appName: AppNames, postId?: number): UsePostsTable {
     pageSize: pageSize,
     setPageSize: setPageSize,
     error: extractBackendError(query.error),
+    filterModel: filter,
+    setFilterModel: setFilter,
   };
 }
 

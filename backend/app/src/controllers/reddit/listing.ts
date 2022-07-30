@@ -79,6 +79,7 @@ export const getListingTable: RequestHandler = async (req, res, next) => {
     const listings = await RedditListing.findAll({
       where: {
         subredditId: user!.subreddit.id,
+        ...res.locals.getFilterCondition(),
         date: {
           [Op.between]: [dates.startDate, dates.endDate],
         },
@@ -249,8 +250,7 @@ export const getSubjectivityAnalysisForTimeSeries: RequestHandler = async (
             date: listing.date.toLocaleDateString(),
             time: listing.date.toLocaleTimeString('it-IT'),
             subjective: (subjective / total) * 100,
-            objective: (objective / total) * 100
-
+            objective: (objective / total) * 100,
           });
         }
 

@@ -1,3 +1,4 @@
+import { GridFilterModel } from '@mui/x-data-grid';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -11,6 +12,7 @@ import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
 import { extractBackendError } from '../../../utils/httpHelpers';
 import {
+  MetricsFilter,
   MetricsTableColDef,
   MetricsTables,
 } from '../MetricsTable/MetricsTableQueryTypes';
@@ -64,6 +66,8 @@ export type UseCommentsTable = {
   pageSize: number;
   setPageSize: (size: number) => void;
   error: string | null;
+  filterModel: MetricsFilter;
+  setFilterModel: (model: MetricsFilter) => void;
 };
 
 function useCommentsTable(
@@ -74,6 +78,7 @@ function useCommentsTable(
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const [filter, setFilter] = useState<MetricsFilter>();
 
   const appData = commentsTables[appName];
   const getCommentsData = async (
@@ -81,20 +86,22 @@ function useCommentsTable(
     endDate: String,
     page: number,
     pageSize: number,
+    filter: MetricsFilter,
     postId?: number
   ): Promise<CommentsTableResponse> => {
     const params = postId
-      ? { startDate, endDate, page, pageSize, postId }
-      : { startDate, endDate, page, pageSize };
-    return await HTTP.get(appData.url, { params }).then((res: any) => res.data);
+      ? { startDate, endDate, page, pageSize, filter, postId }
+      : { startDate, endDate, page, pageSize, filter };
+    return await HTTP.get(appData.url, { params }).then((res) => res.data);
   };
 
   const query = useQuery<
     CommentsTableResponse,
     AxiosError<ErrorResponse>,
     CommentsTableResponse | null
-  >(['commentsTableData', startDate, endDate, page, pageSize, postId], () =>
-    getCommentsData(startDate, endDate, page, pageSize, postId)
+  >(
+    ['commentsTableData', startDate, endDate, page, pageSize, filter, postId],
+    () => getCommentsData(startDate, endDate, page, pageSize, filter, postId)
   );
 
   return {
@@ -106,6 +113,8 @@ function useCommentsTable(
     pageSize: pageSize,
     setPageSize: setPageSize,
     error: extractBackendError(query.error),
+    filterModel: filter,
+    setFilterModel: setFilter,
   };
 }
 
