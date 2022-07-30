@@ -6,7 +6,7 @@ import {
   RouteNames,
   RoutePaths,
 } from '../../../Components/Router/RoutesConstants';
-import { getSingInNotification } from '../../../pages/Auth/SignIn';
+import { getSignInNotifcation } from '../../../pages/Auth/SignIn';
 import { getSignUpNotification } from '../../../pages/Auth/SignUp';
 import { ErrorResponse } from '../../../utils/enums';
 import { NotificationType } from '../../../utils/hooks/Notification';
@@ -40,11 +40,21 @@ export const signIn = createAsyncThunk<
   }
 >('user/signIn', async (user, thunkAPI) => {
   try {
+    // if a new user attempts signing in, sign out the older user
+    let currUsername = AuthStorage.getSession();
+    let newUsername = user.username;
+
+    if (currUsername && currUsername !== newUsername) {
+      await signOutAPI();
+      AuthStorage.removeSession();
+      thunkAPI.dispatch(setUsername(''));
+    }
+
     const response = await signInAPI(user);
-    AuthStorage.storeSession(user.username);
-    thunkAPI.dispatch(setUsername(user.username));
-    history.push(RoutePaths.Dashboard);
+    thunkAPI.dispatch(setUsername(newUsername));
     thunkAPI.dispatch(setPageName(RouteNames.Dashboard));
+    AuthStorage.storeSession(user.username);
+    history.push(RoutePaths.Dashboard);
 
     return response.data;
   } catch (error: any) {
@@ -112,7 +122,7 @@ export const userSlice = createSlice({
         state.signInStatus = ReduxStatus.failed;
         state.errorMessage = String(action.payload);
 
-        const notification = getSingInNotification();
+        const notification = getSignInNotifcation();
 
         notification.setMessage(String(action.payload));
         notification.setType(NotificationType.Error);
