@@ -6,7 +6,7 @@ import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+// import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
 import { extractBackendError } from '../../../utils/httpHelpers';
@@ -15,6 +15,16 @@ import {
   CommentsWordCloudResponse,
   CommentsWordCloudUrlRequest,
 } from './WordCloudURLConst';
+
+export enum AppNames {
+  Facebook = 'Facebook',
+  Instagram = 'Instagram',
+  Twitter = 'Twitter',
+  YouTube = 'YouTube',
+  Reddit = 'Reddit',
+  GoogleReviews = 'Google Reviews',
+  Yelp = 'Yelp',
+}
 
 type WordCloudQueryType = {
   cloudQuery: string;
@@ -54,10 +64,6 @@ const wordCloudQuery: DictWordCloudQuery = {
     cloudQuery: CommentsWordCloudUrlRequest.Yelp,
     appName: AppNames.Yelp,
   },
-  [AppNames.default]: {
-    cloudQuery: '',
-    appName: '',
-  },
 };
 
 const useCommentsWordCloud = (): UseWordCloudrQuery => {
@@ -84,6 +90,7 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   const query = useQueries(
     queries.map((app) => {
+      console.log('app:' + JSON.stringify(app));
       return {
         queryKey: [
           'WordCloudData',
@@ -99,7 +106,8 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   query.forEach((item) => {
     if (item.data) {
-      keywords.push(item.data.WordCloudData); //to fix
+      console.log('item:' + JSON.stringify(item)); //data: []????
+      //   keywords.push(item.data.WordCloudData); //to fix
     } else {
       isLoading = item.isLoading;
       if (item.error) {
