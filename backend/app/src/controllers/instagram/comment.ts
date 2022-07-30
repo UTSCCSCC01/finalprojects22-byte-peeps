@@ -17,6 +17,12 @@ import { getDates } from '../../globalHelpers/globalHelpers';
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
 import InstagramTag from '../../models/instagram/tag';
 import { Sequelize } from 'sequelize-typescript';
+import {
+  createFilterCondition,
+  removeTableFilterField,
+  renameTableFilterField,
+  TableFilter,
+} from '../../middlewares/tableFilter';
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
@@ -53,44 +59,81 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
           where: { apiId: user!.instagramApi.id },
         });
     const mediaIds: number[] = media.map((m) => m.id);
-    const comments = await InstagramComment.findAll({
-      where: {
-        mediaId: mediaIds,
-        date: {
-          [Op.between]: [dates.startDate, dates.endDate],
-        },
-      },
-      order: [['date', 'DESC']],
-      attributes: [
-        'id',
-        'date',
-        'userName',
-        'message',
-        [Sequelize.literal("'Comment'"), 'type'],
-        'likes',
-        'sentimentAnalysis',
-        'topicClassification',
-        'subjectivityAnalysis',
-      ],
-    });
 
-    const tags = await InstagramTag.findAll({
-      where: { apiId: user!.instagramApi.id },
-      order: [['date', 'DESC']],
-      attributes: [
-        'id',
-        'date',
+    let filter: TableFilter | null = res.locals.tableFilter;
+    let commentsAndTags: (InstagramComment | InstagramTag)[] = [];
+
+    // Query if no filter is added for type or is specific to comment type
+    if (
+      !filter ||
+      filter.columnField !== 'type' ||
+      filter.value?.toLowerCase() === 'comment'
+    ) {
+      const commentsFilter = removeTableFilterField(filter, 'type');
+      const commentsFilterCondition = createFilterCondition(commentsFilter);
+
+      commentsAndTags = await InstagramComment.findAll({
+        where: {
+          mediaId: mediaIds,
+          ...commentsFilterCondition,
+          date: {
+            [Op.between]: [dates.startDate, dates.endDate],
+          },
+        },
+        order: [['date', 'DESC']],
+        attributes: [
+          'id',
+          'date',
+          'userName',
+          'message',
+          [Sequelize.literal("'Comment'"), 'type'],
+          'likes',
+          'sentimentAnalysis',
+          'topicClassification',
+          'subjectivityAnalysis',
+        ],
+      });
+    }
+
+    // Query if no filter is added for type or is specific to tag type
+    if (
+      !filter ||
+      filter.columnField !== 'type' ||
+      filter.value?.toLowerCase() === 'tag'
+    ) {
+      const RENAMED_FIELDS: any = [
         ['username', 'userName'],
         ['caption', 'message'],
-        [Sequelize.literal("'Tag'"), 'type'],
-        'likes',
-        'sentimentAnalysis',
-        'topicClassification',
-        'subjectivityAnalysis',
-      ],
-    });
+      ];
 
-    const commentsAndTags = [...comments, ...tags];
+      const tagFilter = removeTableFilterField(filter, 'type');
+      const renamedTagFilter = renameTableFilterField(
+        tagFilter,
+        RENAMED_FIELDS
+      );
+      const tagFilterCondition = createFilterCondition(renamedTagFilter);
+
+      commentsAndTags = commentsAndTags.concat(
+        await InstagramTag.findAll({
+          where: {
+            apiId: user!.instagramApi.id,
+            ...tagFilterCondition,
+          },
+          order: [['date', 'DESC']],
+          attributes: [
+            'id',
+            'date',
+            ...RENAMED_FIELDS,
+            [Sequelize.literal("'Tag'"), 'type'],
+            'likes',
+            'sentimentAnalysis',
+            'topicClassification',
+            'subjectivityAnalysis',
+          ],
+        })
+      );
+    }
+
     commentsAndTags.sort((a, b) => b.date.getTime() - a.date.getTime());
 
     const filteredCommentsAndTags = commentsAndTags.slice(
