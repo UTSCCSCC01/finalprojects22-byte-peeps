@@ -1,11 +1,12 @@
 import GoogleIcon from '@mui/icons-material/Google';
 import StarIcon from '@mui/icons-material/Star';
 import { Box, Tab, Tabs } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { RouteNames } from '../../Components/Router/RoutesConstants';
 import TabPanel, { a11yProps } from '../../Components/TabPanel/TabPanel';
 import { useAppDispatch } from '../../Redux/hooks';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { setAppName } from '../../Redux/Slices/webApp/webAppSlice';
+import { setAppName, setPageName } from '../../Redux/Slices/webApp/webAppSlice';
 import GoogleReviewsTab from './GoogleReviews/GoogleReviewsTab';
 import YelpTab from './Yelp/YelpTab';
 
@@ -19,6 +20,10 @@ const tabPanels: React.ReactNode[] = [<YelpTab />, <GoogleReviewsTab />];
 
 const ReviewApps: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setPageName(RouteNames.Reviews));
+  }, [dispatch]);
 
   const [currTab, setCurrTab] = React.useState<number>(0);
 
