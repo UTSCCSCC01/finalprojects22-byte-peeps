@@ -209,8 +209,8 @@ async function userAndAPIs(): Promise<RegisteredUser> {
 
   // Add Yelp Business  user
   const yelpBusinessId = await YelpBusiness.create({
-    businessId: faker.datatype.uuid(),
-    name: faker.company.companyName(),
+    businessId: 'r-sushi-north-york',
+    name: 'R Sushi',
     userId,
   }).then((account) => {
     if (account) return account.id;
