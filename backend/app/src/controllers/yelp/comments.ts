@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import {
   invalidDateRangeResponse,
   invalidInput,
+  unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
 import YelpReview from '../../models/yelp/review';
@@ -13,6 +14,62 @@ import {
 } from '../../globalHelpers/globalConstants';
 const { Op } = require('sequelize');
 import { keywordExtraction } from '../../middlewares/keywordExtraction';
+
+/**
+ * Provides the page number and size, provides comments of any Yelp review related to the user API
+ */
+export const getComments: RequestHandler = async (req, res, next) => {
+  try {
+    if (
+      !req.query.startDate ||
+      req.query.startDate.length !== 8 ||
+      !req.query.endDate ||
+      req.query.endDate.length !== 8
+    )
+      return res.status(400).send();
+
+    const user = await User.findOne({
+      where: { username: req.session.username },
+      include: YelpBusiness,
+    });
+    const pageNumber = parseInt(req.query.page?.toString() ?? '0');
+    const pageSize = parseInt(req.query.pageSize?.toString() ?? '0');
+
+    const start: string = req.query.startDate.toString();
+    const end: string = req.query.endDate.toString();
+    const dates = getDates(start, end);
+
+    if (!user?.yelpBusiness) return res.send({ count: 0, data: [] });
+
+    const reviews = await YelpReview.findAll({
+      where: {
+        businessId: user.yelpBusiness.id,
+        ...res.locals.getFilterCondition(),
+        date: {
+          [Op.between]: [dates.startDate, dates.endDate],
+        },
+      },
+      order: [['date', 'DESC']],
+      attributes: [
+        'id',
+        'text',
+        'userName',
+        'rating',
+        'sentimentAnalysis',
+        'topicClassification',
+        'subjectivityAnalysis',
+      ],
+    });
+    const filteredReviews = reviews.slice(
+      pageNumber * pageSize,
+      pageNumber * pageSize + pageSize
+    );
+    res.send({ count: reviews.length, data: filteredReviews });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: unknownError });
+  }
+};
 
 export const getCommentsSentimentAnalysis: RequestHandler = async (
   req,
@@ -134,7 +191,6 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
   }
 };
 
-
 export const getWordCloudData: RequestHandler = async (req, res, next) => {
   try {
     const startDateParam = req.query.startDate?.toString();
@@ -170,4 +226,3 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     next(e);
   }
 };
-

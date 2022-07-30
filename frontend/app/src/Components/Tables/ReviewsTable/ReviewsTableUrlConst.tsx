@@ -14,6 +14,6 @@ interface GoogleReviewsReviewsTableResponse {
 export type ReviewsTableResponse = GoogleReviewsReviewsTableResponse;
 
 export enum ReviewsTableUrlRequest {
-  GoogleReviews = '/googleReviews/reviews',
-  Yelp = '/yelp/reviews',
+  GoogleReviews = '/googleReviews/comments',
+  Yelp = '/yelp/comments',
 }
