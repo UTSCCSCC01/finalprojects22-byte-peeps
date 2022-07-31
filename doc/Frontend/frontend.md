@@ -19,6 +19,10 @@
 
   - Used by the Comments Table to maintain states including paging and querying data
 
+- Use Posts Table
+
+  - Used by the Posts Table to maintain states including paging and querying data
+
 ## Generic Components
 
 - Authenticated check:
@@ -49,11 +53,15 @@
 - Metrics Table
 
   - `MetricsTable.tsx`
-  - Contains default configuration for displaying consistent tables with server side paging
+  - Contains default configuration for displaying consistent tables with server side paging and filtering
 
 - Comments Table
 
   - `CommentsTable.tsx`: the actual component, utilizes the metrics table and the `useCommentsTable` custom hook to display comments for social media platforms
+
+- Posts Table
+
+  - `PostsTable.tsx`: the actual component, utilizes the metrics table and the `useCommentsTable` custom hook to display comments for social media platforms
 
 -Time Series Table
 
