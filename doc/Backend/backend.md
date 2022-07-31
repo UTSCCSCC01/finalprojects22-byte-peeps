@@ -50,3 +50,21 @@ All error messages from the backend should take the format:
     "message": "this is an error message"
 }
 ```
+
+## Filter Table Middleware
+
+The filter table middleware extracts request parameters and provides simplistic ways to manipulate filters as well as create model conditions out of it.
+
+### Instructions
+1. Place the middleware `filterTable` in the route definition as in:
+    ```javascript
+    commentRouter.get('/', tableFilter, getComments);
+    ```
+2. Add the filter condition in the model retrieval
+    ```
+    where: {
+        ...res.locals.getFilterCondition(),
+    }
+    ```
+
+There are additional exported functions that can be used to rename fields, recreate filter conditions, remove fields, and more. Refer to the `/middlewares/tableFilter.ts` for exported functions and corresponding documentation.
