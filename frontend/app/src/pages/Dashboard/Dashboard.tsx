@@ -26,7 +26,7 @@ const Dashboard: React.FunctionComponent<Props> = () => {
 
         <Grid item xs={2} sm={4} md={4}>
           <CardCharts name={'Word Cloud'}>
-            <CommentsWordCloud />
+            {/* <CommentsWordCloud /> */}
           </CardCharts>
         </Grid>
 
