@@ -1,23 +1,27 @@
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useAppSelector } from '../../Redux/hooks';
+import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
-} from '../../Redux/Slices/dateSelector/dateSelectorSlice';
-import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../utils/enums';
-import HTTP from '../../utils/http';
-import { extractBackendError } from '../../utils/httpHelpers';
+} from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { ErrorResponse } from '../../../utils/enums';
+import HTTP from '../../../utils/http';
+import { extractBackendError } from '../../../utils/httpHelpers';
+import {
+  MetricsFilter,
+  MetricsTableColDef,
+  MetricsTables,
+} from '../MetricsTable/MetricsTableQueryTypes';
 import { CommentsTableColDefConst } from './CommentsTableColDefConst';
-import { CommentsTableColDef, CommentTables } from './CommentsTableQueryTypes';
 import {
   CommentsTableResponse,
   CommentsTableUrlRequest,
 } from './CommentsTableUrlConst';
 
-const commentsTables: CommentTables = {
+const commentsTables: MetricsTables = {
   [AppNames.Facebook]: {
     url: CommentsTableUrlRequest.Facebook,
     colDef: CommentsTableColDefConst.Facebook,
@@ -39,16 +43,12 @@ const commentsTables: CommentTables = {
     colDef: CommentsTableColDefConst.YouTube,
   },
   [AppNames.GoogleReviews]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.GoogleReviews,
+    colDef: CommentsTableColDefConst.GoogleReviews,
   },
   [AppNames.Yelp]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
-  },
-  [AppNames.Overview]: {
-    url: '',
-    colDef: CommentsTableColDefConst.Default,
+    url: CommentsTableUrlRequest.Yelp,
+    colDef: CommentsTableColDefConst.Yelp,
   },
   [AppNames.default]: {
     url: '',
@@ -57,7 +57,7 @@ const commentsTables: CommentTables = {
 };
 
 export type UseCommentsTable = {
-  colDef: CommentsTableColDef;
+  colDef: MetricsTableColDef;
   data: CommentsTableResponse | undefined | null;
   isLoading: boolean;
   page: number;
@@ -65,6 +65,8 @@ export type UseCommentsTable = {
   pageSize: number;
   setPageSize: (size: number) => void;
   error: string | null;
+  filterModel: MetricsFilter;
+  setFilterModel: (model: MetricsFilter) => void;
 };
 
 function useCommentsTable(
@@ -75,6 +77,7 @@ function useCommentsTable(
   const endDate = useAppSelector(selectEndDate);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const [filter, setFilter] = useState<MetricsFilter>();
 
   const appData = commentsTables[appName];
   const getCommentsData = async (
@@ -82,11 +85,12 @@ function useCommentsTable(
     endDate: String,
     page: number,
     pageSize: number,
+    filter: MetricsFilter,
     postId?: number
   ): Promise<CommentsTableResponse> => {
     const params = postId
-      ? { startDate, endDate, page, pageSize, postId }
-      : { startDate, endDate, page, pageSize };
+      ? { startDate, endDate, page, pageSize, filter, postId }
+      : { startDate, endDate, page, pageSize, filter };
     return await HTTP.get(appData.url, { params }).then((res) => res.data);
   };
 
@@ -94,8 +98,9 @@ function useCommentsTable(
     CommentsTableResponse,
     AxiosError<ErrorResponse>,
     CommentsTableResponse | null
-  >(['commentsTableData', startDate, endDate, page, pageSize, postId], () =>
-    getCommentsData(startDate, endDate, page, pageSize, postId)
+  >(
+    ['commentsTableData', startDate, endDate, page, pageSize, filter, postId],
+    () => getCommentsData(startDate, endDate, page, pageSize, filter, postId)
   );
 
   return {
@@ -107,6 +112,8 @@ function useCommentsTable(
     pageSize: pageSize,
     setPageSize: setPageSize,
     error: extractBackendError(query.error),
+    filterModel: filter,
+    setFilterModel: setFilter,
   };
 }
 
