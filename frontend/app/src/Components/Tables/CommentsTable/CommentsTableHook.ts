@@ -50,6 +50,10 @@ const commentsTables: MetricsTables = {
     url: CommentsTableUrlRequest.Yelp,
     colDef: CommentsTableColDefConst.Yelp,
   },
+  [AppNames.Overview]: {
+    url: '',
+    colDef: CommentsTableColDefConst.Default,
+  },
   [AppNames.default]: {
     url: '',
     colDef: CommentsTableColDefConst.Default,

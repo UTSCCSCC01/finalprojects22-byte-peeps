@@ -1,4 +1,5 @@
 export enum AppNames {
+  Overview = 'Overview',
   Facebook = 'Facebook',
   Instagram = 'Instagram',
   Twitter = 'Twitter',
@@ -6,6 +7,5 @@ export enum AppNames {
   Reddit = 'Reddit',
   GoogleReviews = 'Google Reviews',
   Yelp = 'Yelp',
-  Overview = 'Overview',
   default = '',
 }
