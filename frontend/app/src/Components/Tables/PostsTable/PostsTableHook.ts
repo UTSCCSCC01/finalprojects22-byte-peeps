@@ -47,6 +47,10 @@ const postsTables: MetricsTables = {
     url: '',
     colDef: PostsTableColDefConst.Default,
   },
+  [AppNames.Overview]: {
+    url: '',
+    colDef: PostsTableColDefConst.Default,
+  },
   [AppNames.default]: {
     url: '',
     colDef: PostsTableColDefConst.Default,
