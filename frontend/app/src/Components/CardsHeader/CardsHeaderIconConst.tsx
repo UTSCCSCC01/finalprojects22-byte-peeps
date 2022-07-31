@@ -59,6 +59,15 @@ const GoogleReviewsCardIcons = {
   avgReview: <StarRateIcon color="primary" />,
 };
 
+const OverviewCardIcons = {
+  totalPosts: <FeedIcon color="primary" />,
+  totalLikes: <ThumbUpIcon color="primary" />,
+  totalMentions: (
+    <FontAwesomeIcon icon={faUserTag} style={{ color: MUITheme.main }} />
+  ),
+  avgReview: <StarRateIcon color="primary" />,
+};
+
 const CardHeaderIcons = {
   FacebookCardIcons,
   InstagramCardIcons,
@@ -67,6 +76,7 @@ const CardHeaderIcons = {
   RedditCardIcons,
   YelpCardIcons,
   GoogleReviewsCardIcons,
+  OverviewCardIcons,
 };
 
 export default CardHeaderIcons;

@@ -8,7 +8,6 @@ import CardsHeader from '../../Components/CardsHeader/CardsHeader';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
 import CircularProgressChart from '../../Components/Charts/DonutChart/CircularProgressChart';
 import SentimentPerformanceChart from '../../Components/Charts/DonutChart/SentimentPerformanceChart';
-import CardsDashboard from '../../Components/CardsHeader/CardsDashboard';
 
 interface Props {}
 
@@ -22,7 +21,7 @@ const Dashboard: React.FunctionComponent<Props> = () => {
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
         <Grid item xs={12}>
-          <CardsDashboard />
+          <CardsHeader appName={AppNames.Overview} />
         </Grid>
 
         <Grid item xs={2} sm={4} md={4}>

@@ -41,6 +41,13 @@ type GoogleReviewsCardResponse = {
   avgReview: number;
 };
 
+type OverviewCardResponse = {
+  totalPosts: number;
+  totalLikes: number;
+  totalMentions: number;
+  avgReview: number;
+};
+
 export type CardHeaderResponse =
   | FacebookCardResponse
   | InstagramCardResponse
@@ -48,7 +55,8 @@ export type CardHeaderResponse =
   | YouTubeCardResponse
   | RedditCardResponse
   | YelpCardResponse
-  | GoogleReviewsCardResponse;
+  | GoogleReviewsCardResponse
+  | OverviewCardResponse;
 
 export enum CardHeaderURLRequest {
   FacebookCardHeader = '/facebook/stats/cards',
@@ -58,4 +66,5 @@ export enum CardHeaderURLRequest {
   RedditCardHeader = '/reddit/stats/cards',
   YelpCardHeader = '/yelp/stats/cards',
   GoogleReviewsCardHeader = '/googleReviews/stats/cards',
+  OverviewCardHeader = '/overview/stats/cards',
 }
