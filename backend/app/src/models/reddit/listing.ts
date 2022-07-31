@@ -41,6 +41,15 @@ export default class RedditListing extends Model {
   @Column
   numComments: number;
 
+  @Column
+  sentimentAnalysis: string;
+
+  @Column
+  topicClassification: string;
+
+  @Column
+  subjectivityAnalysis: string;
+
   @DeletedAt
   deletedAt?: Date;
 

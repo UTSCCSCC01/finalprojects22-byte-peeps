@@ -7,7 +7,6 @@ import {
   selectStartDate,
 } from '../../Redux/Slices/dateSelector/dateSelectorSlice';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
-import { selectAppName } from '../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../utils/enums';
 import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
@@ -81,17 +80,23 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
     cardLength: Object.keys(CardHeaderNames.RedditCardNames).length,
     cardIcons: CardHeaderIcons.RedditCardIcons,
   },
-  [AppNames.GoogleReviews]: {
-    cardQuery: '',
-    cardNames: {},
-    cardLength: 0,
-    cardIcons: {},
-  },
   [AppNames.Yelp]: {
-    cardQuery: '',
-    cardNames: {},
-    cardLength: 0,
-    cardIcons: {},
+    cardQuery: CardHeaderURLRequest.YelpCardHeader,
+    cardNames: CardHeaderNames.YelpCardNames,
+    cardLength: Object.keys(CardHeaderNames.YelpCardNames).length,
+    cardIcons: CardHeaderIcons.YelpCardIcons,
+  },
+  [AppNames.GoogleReviews]: {
+    cardQuery: CardHeaderURLRequest.GoogleReviewsCardHeader,
+    cardNames: CardHeaderNames.GoogleReviewsCardNames,
+    cardLength: Object.keys(CardHeaderNames.GoogleReviewsCardNames).length,
+    cardIcons: CardHeaderIcons.GoogleReviewsCardIcons,
+  },
+  [AppNames.Overview]: {
+    cardQuery: CardHeaderURLRequest.OverviewCardHeader, //incomplete path
+    cardNames: CardHeaderNames.OverviewCardNames,
+    cardLength: Object.keys(CardHeaderNames.OverviewCardNames).length,
+    cardIcons: CardHeaderIcons.OverviewCardIcons,
   },
   [AppNames.default]: {
     cardQuery: '',
@@ -105,8 +110,10 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
  * Custom hook to get the card header data depending on the platform using useQuery()
  * @return {UseCardsHeaderQuery} useQuery() hook types alongside other extensions
  */
-function useCardsHeaderQuery(postId?: number): UseCardsHeaderQuery {
-  const appName = useAppSelector(selectAppName);
+function useCardsHeaderQuery(
+  appName: AppNames,
+  postId?: number
+): UseCardsHeaderQuery {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 

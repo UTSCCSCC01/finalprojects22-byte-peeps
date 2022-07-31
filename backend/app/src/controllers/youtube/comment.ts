@@ -54,6 +54,7 @@ export const getComments: RequestHandler = async (req, res, next) => {
     const comments = await YouTubeComment.findAll({
       where: {
         videoId: videoIds,
+        ...res.locals.getFilterCondition(),
         date: {
           [Op.between]: [dates.startDate, dates.endDate],
         },

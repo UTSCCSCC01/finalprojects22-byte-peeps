@@ -185,7 +185,7 @@ npm run start
 
 Due to github actions being displayed, we will be running the github actions locally using [act](https://github.com/nektos/act) to deploy.
 
-Currently, the website is deployed at: https://c01.mohamedtayeh.com/
+Currently, the website is deployed at: https://www.datalytic.ml/
 
 - Installation:
 
@@ -215,14 +215,11 @@ Currently, the website is deployed at: https://c01.mohamedtayeh.com/
 
 - **Note:** the last command will say failure but it did actually work.
 
-- **Note:** the last command will say failure but it did actually work.
-
 ## Authors
 
 - [Mohamed Tayeh](https://github.com/mohamed-tayeh)
 - [Bassel Ashi](https://github.com/BasselAshi)
 - [Connie Lin](https://github.com/connieJ-lin)
-- [Mohammad Qadir](https://github.com/DomiVesalius)
 - [Karandeep Lubana](https://github.com/KarandeepLubana)
 - [Jiaming Yang](https://github.com/Jiaming-Yang-20)
 - [Juan Camilo Corral](https://github.com/Wikisaqui)

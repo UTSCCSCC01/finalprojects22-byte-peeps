@@ -4,6 +4,7 @@ import RedditSubreddit from '../../models/reddit/subreddit';
 import RedditListing from '../../models/reddit/listing';
 import RedditComment from '../../models/reddit/comment';
 import User from '../../models/user/user';
+import { startPipeline } from '../../dataPipelines/reddit';
 
 export const getSettings: RequestHandler = async (req, res, next) => {
   try {
@@ -111,6 +112,15 @@ export const connectSubreddit: RequestHandler = async (req, res, next) => {
       message: 'The subreddit has been connected successfully!',
     });
   } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+export const populateFirstTime: RequestHandler = async (req, res, next) => {
+  try {
+    await startPipeline(true);
+    return res.send('Reddit data has been pulled');
+  } catch (err: any) {
     return res.status(500).send(err);
   }
 };

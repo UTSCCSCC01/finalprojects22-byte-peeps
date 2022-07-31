@@ -19,7 +19,7 @@ const YouTubeApiEndPoint = google.youtube({
  * 3. Update all comments
  * @returns {Promise<void>} - Promise that resolves when the function is complete
  */
-async function startPipeline(): Promise<void> {
+export async function startPipeline(firstTime = false): Promise<void> {
   try {
     let youtubeChannels = await YouTubeChannel.findAll();
     if (youtubeChannels.length == 0) return;
@@ -27,23 +27,27 @@ async function startPipeline(): Promise<void> {
     /* Get the last day that a You dates */
     const updateVideosWorkFlow: Promise<[YouTubeVideo, boolean | null]>[] = [];
 
-    // for looop over youtube channel and do the same thing as below
-    for (let i = 0; i < youtubeChannels.length; i++) {
-      const youtubeChannel = youtubeChannels[i];
-
+    // Loop over youtube channel and do the same thing as below
+    for (const youtubeChannel of youtubeChannels) {
       /* Get channel id */
       const channelIdKey = youtubeChannel.id;
       const channelId = youtubeChannel.channelId;
       const oauth = youtubeChannel.oauth;
 
       /* Last day that a YouTube video was published */
-      let lastDate: Date = await YouTubeVideo.findOne({
-        where: { channelId: channelIdKey },
-        order: [['date', 'DESC']],
-      }).then((video) => {
-        if (video) return video.date;
-        return new Date(0);
-      });
+      let lastDate: Date;
+      if (firstTime) {
+        lastDate = new Date();
+        lastDate.setDate(lastDate.getDate() - 7);
+      } else {
+        lastDate = await YouTubeVideo.findOne({
+          where: { channelId: channelIdKey },
+          order: [['date', 'DESC']],
+        }).then((video) => {
+          if (video) return video.date;
+          return new Date(0);
+        });
+      }
 
       updateVideosWorkFlow.push(
         ...(await updateVideos(channelId, channelIdKey, oauth, lastDate))
@@ -225,9 +229,7 @@ async function updateComments(
 
       if (!commentMessage) continue;
 
-      let textAnalysis: DatumAPICallResult = await DatumBoxAPICall(
-        commentMessage
-      );
+      let textAnalysis = await DatumBoxAPICall(commentMessage);
 
       let dbCommentUpdateQuery = YouTubeComment.upsert({
         resourceId: commentId,

@@ -12,6 +12,8 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import SyncIcon from '@mui/icons-material/Sync';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   getSettingsAsync,
@@ -21,6 +23,7 @@ import {
   selectNewChannel,
   setStatus,
   setNewChannel,
+  selectFetchState,
 } from '../../Redux/Slices/youtubeSetup/youtubeSetupSlice';
 import { Notification } from '../Notification/Notification';
 import useNotification, {
@@ -37,6 +40,7 @@ export function YoutubeSetup() {
   const status = useAppSelector(selectStatus);
   const channel = useAppSelector(selectChannel);
   const newChannel = useAppSelector(selectNewChannel);
+  const fetchState = useAppSelector(selectFetchState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -130,6 +134,26 @@ export function YoutubeSetup() {
               Cancel
             </Button>
           </Box>
+        </Grid>
+      )}
+
+      {fetchState === 'fetching' && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="info" icon={<SyncIcon />}>
+            Pulling YouTube data, please wait...
+          </Alert>
+        </Grid>
+      )}
+
+      {fetchState === 'fetched' && (
+        <Grid item xs={12}>
+          <Alert
+            variant="standard"
+            severity="success"
+            icon={<PublishedWithChangesIcon />}
+          >
+            YouTube data has been pulled
+          </Alert>
         </Grid>
       )}
 

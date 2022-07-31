@@ -5,16 +5,17 @@ import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
+import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { selectAppName } from '../../../Redux/Slices/webApp/webAppSlice';
 import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
-import { SentimentUrlRequest } from './SentimentUrlConst';
+import { extractBackendError } from '../../../utils/httpHelpers';
 import { DictPieChartQuery } from './PieChartQueryTypes';
 import { UsePieChartQuery } from './SentimentPieChartQueryTypes';
-import { SentimentAnalysisResponse } from './SentimentUrlConst';
-import { SentimentAnalysis } from '../../../Redux/Slices/facebook/facebookSlice';
-import { extractBackendError } from '../../../utils/httpHelpers';
+import {
+  SentimentAnalysisResponse,
+  SentimentUrlRequest,
+} from './SentimentUrlConst';
 
 const SentimentPieChartQuery: DictPieChartQuery = {
   [AppNames.Facebook]: {
@@ -33,9 +34,12 @@ const SentimentPieChartQuery: DictPieChartQuery = {
     pieChartQuery: SentimentUrlRequest.Reddit,
   },
   [AppNames.GoogleReviews]: {
-    pieChartQuery: '',
+    pieChartQuery: SentimentUrlRequest.GoogleReviews,
   },
   [AppNames.Yelp]: {
+    pieChartQuery: SentimentUrlRequest.Yelp,
+  },
+  [AppNames.Overview]: {
     pieChartQuery: '',
   },
   [AppNames.default]: {
@@ -43,8 +47,10 @@ const SentimentPieChartQuery: DictPieChartQuery = {
   },
 };
 
-const useSentimentPieChart = (postId?: number): UsePieChartQuery => {
-  const appName = useAppSelector(selectAppName);
+const useSentimentPieChart = (
+  appName: AppNames,
+  postId?: number
+): UsePieChartQuery => {
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
 

@@ -1,8 +1,8 @@
 export enum RoutePaths {
-  SignIn = '/',
+  SignIn = '/signin',
   SignUp = '/signup',
   Dashboard = '/dashboard',
-  Surveys = '/surveys',
+  // Surveys = '/surveys',
   Reviews = '/reviews',
   Socials = '/socials',
   Settings = '/settings',
@@ -11,8 +11,8 @@ export enum RoutePaths {
 export enum RouteNames {
   SignIn = 'Sign In',
   SignUp = 'Sign Up',
-  Dashboard = 'Dashboard',
-  Surveys = 'Surveys',
+  Dashboard = 'Overview',
+  // Surveys = 'Surveys',
   Reviews = 'Review Apps',
   Socials = 'Social Media',
   Settings = 'Settings',

@@ -11,7 +11,6 @@ import errorHandler from './middlewares/errorHandler';
 import notFoundHandler from './middlewares/notFoundHandler';
 import sessionHandler from './middlewares/sessionHandler';
 import requestRouter from './routes/routes';
-import addFakeData from './dataPipelines/fakeData/fakeData';
 
 const app = express();
 
@@ -41,4 +40,3 @@ app.listen(PORT, () => {
 });
 
 startPipelines();
-addFakeData();

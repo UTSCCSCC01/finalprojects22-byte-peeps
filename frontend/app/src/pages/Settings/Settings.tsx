@@ -1,33 +1,35 @@
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
-import GoogleIcon from '@mui/icons-material/Google';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import RedditIcon from '@mui/icons-material/Reddit';
 import StarIcon from '@mui/icons-material/Star';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, Tab, Tabs } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FacebookSetup } from '../../Components/FacebookSetup/FacebookSetup';
 import { InactiveApiChecker } from '../../Components/InactiveApiChecker/InactiveApiChecker';
 import { InstagramSetup } from '../../Components/InstagramSetup/InstagramSetup';
 import { RedditSetup } from '../../Components/RedditSetup/RedditSetup';
+import { RouteNames } from '../../Components/Router/RoutesConstants';
 import TabPanel, { a11yProps } from '../../Components/TabPanel/TabPanel';
-import ToBeImplemented from '../../Components/ToBeImplemented/ToBeImplemented';
 import { TwitterSetup } from '../../Components/TwitterSetup/TwitterSetup';
-import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
-import './Settings.css';
 import { YelpSetup } from '../../Components/YelpSetup/YelpSetup';
+import { YoutubeSetup } from '../../Components/YoutubeSetup/YoutubeSetup';
+import { useAppDispatch } from '../../Redux/hooks';
+import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
+import { setPageName } from '../../Redux/Slices/webApp/webAppSlice';
+import './Settings.css';
 
 interface Props {}
 
 const tabLabels: string[] = [
-  'Facebook',
-  'Instagram',
-  'Twitter',
-  'YouTube',
-  'Reddit',
-  'Google',
-  'Yelp',
+  AppNames.Facebook,
+  AppNames.Instagram,
+  AppNames.Twitter,
+  AppNames.YouTube,
+  AppNames.Reddit,
+  // 'Google',
+  AppNames.Yelp,
 ];
 
 const tabIcons: JSX.Element[] = [
@@ -36,7 +38,7 @@ const tabIcons: JSX.Element[] = [
   <TwitterIcon />,
   <YouTubeIcon />,
   <RedditIcon />,
-  <GoogleIcon />,
+  // <GoogleIcon />,
   <StarIcon />,
 ];
 
@@ -46,11 +48,17 @@ const tabPanels: JSX.Element[] = [
   <TwitterSetup />,
   <YoutubeSetup />,
   <RedditSetup />,
-  <ToBeImplemented />,
+  // <ToBeImplemented />,
   <YelpSetup />,
 ];
 
 const Settings: React.FunctionComponent<Props> = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setPageName(RouteNames.Settings));
+  }, [dispatch]);
+
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

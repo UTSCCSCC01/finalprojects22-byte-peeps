@@ -5,6 +5,7 @@ import { getSettingsAsync } from '../instagramSetup/instagramSetupSlice';
 import {
   fetchCurrentPage,
   fetchPages,
+  populateFirstTime,
   saveCurrentPage,
 } from './facebookSetupAPI';
 
@@ -12,12 +13,14 @@ export interface FacebookSetupState {
   stage: 'loading' | 'logIn' | 'selectPage' | 'active' | 'inactive' | 'change';
   pages: { id: string; name: string; access_token: string }[];
   currentPage: string | null;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: FacebookSetupState = {
   stage: 'loading',
   pages: [],
   currentPage: null,
+  fetchState: null,
 };
 
 export const getCurrentPageAsync = createAsyncThunk(
@@ -32,7 +35,15 @@ export const saveCurrentPageAsync = createAsyncThunk(
   async (pageToken: string, thunkApi) => {
     const status = await saveCurrentPage(pageToken);
     thunkApi.dispatch(getSettingsAsync());
+    thunkApi.dispatch(populateFirstTimeAsync());
     return status;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'facebookSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
@@ -91,6 +102,12 @@ export const facebookSetupSlice = createSlice({
       .addCase(retrievePagesAsync.fulfilled, (state, action) => {
         state.pages = action.payload;
         state.stage = 'selectPage';
+      })
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -101,5 +118,7 @@ export const selectStage = (state: RootState) => state.facebookSetup.stage;
 export const selectPages = (state: RootState) => state.facebookSetup.pages;
 export const selectCurrentPage = (state: RootState) =>
   state.facebookSetup.currentPage;
+export const selectFetchState = (state: RootState) =>
+  state.facebookSetup.fetchState;
 
 export default facebookSetupSlice.reducer;

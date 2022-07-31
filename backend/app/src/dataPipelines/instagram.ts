@@ -1,14 +1,15 @@
 import { CronJob } from 'cron';
-import FacebookApi from '../models/facebook/api';
-import InstagramApi from '../models/instagram/api';
-import InstagramMedia from '../models/instagram/media';
-import InstagramTag from '../models/instagram/tag';
-import InstagramComment from '../models/instagram/comment';
 import {
   getAccountMedia,
   getAccountTags,
   getMediaComments,
 } from '../apis/instagram';
+import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
+import FacebookApi from '../models/facebook/api';
+import InstagramApi from '../models/instagram/api';
+import InstagramComment from '../models/instagram/comment';
+import InstagramMedia from '../models/instagram/media';
+import InstagramTag from '../models/instagram/tag';
 
 /**
  * Updates the database as follows:
@@ -20,23 +21,24 @@ import {
  *           related to this Instagram account, and for each one
  *           fetches and updates the comments.
  */
-async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     /* Get stored Instagram Accounts (API) */
     let instagramApis = await InstagramApi.findAll({ include: FacebookApi });
     if (instagramApis.length == 0) return;
 
     /* Get boundary dates */
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const initial = new Date();
+    const daysToFetch = firstTime ? 7 : 1;
+    initial.setDate(initial.getDate() - daysToFetch);
     const today = new Date();
     const dates = [
-      Math.round(yesterday.getTime() / 1000),
+      Math.round(initial.getTime() / 1000),
       Math.round(today.getTime() / 1000),
     ];
 
     /* Update data for each IG account */
-    instagramApis.forEach(async (api) => {
+    for (const api of instagramApis) {
       /* Get IG account data */
       const accessToken = api.facebookApi.token;
 
@@ -47,14 +49,14 @@ async function startPipeline() {
       await updateAccountTags(accessToken, api);
 
       /* Fetch and update comments */
-      const media = await InstagramMedia.findAll({
+      const posts = await InstagramMedia.findAll({
         where: { apiId: api.id },
       });
-      if (media.length == 0) return;
-      media.forEach(async (media) => {
+      if (posts.length == 0) return;
+      for (const media of posts) {
         await updateMediaComments(accessToken, media);
-      });
-    });
+      }
+    }
   } catch (err) {
     console.log(err);
   }
@@ -82,17 +84,17 @@ async function updateAccountMedia(
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (media: { [key: string]: any }) => {
-    InstagramMedia.findOne({
+  for (const media of data) {
+    await InstagramMedia.findOne({
       where: { dataId: media['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
       if (obj) {
-        obj.update({
+        await obj.update({
           likes: Number(media['like_count']),
           numComments: Number(media['comments_count']),
         });
       } else {
-        InstagramMedia.create({
+        await InstagramMedia.create({
           dataId: media['id'],
           date: media['timestamp'],
           caption: media['caption'],
@@ -102,7 +104,7 @@ async function updateAccountMedia(
         });
       }
     });
-  });
+  }
 }
 
 /**
@@ -117,28 +119,38 @@ async function updateAccountTags(accessToken: string, api: InstagramApi) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (tag: { [key: string]: any }) => {
-    InstagramTag.findOne({
+  for (const tag of data) {
+    await InstagramTag.findOne({
       where: { dataId: tag['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
+      let caption: string = tag['caption'];
+      let textAnalysis = await DatumBoxAPICall(caption);
+
       if (obj) {
-        obj.update({
+        await obj.update({
           likes: Number(tag['like_count']),
           numComments: Number(tag['comments_count']),
+          caption,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       } else {
-        InstagramTag.create({
+        await InstagramTag.create({
           dataId: tag['id'],
           date: tag['timestamp'],
           username: tag['username'],
-          caption: tag['caption'],
+          caption,
           likes: Number(tag['like_count']),
           numComments: Number(tag['comments_count']),
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
           apiId: api.id,
         });
       }
     });
-  });
+  }
 }
 
 /**
@@ -153,24 +165,30 @@ async function updateMediaComments(accessToken: string, media: InstagramMedia) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (comment: { [key: string]: any }) => {
-    InstagramComment.findOne({
+  for (const comment of data) {
+    await InstagramComment.findOne({
       where: { dataId: comment['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
+      let message = comment['text'];
+      let textAnalysis = await DatumBoxAPICall(message);
+
       if (obj) {
-        obj.update({ likes: Number(comment['like_count']) });
+        await obj.update({ likes: Number(comment['like_count']) });
       } else {
-        InstagramComment.create({
+        await InstagramComment.create({
           dataId: comment['id'],
           date: comment['timestamp'],
           userName: comment['username'],
-          message: comment['text'],
+          message,
           likes: Number(comment['like_count']),
           mediaId: media.id,
+          sentimentAnalysis: textAnalysis.SentimentAnalysis,
+          subjectivityAnalysis: textAnalysis.SubjectivityAnalysis,
+          topicClassification: textAnalysis.TopicClassification,
         });
       }
     });
-  });
+  }
 }
 
 /**

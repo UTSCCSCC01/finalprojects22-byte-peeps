@@ -4,6 +4,7 @@ import YoutubeChannel from '../../models/youtube/channel';
 import YoutubeVideo from '../../models/youtube/video';
 import YoutubeComment from '../../models/youtube/comment';
 import User from '../../models/user/user';
+import { startPipeline } from '../../dataPipelines/youtube';
 
 export const getSettings: RequestHandler = async (req, res, next) => {
   try {
@@ -112,6 +113,15 @@ export const connectUser: RequestHandler = async (req, res, next) => {
       message: 'Youtube account has been connected successfully!',
     });
   } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+export const populateFirstTime: RequestHandler = async (req, res, next) => {
+  try {
+    await startPipeline(true);
+    return res.send('YouTube data has been pulled');
+  } catch (err: any) {
     return res.status(500).send(err);
   }
 };

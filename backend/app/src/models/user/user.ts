@@ -5,7 +5,6 @@ import {
   AllowNull,
   HasOne,
   DeletedAt,
-  HasMany,
 } from 'sequelize-typescript';
 import FacebookApi from '../facebook/api';
 import InstagramApi from '../instagram/api';

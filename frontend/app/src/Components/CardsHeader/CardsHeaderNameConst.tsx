@@ -31,12 +31,32 @@ const RedditCardNames = {
   totalComments: 'Comments',
 };
 
+const YelpCardNames = {
+  totalReviews: 'Total Reviews',
+  avgReview: 'Average Review',
+};
+
+const GoogleReviewsCardNames = {
+  totalReviews: 'Total Reviews',
+  avgReview: 'Average Review',
+};
+
+const OverviewCardNames = {
+  totalPosts: 'Total Posts',
+  totalLikes: 'Total Likes',
+  totalMentions: 'Total Mentions',
+  avgReview: 'Average Review',
+};
+
 const CardHeaderNames = {
   FacebookCardNames,
   InstagramCardNames,
   TwitterCardNames,
   YouTubeCardNames,
   RedditCardNames,
+  YelpCardNames,
+  GoogleReviewsCardNames,
+  OverviewCardNames,
 };
 
 export default CardHeaderNames;

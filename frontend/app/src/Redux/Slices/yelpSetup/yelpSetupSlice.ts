@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getYelpSetupNotification } from '../../../Components/YelpSetup/YelpSetup';
 import { RootState } from '../../store';
-import { fetchSettings, saveBusiness, searchBusiness } from './yelpSetupAPI';
+import {
+  fetchSettings,
+  populateFirstTime,
+  saveBusiness,
+  searchBusiness,
+} from './yelpSetupAPI';
 
 export interface YelpSetupState {
   status:
@@ -14,6 +19,7 @@ export interface YelpSetupState {
   newBusiness: { id: string; name: string };
   searchObject: { term: string; location: string };
   searchResults: { id: string; name: string }[] | null;
+  fetchState: 'fetching' | 'fetched' | null;
 }
 
 const initialState: YelpSetupState = {
@@ -22,6 +28,7 @@ const initialState: YelpSetupState = {
   newBusiness: { id: '', name: '' },
   searchObject: { term: '', location: '' },
   searchResults: null,
+  fetchState: null,
 };
 
 export const getSettingsAsync = createAsyncThunk(
@@ -40,8 +47,17 @@ export const searchBusinessAsync = createAsyncThunk(
 
 export const connectBusinessAsync = createAsyncThunk(
   'yelpSetup/saveBusiness',
-  async (newBusiness: { id: string; name: string }) => {
-    return await saveBusiness(newBusiness);
+  async (newBusiness: { id: string; name: string }, thunkApi) => {
+    const response = await saveBusiness(newBusiness);
+    thunkApi.dispatch(populateFirstTimeAsync());
+    return response;
+  }
+);
+
+const populateFirstTimeAsync = createAsyncThunk(
+  'twitterSetup/populateFirstTime',
+  async () => {
+    return await populateFirstTime();
   }
 );
 
@@ -98,6 +114,12 @@ export const yelpSetupSlice = createSlice({
           action.payload.status === 'active' ? 'success' : 'error'
         );
         notification.setShown(true);
+      })
+      .addCase(populateFirstTimeAsync.pending, (state) => {
+        state.fetchState = 'fetching';
+      })
+      .addCase(populateFirstTimeAsync.fulfilled, (state) => {
+        state.fetchState = 'fetched';
       });
   },
 });
@@ -113,5 +135,7 @@ export const selectSearchObject = (state: RootState) =>
   state.yelpSetup.searchObject;
 export const selectSearchResults = (state: RootState) =>
   state.yelpSetup.searchResults;
+export const selectFetchState = (state: RootState) =>
+  state.yelpSetup.fetchState;
 
 export default yelpSetupSlice.reducer;

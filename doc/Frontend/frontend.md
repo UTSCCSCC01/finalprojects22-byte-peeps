@@ -82,6 +82,13 @@
 
 - Redux
 
+## Authentication
+
+- We use session authentication to authenticate the user
+- Therefore, we only allow one user to be logged in from one browser at time
+- If two users which to be logged in from the same browsers, then two different browsers must be used
+- `AuthChecker.tsx` adds on an event listener to the localStorage to see if another user attempts to sign in, if so any tabs that previously were signed in are signed out
+
 ## Making async backend calls
 
 - Initially we used `Async Thunks` from the redux tool kit, however we realized how verbose they are and how much more code we will have to write in comparison to a library like `ReduxToolKit Query` and `React Query`.
