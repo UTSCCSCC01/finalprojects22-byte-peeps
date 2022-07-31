@@ -1,5 +1,7 @@
 import { Alert, Backdrop, CircularProgress, Grid, Button } from '@mui/material';
 import PowerIcon from '@mui/icons-material/Power';
+import SyncIcon from '@mui/icons-material/Sync';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import {
   selectPage,
@@ -7,6 +9,7 @@ import {
   connectPageAsync,
   selectConnectedPageId,
   getSettingsAsync,
+  selectFetchState,
 } from '../../Redux/Slices/instagramSetup/instagramSetupSlice';
 import useNotification, {
   NotificationState,
@@ -26,6 +29,7 @@ export function InstagramSetup() {
   const status = useAppSelector(selectStatus);
   const page = useAppSelector(selectPage);
   const connectedPageId = useAppSelector(selectConnectedPageId);
+  const fetchState = useAppSelector(selectFetchState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -128,6 +132,26 @@ export function InstagramSetup() {
             <PowerIcon />
             CONNECT TO {page?.name.toUpperCase()}
           </Button>
+        </Grid>
+      )}
+
+      {fetchState === 'fetching' && (
+        <Grid item xs={12}>
+          <Alert variant="standard" severity="info" icon={<SyncIcon />}>
+            Pulling Instagram data from this week, please wait...
+          </Alert>
+        </Grid>
+      )}
+
+      {fetchState === 'fetched' && (
+        <Grid item xs={12}>
+          <Alert
+            variant="standard"
+            severity="success"
+            icon={<PublishedWithChangesIcon />}
+          >
+            Instagram data has been pulled
+          </Alert>
         </Grid>
       )}
 

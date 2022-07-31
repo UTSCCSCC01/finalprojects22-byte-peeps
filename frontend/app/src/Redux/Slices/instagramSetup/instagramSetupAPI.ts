@@ -12,3 +12,8 @@ export async function fetchSettings(): Promise<{
 export async function savePage(): Promise<void> {
   await HTTP.post('/setup/instagram/connect');
 }
+
+export async function populateFirstTime(): Promise<string> {
+  const response = await HTTP.post('/setup/instagram/populate');
+  return response.data;
+}

@@ -4,6 +4,7 @@ import TwitterUser from '../../models/twitter/user';
 import TwitterTweet from '../../models/twitter/tweet';
 import TwitterConversation from '../../models/twitter/conversation';
 import User from '../../models/user/user';
+import { startPipeline } from '../../dataPipelines/twitter';
 
 export const getSettings: RequestHandler = async (req, res, next) => {
   try {
@@ -112,6 +113,15 @@ export const connectUser: RequestHandler = async (req, res, next) => {
       message: 'Twitter account has been connected successfully!',
     });
   } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+export const populateFirstTime: RequestHandler = async (req, res, next) => {
+  try {
+    await startPipeline(true);
+    return res.send('Twitter data has been pulled');
+  } catch (err: any) {
     return res.status(500).send(err);
   }
 };

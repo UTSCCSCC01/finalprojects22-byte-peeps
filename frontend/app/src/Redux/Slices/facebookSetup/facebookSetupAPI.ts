@@ -22,3 +22,8 @@ export async function fetchPages(
   });
   return response.data;
 }
+
+export async function populateFirstTime(): Promise<string> {
+  const response = await HTTP.post('/setup/facebook/populate');
+  return response.data;
+}

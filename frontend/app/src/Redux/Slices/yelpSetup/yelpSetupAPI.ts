@@ -20,11 +20,19 @@ export async function searchBusiness(params: {
   return response.data;
 }
 
-export async function saveBusiness(business: { id: string; name: string }): Promise<{
+export async function saveBusiness(business: {
+  id: string;
+  name: string;
+}): Promise<{
   business: string | null;
   status: 'yelp-not-set-up' | 'active';
   message: string;
 }> {
   const response = await HTTP.post('/setup/yelp/connect', { business });
+  return response.data;
+}
+
+export async function populateFirstTime(): Promise<string> {
+  const response = await HTTP.post('/setup/yelp/populate');
   return response.data;
 }

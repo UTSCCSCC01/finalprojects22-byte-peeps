@@ -16,7 +16,7 @@ const RedditBaseUrl = 'https://www.reddit.com';
  *           fetches and updates the comments.
  */
 
-export async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     /* Get stored subreddits*/
     let subreddits = await Subreddit.findAll();
@@ -24,9 +24,9 @@ export async function startPipeline() {
     if (subreddits.length == 0) return;
 
     /* Update data for each subreddit */
-    for (let i = 0; i < subreddits.length; i++) {
+    for (const subreddit of subreddits) {
       /* Fetch and update listings */
-      await updateListings(subreddits[i]);
+      await updateListings(subreddit, firstTime);
     }
   } catch (err) {
     console.error(err);
@@ -34,12 +34,12 @@ export async function startPipeline() {
 
   try {
     /* Get stored reddit listings*/
-    let redditListings = await RedditListing.findAll();
-    if (redditListings.length == 0) return;
+    let listings = await RedditListing.findAll();
+    if (listings.length == 0) return;
 
     /* Update comment for each listing */
-    for (let i = 0; i < redditListings.length; i++) {
-      await updateComment(redditListings[i]);
+    for (const listing of listings) {
+      await updateComment(listing);
     }
   } catch (err) {
     console.error(err);
@@ -50,9 +50,15 @@ export async function startPipeline() {
  * to Reddit listings belonging to a particular Subreddit
  * @param {subreddit} the Subreddit object
  */
-const updateListings = async (subreddit: Subreddit) => {
+const updateListings = async (subreddit: Subreddit, firstTime: boolean) => {
+  const dateRange = firstTime ? 'week' : 'day';
   let listingsUrl =
-    RedditBaseUrl + '/r/' + subreddit.name + '/top.json?t=day&raw_json=1';
+    RedditBaseUrl +
+    '/r/' +
+    subreddit.name +
+    '/top.json?t=' +
+    dateRange +
+    '&raw_json=1';
   /* Perform request */
   try {
     let response = await fetch(listingsUrl);

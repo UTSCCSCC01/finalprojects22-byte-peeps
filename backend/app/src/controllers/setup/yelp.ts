@@ -3,10 +3,11 @@ import * as api from '../../apis/yelp';
 import YelpBusiness from '../../models/yelp/business';
 import YelpReview from '../../models/yelp/review';
 import User from '../../models/user/user';
+import { startPipeline } from '../../dataPipelines/yelp';
 
 enum status {
   NOT_SET = 'yelp-not-set-up',
-  ACTIVE = 'active'
+  ACTIVE = 'active',
 }
 
 export const getSettings: RequestHandler = async (req, res, next) => {
@@ -43,8 +44,8 @@ export const searchBusiness: RequestHandler = async (req, res, next) => {
       : "The business you provided doesn't exist";
     const searchResults = rawSearchResults
       ? rawSearchResults.map((result: any) => {
-        return { id: result.id, name: result.name }
-      })
+          return { id: result.id, name: result.name };
+        })
       : null;
 
     return res.send({ status, searchResults, message });
@@ -116,5 +117,14 @@ export const connectBusiness: RequestHandler = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const populateFirstTime: RequestHandler = async (req, res, next) => {
+  try {
+    await startPipeline(true);
+    return res.send('Yelp data has been pulled');
+  } catch (err: any) {
+    return res.status(500).send(err);
   }
 };

@@ -1,5 +1,6 @@
 import e, { RequestHandler } from 'express';
 import * as api from '../../apis/instagram';
+import { startPipeline } from '../../dataPipelines/instagram';
 import FacebookApi from '../../models/facebook/api';
 import InstagramApi from '../../models/instagram/api';
 import InstagramComment from '../../models/instagram/comment';
@@ -110,6 +111,15 @@ export const connectPage: RequestHandler = async (req, res, next) => {
 
     return res.status(200).send();
   } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+export const populateFirstTime: RequestHandler = async (req, res, next) => {
+  try {
+    await startPipeline(true);
+    return res.send('Instagram data has been pulled');
+  } catch (err: any) {
     return res.status(500).send(err);
   }
 };

@@ -14,23 +14,24 @@ import FacebookPost from '../models/facebook/post';
  *           related to this Facebook account, and for each one
  *           fetches and updates the comments.
  */
-async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     /* Get stored Facebook Accounts (API) */
     let facebookApis = await FacebookApi.findAll();
     if (facebookApis.length == 0) return;
 
     /* Get boundary dates */
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const initial = new Date();
+    const daysToFetch = firstTime ? 7 : 1;
+    initial.setDate(initial.getDate() - daysToFetch);
     const today = new Date();
     const dates = [
-      Math.round(yesterday.getTime() / 1000),
+      Math.round(initial.getTime() / 1000),
       Math.round(today.getTime() / 1000),
     ];
 
     /* Update data for each FB account */
-    facebookApis.forEach(async (api) => {
+    for (const api of facebookApis) {
       /* Get IG account data */
       const accessToken = api.token;
       const apiId = api.id;
@@ -39,14 +40,14 @@ async function startPipeline() {
       await updateAccountPost(accessToken, apiId, dates);
 
       /* Fetch and update comments */
-      const post = await FacebookPost.findAll({
+      const posts = await FacebookPost.findAll({
         where: { apiId: api.id },
       });
-      if (post.length == 0) return;
-      post.forEach(async (post) => {
+      if (posts.length == 0) return;
+      for (const post of posts) {
         await updatePostComments(accessToken, post);
-      });
-    });
+      }
+    }
   } catch (err) {
     console.log(err);
   }
@@ -69,7 +70,7 @@ async function updateAccountPost(
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (post: { [key: string]: any }) => {
+  for (const post of data) {
     const reactions: { [key: string]: number } = {
       LIKE: 0,
       LOVE: 0,
@@ -82,11 +83,11 @@ async function updateAccountPost(
     post['reactions']['data'].forEach((reaction: any) => {
       reactions[reaction['type']] += 1;
     });
-    FacebookPost.findOne({
+    await FacebookPost.findOne({
       where: { dataId: post['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
       if (obj) {
-        obj.update({
+        await obj.update({
           likes: reactions['LIKE'],
           loves: reactions['LOVE'],
           cares: reactions['CARE'],
@@ -96,7 +97,7 @@ async function updateAccountPost(
           angrys: reactions['ANGRY'],
         });
       } else {
-        FacebookPost.create({
+        await FacebookPost.create({
           dataId: post['id'],
           date: post['created_time'],
           message: post['message'],
@@ -111,7 +112,7 @@ async function updateAccountPost(
         });
       }
     });
-  });
+  }
 }
 
 /**
@@ -126,15 +127,15 @@ async function updatePostComments(accessToken: string, post: FacebookPost) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (comment: { [key: string]: any }) => {
-    FacebookComment.findOne({
+  for (const comment of data) {
+    await FacebookComment.findOne({
       where: { dataId: comment['id'] },
     }).then(async function (obj) {
       let message = comment['message'];
       let textAnalysis = await DatumBoxAPICall(message);
 
       if (obj) {
-        obj.update({
+        await obj.update({
           likes: Number(comment['like_count']),
           message,
           sentimentAnalysis: textAnalysis.SentimentAnalysis,
@@ -142,7 +143,7 @@ async function updatePostComments(accessToken: string, post: FacebookPost) {
           topicClassification: textAnalysis.TopicClassification,
         });
       } else {
-        FacebookPost.create({
+        await FacebookComment.create({
           dataId: comment['id'],
           date: comment['created_time'],
           userName: comment['from']['name'],
@@ -155,7 +156,7 @@ async function updatePostComments(accessToken: string, post: FacebookPost) {
         });
       }
     });
-  });
+  }
 }
 
 /**

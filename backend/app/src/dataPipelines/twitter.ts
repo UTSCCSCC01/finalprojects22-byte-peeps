@@ -14,20 +14,21 @@ import TwitterUser from '../models/twitter/user';
  *           related to this Twitter User, and for each one
  *           fetches and updates the conversation.
  */
-async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     /* Get stored Twitter Users */
     let twitterUsers = await TwitterUser.findAll();
     if (twitterUsers.length == 0) return;
 
     /* Get boundary dates */
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const initial = new Date();
+    const daysToFetch = firstTime ? 7 : 1;
+    initial.setDate(initial.getDate() - daysToFetch);
     const today = new Date();
-    const dates: string[] = [yesterday.toISOString(), today.toISOString()];
+    const dates: string[] = [initial.toISOString(), today.toISOString()];
 
     /* Update data for each Twitter user */
-    twitterUsers.forEach(async (twitterUser) => {
+    for (const twitterUser of twitterUsers) {
       /* Fetch and update posts */
       await updateUserTweets(twitterUser, dates);
 
@@ -36,10 +37,10 @@ async function startPipeline() {
         where: { twitterUserId: twitterUser.id },
       });
       if (tweets.length == 0) return;
-      tweets.forEach(async (tweet) => {
+      for (const tweet of tweets) {
         await updateTweetConversation(tweet);
-      });
-    });
+      }
+    }
   } catch (err) {
     console.log(err);
   }
@@ -61,18 +62,18 @@ async function updateUserTweets(twitterUser: TwitterUser, dates: string[]) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (tweet: { [key: string]: any }) => {
-    TwitterTweet.findOne({
+  for (const tweet of data) {
+    await TwitterTweet.findOne({
       where: { twitterId: tweet['id'] },
-    }).then(function (obj) {
+    }).then(async function (obj) {
       if (obj) {
-        obj.update({
+        await obj.update({
           retweets: tweet['public_metrics']['retweet_count'],
           replies: tweet['public_metrics']['reply_count'],
           likes: tweet['public_metrics']['like_count'],
         });
       } else {
-        TwitterTweet.create({
+        await TwitterTweet.create({
           twitterId: tweet['id'],
           conversationId: tweet['conversation_id'],
           text: tweet['text'],
@@ -84,7 +85,7 @@ async function updateUserTweets(twitterUser: TwitterUser, dates: string[]) {
         });
       }
     });
-  });
+  }
 }
 
 /**
@@ -98,8 +99,8 @@ async function updateTweetConversation(tweet: TwitterTweet) {
   if (data === null) return;
 
   /* Update data in db */
-  data.forEach(async (comment: { [key: string]: any }) => {
-    TwitterConversation.findOne({
+  for (const comment of data) {
+    await TwitterConversation.findOne({
       where: { twitterId: comment['id'] },
     }).then(async function (obj) {
       let text = comment['text'];
@@ -107,7 +108,7 @@ async function updateTweetConversation(tweet: TwitterTweet) {
       let textAnalysis = await DatumBoxAPICall(text);
 
       if (obj) {
-        obj.update({
+        await obj.update({
           retweets: comment['public_metrics']['retweet_count'],
           replies: comment['public_metrics']['reply_count'],
           likes: comment['public_metrics']['like_count'],
@@ -117,7 +118,7 @@ async function updateTweetConversation(tweet: TwitterTweet) {
           topicClassification: textAnalysis.TopicClassification,
         });
       } else {
-        TwitterConversation.create({
+        await TwitterConversation.create({
           twitterId: comment['id'],
           conversationId: comment['conversation_id'],
           text,
@@ -132,7 +133,7 @@ async function updateTweetConversation(tweet: TwitterTweet) {
         });
       }
     });
-  });
+  }
 }
 
 /**

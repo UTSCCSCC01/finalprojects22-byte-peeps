@@ -8,7 +8,7 @@ import YelpReview from '../models/yelp/review';
  *    2. For each businessId:
  *        a. Fetches all comments created on the previous day.
  **/
-export async function startPipeline() {
+export async function startPipeline(firstTime = false) {
   try {
     // Get stored yelp businesses
     let businesses = await YelpBusiness.findAll();
@@ -16,14 +16,14 @@ export async function startPipeline() {
     if (businesses.length == 0) return;
 
     // Update reviews for each business
-    for (let i = 0; i < businesses.length; i++) {
-      await updateComment(businesses[i]);
+    for (const business of businesses) {
+      await updateComment(business, firstTime);
     }
   } catch (err) {
     console.error(err);
   }
 }
-const updateComment = async (business: YelpBusiness) => {
+const updateComment = async (business: YelpBusiness, firstTime: boolean) => {
   try {
     while (true) {
       // go through the pages
@@ -48,8 +48,9 @@ const updateComment = async (business: YelpBusiness) => {
         const today = new Date();
         const diffTime = Math.abs(today.getTime() - reviewDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        // stop if the review is from more than 1 days ago
-        if (diffDays > 1) return;
+        // stop if the review is from more than x days ago
+        const x = firstTime ? 7 : 1;
+        if (diffDays > x) return;
         let reviewText = review['comment']['text'];
 
         let textAnalysis = await DatumBoxAPICall(reviewText);
