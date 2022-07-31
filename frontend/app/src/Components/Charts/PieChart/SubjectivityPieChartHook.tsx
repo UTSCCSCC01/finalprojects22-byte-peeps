@@ -39,6 +39,9 @@ const SubjectivityPieChartQuery: DictPieChartQuery = {
   [AppNames.Yelp]: {
     pieChartQuery: SubjectivityUrlRequest.Yelp,
   },
+  [AppNames.Overview]: {
+    pieChartQuery: '',
+  },
   [AppNames.default]: {
     pieChartQuery: '',
   },

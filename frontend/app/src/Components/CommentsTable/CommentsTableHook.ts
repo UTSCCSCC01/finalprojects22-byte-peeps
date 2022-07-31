@@ -46,6 +46,10 @@ const commentsTables: CommentTables = {
     url: '',
     colDef: CommentsTableColDefConst.Default,
   },
+  [AppNames.Overview]: {
+    url: '',
+    colDef: CommentsTableColDefConst.Default,
+  },
   [AppNames.default]: {
     url: '',
     colDef: CommentsTableColDefConst.Default,

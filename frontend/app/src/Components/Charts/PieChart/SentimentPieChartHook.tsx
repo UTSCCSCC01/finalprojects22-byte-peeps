@@ -39,6 +39,9 @@ const SentimentPieChartQuery: DictPieChartQuery = {
   [AppNames.Yelp]: {
     pieChartQuery: SentimentUrlRequest.Yelp,
   },
+  [AppNames.Overview]: {
+    pieChartQuery: '',
+  },
   [AppNames.default]: {
     pieChartQuery: '',
   },

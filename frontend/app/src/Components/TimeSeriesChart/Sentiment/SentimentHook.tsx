@@ -39,6 +39,9 @@ const timeSeriesTable = {
   [AppNames.Yelp]: {
     url: SentimentUrlRequest.Empty,
   },
+  [AppNames.Overview]: {
+    url: SentimentUrlRequest.Empty,
+  },
   [AppNames.default]: {
     url: SentimentUrlRequest.Empty,
   },

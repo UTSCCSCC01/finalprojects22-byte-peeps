@@ -41,6 +41,9 @@ const wordCloudQuery: DictWordCloudQuery = {
   [AppNames.Yelp]: {
     cloudQuery: CommentsWordCloudUrlRequest.Yelp,
   },
+  [AppNames.Overview]: {
+    cloudQuery: '',
+  },
   [AppNames.default]: {
     cloudQuery: '',
   },
