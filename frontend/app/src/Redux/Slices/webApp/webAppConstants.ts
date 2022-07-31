@@ -6,5 +6,6 @@ export enum AppNames {
   Reddit = 'Reddit',
   GoogleReviews = 'Google Reviews',
   Yelp = 'Yelp',
+  Overview = 'Overview',
   default = '',
 }

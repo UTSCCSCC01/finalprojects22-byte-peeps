@@ -28,12 +28,12 @@ const Dashboard: React.FunctionComponent<Props> = () => {
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
         <Grid item xs={12}>
-          <CardsHeader appName={AppNames.Instagram} />
+          <CardsHeader appName={AppNames.Overview} />
         </Grid>
 
         <Grid item xs={2} sm={4} md={4}>
           <CardCharts name={'Word Cloud'}>
-            {/* <CommentsWordCloud appName={AppNames.Facebook} /> */}
+            {/* <CommentsWordCloud /> */}
           </CardCharts>
         </Grid>
 

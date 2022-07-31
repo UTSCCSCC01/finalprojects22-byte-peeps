@@ -92,6 +92,12 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
     cardLength: Object.keys(CardHeaderNames.GoogleReviewsCardNames).length,
     cardIcons: CardHeaderIcons.GoogleReviewsCardIcons,
   },
+  [AppNames.Overview]: {
+    cardQuery: CardHeaderURLRequest.OverviewCardHeader, //incomplete path
+    cardNames: CardHeaderNames.OverviewCardNames,
+    cardLength: Object.keys(CardHeaderNames.OverviewCardNames).length,
+    cardIcons: CardHeaderIcons.OverviewCardIcons,
+  },
   [AppNames.default]: {
     cardQuery: '',
     cardNames: {},

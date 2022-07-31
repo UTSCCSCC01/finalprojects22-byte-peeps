@@ -41,6 +41,13 @@ const GoogleReviewsCardNames = {
   avgReview: 'Average Review',
 };
 
+const OverviewCardNames = {
+  totalPosts: 'Total Posts',
+  totalLikes: 'Total Likes',
+  totalMentions: 'Total Mentions',
+  avgReview: 'Average Review',
+};
+
 const CardHeaderNames = {
   FacebookCardNames,
   InstagramCardNames,
@@ -49,6 +56,7 @@ const CardHeaderNames = {
   RedditCardNames,
   YelpCardNames,
   GoogleReviewsCardNames,
+  OverviewCardNames,
 };
 
 export default CardHeaderNames;

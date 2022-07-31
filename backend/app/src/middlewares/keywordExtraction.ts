@@ -33,8 +33,8 @@ export function keywordExtraction(
 
   let result: { value: string; count: number }[] = [];
 
-  keywords.slice(0, 25).forEach((keyword: string, index: number) => {
-    result.push({ value: keyword, count: 25 - index });
+  keywords.slice(0, 8).forEach((keyword: string, index: number) => {
+    result.push({ value: keyword, count: 8 - index });
   });
 
   return result;
