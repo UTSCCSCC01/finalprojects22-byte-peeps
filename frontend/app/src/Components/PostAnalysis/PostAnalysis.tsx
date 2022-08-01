@@ -39,7 +39,11 @@ const PostAnalysis: React.FC<Props> = (props) => {
             disableClearable
             blurOnSelect
             options={query.data ?? []}
-            value={query.data?.find((item) => item.id === post.id)}
+            value={
+              query.data && query.data.length > 0
+                ? query.data.find((item) => item.id === post.id)
+                : undefined
+            }
             onChange={(e, val) => {
               if (val) setPost(val);
             }}
