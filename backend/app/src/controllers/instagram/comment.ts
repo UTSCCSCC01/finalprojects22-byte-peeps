@@ -236,7 +236,8 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       include: InstagramApi,
     });
 
-    if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
+    if (!user?.instagramApi)
+      return res.send({ positive: 0, neutral: 0, negative: 0 });
 
     const media =
       postId != null

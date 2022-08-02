@@ -33,6 +33,7 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
         <Pie
           dataKey="value"
           data={data}
+          isAnimationActive={false}
           label={({
             cx,
             cy,
