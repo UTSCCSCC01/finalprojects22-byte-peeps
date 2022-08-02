@@ -11,6 +11,8 @@ interface Props {
   isLoading: boolean;
   error: string | null;
 }
+const minFontSize = 13;
+const maxFontSize = 20;
 
 const WordCloud: React.FC<Props> = (props) => {
   const { data, isLoading, error } = props;
@@ -25,8 +27,8 @@ const WordCloud: React.FC<Props> = (props) => {
         luminosity: 'dark',
         format: 'rgb',
       }}
-      minSize={10}
-      maxSize={18}
+      minSize={minFontSize}
+      maxSize={maxFontSize}
       tags={data}
     />
   );
