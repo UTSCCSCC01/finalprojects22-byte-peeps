@@ -92,10 +92,12 @@ function useCommentsTable(
     filter: MetricsFilter,
     postId?: number
   ): Promise<CommentsTableResponse> => {
-    const params = postId
-      ? { startDate, endDate, page, pageSize, filter, postId }
-      : { startDate, endDate, page, pageSize, filter };
-    return await HTTP.get(appData.url, { params }).then((res) => res.data);
+    const params =
+      postId !== undefined
+        ? { startDate, endDate, page, pageSize, filter, postId }
+        : { startDate, endDate, page, pageSize, filter };
+    let hola = await HTTP.get(appData.url, { params }).then((res) => res.data);
+    return hola;
   };
 
   const query = useQuery<
