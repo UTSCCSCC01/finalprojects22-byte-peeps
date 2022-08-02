@@ -29,7 +29,6 @@
     "node-fetch": "^2.6.7",
     "node-rake": "^1.0.1",
     "pg": "^8.7.3",
-    "puppeteer": "^15.5.0",
     "rake-js": "^0.1.1",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
