@@ -43,14 +43,13 @@ export const getComments: RequestHandler = async (req, res, next) => {
 
     if (!user?.subreddit) return res.send({ count: 0, data: [] });
 
-    const listings =
-      postId != null
-        ? await RedditListing.findAll({
-            where: { subredditId: user!.subreddit.id, id: postId },
-          })
-        : await RedditListing.findAll({
-            where: { subredditId: user!.subreddit.id },
-          });
+    const listings = postId
+      ? await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id, id: postId },
+        })
+      : await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id },
+        });
     const listingIds: number[] = listings.map((l) => l.id);
     const comments = await RedditComment.findAll({
       where: {
@@ -112,14 +111,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const listings =
-      postId != null
-        ? await RedditListing.findAll({
-            where: { subredditId: user!.subreddit.id, id: postId },
-          })
-        : await RedditListing.findAll({
-            where: { subredditId: user!.subreddit.id },
-          });
+    const listings = postId
+      ? await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id, id: postId },
+        })
+      : await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id },
+        });
     const listingIds: number[] = listings.map((l) => l.id);
 
     const subjective = await RedditComment.count({
@@ -181,14 +179,13 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const listings =
-      postId != null
-        ? await RedditListing.findAll({
-            where: { subredditId: user!.subreddit.id, id: postId },
-          })
-        : await RedditListing.findAll({
-            where: { subredditId: user!.subreddit.id },
-          });
+    const listings = postId
+      ? await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id, id: postId },
+        })
+      : await RedditListing.findAll({
+          where: { subredditId: user!.subreddit.id },
+        });
     const listingIds: number[] = listings.map((l) => l.id);
 
     const positive = await RedditComment.count({

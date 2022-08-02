@@ -15,8 +15,7 @@ import SubjectivityPieChartWrapper from '../Charts/PieChart/SubjectivityPieChart
 import CommentsTable from '../Tables/CommentsTable/CommentsTable';
 import Loader from '../Loader/Loader';
 import './PostAnalysis.css';
-import usePlatformPosts, { Post } from './PostAnalysisHook';
-import NoData from '../NoData/NoData';
+import usePlatformPosts from './PostAnalysisHook';
 
 interface Props {
   appName: AppNames;
@@ -24,28 +23,35 @@ interface Props {
 
 const PostAnalysis: React.FC<Props> = (props) => {
   const query = usePlatformPosts(props.appName);
-  const [post, setPost] = useState<Post | null>(null);
+  const [postId, setPostId] = useState<number | ''>('');
+  const [postTitle, setPostTitle] = useState<string>('');
+  const [postDate, setPostDate] = useState<string>('');
+  const [postPid, setPostPid] = useState<string>('');
 
   useEffect(() => {
-    setPost(query.data && query.data.length > 0 ? query.data[0] : null);
+    setPostId(query.data?.at(0)?.id ?? '');
+    setPostTitle(query.data?.at(0)?.label ?? '');
+    setPostDate(query.data?.at(0)?.date ?? '');
+    setPostPid(query.data?.at(0)?.pid ?? '');
   }, [query.data]);
 
   return (
     <CardCharts
       name={'Post Analysis'}
       action={
-        post && (
+        postId && (
           <Autocomplete
             disableClearable
             blurOnSelect
             options={query.data ?? []}
-            value={
-              query.data && query.data.length > 0
-                ? query.data.find((item) => item.id === post.id)
-                : undefined
-            }
+            value={query.data?.find((item) => item.id === postId)}
             onChange={(e, val) => {
-              if (val) setPost(val);
+              if (val) {
+                setPostId(val.id);
+                setPostTitle(val.label);
+                setPostDate(val.date);
+                setPostPid(val.pid);
+              }
             }}
             sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} size="small" />}
@@ -53,9 +59,8 @@ const PostAnalysis: React.FC<Props> = (props) => {
         )
       }
     >
-      {query.isLoading && <Loader />}
-      {!post && !query.isLoading && <NoData />}
-      {post && !query.isLoading && (
+      {!postId && <Loader />}
+      {!query.isLoading && (
         <Grid
           container
           sx={{ padding: 0 }}
@@ -70,11 +75,11 @@ const PostAnalysis: React.FC<Props> = (props) => {
               <CardContent className="cardChartContent">
                 <div style={{ minHeight: '325px' }}>
                   <h3 className="post-info">Title:</h3>
-                  <p className="post-info">{post.label}</p>
+                  <p className="post-info">{postTitle}</p>
                   <h3 className="post-info">Date published:</h3>
-                  <p className="post-info">{post.date}</p>
+                  <p className="post-info">{postDate}</p>
                   <h3 className="post-info">Unique identifier:</h3>
-                  <p className="post-info">{post.pid}</p>
+                  <p className="post-info">{postPid}</p>
                 </div>
               </CardContent>
             </Card>
@@ -83,8 +88,8 @@ const PostAnalysis: React.FC<Props> = (props) => {
           <Grid item xs={2} sm={4} md={4}>
             <CardCharts name={'Sentiment Analysis'} variant="outlined">
               <SentimentPieChartWrapper
-                appName={props.appName}
-                postId={typeof post.id === 'number' ? post.id : undefined}
+                appName={AppNames.Instagram}
+                postId={typeof postId === 'number' ? postId : undefined}
               />
             </CardCharts>
           </Grid>
@@ -92,8 +97,8 @@ const PostAnalysis: React.FC<Props> = (props) => {
           <Grid item xs={2} sm={4} md={4}>
             <CardCharts name={'Subjectivity Analysis'} variant="outlined">
               <SubjectivityPieChartWrapper
-                appName={props.appName}
-                postId={typeof post.id === 'number' ? post.id : undefined}
+                appName={AppNames.Instagram}
+                postId={typeof postId === 'number' ? postId : undefined}
               />
             </CardCharts>
           </Grid>
@@ -102,15 +107,15 @@ const PostAnalysis: React.FC<Props> = (props) => {
             <CardsHeader
               appName={props.appName}
               variant="outlined"
-              postId={typeof post.id === 'number' ? post.id : undefined}
+              postId={typeof postId === 'number' ? postId : undefined}
             />
           </Grid>
 
           <Grid item xs={12}>
             <CardCharts name={'Comments'} variant="outlined">
               <CommentsTable
-                appName={props.appName}
-                postId={typeof post.id === 'number' ? post.id : undefined}
+                appName={AppNames.Instagram}
+                postId={typeof postId === 'number' ? postId : undefined}
               />
             </CardCharts>
           </Grid>

@@ -43,14 +43,13 @@ export const getComments: RequestHandler = async (req, res, next) => {
 
     if (!user?.youtubeChannel) return res.send({ count: 0, data: [] });
 
-    const videos =
-      postId != null
-        ? await YouTubeVideo.findAll({
-            where: { channelId: user!.youtubeChannel.id, id: postId },
-          })
-        : await YouTubeVideo.findAll({
-            where: { channelId: user!.youtubeChannel.id },
-          });
+    const videos = postId
+      ? await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id, id: postId },
+        })
+      : await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id },
+        });
     const videoIds: number[] = videos.map((v) => v.id);
     const comments = await YouTubeComment.findAll({
       where: {
@@ -111,14 +110,13 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const videos =
-      postId != null
-        ? await YouTubeVideo.findAll({
-            where: { channelId: user!.youtubeChannel.id, id: postId },
-          })
-        : await YouTubeVideo.findAll({
-            where: { channelId: user!.youtubeChannel.id },
-          });
+    const videos = postId
+      ? await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id, id: postId },
+        })
+      : await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id },
+        });
     const videoIds: number[] = videos.map((v) => v.id);
 
     const subjective = await YouTubeComment.count({
@@ -177,14 +175,13 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const videos =
-      postId != null
-        ? await YouTubeVideo.findAll({
-            where: { channelId: user!.youtubeChannel.id, id: postId },
-          })
-        : await YouTubeVideo.findAll({
-            where: { channelId: user!.youtubeChannel.id },
-          });
+    const videos = postId
+      ? await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id, id: postId },
+        })
+      : await YouTubeVideo.findAll({
+          where: { channelId: user!.youtubeChannel.id },
+        });
     const videoIds: number[] = videos.map((v) => v.id);
 
     const positive = await YouTubeComment.count({
