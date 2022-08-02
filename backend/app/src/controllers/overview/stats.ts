@@ -62,8 +62,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
   });
 
   //total posts
-  let totalPosts = {};
-  let postSum = 0;
+  let totalPosts = 0;
   if (!postId) {
     const fbPosts = await FacebookPost.count({
       where: {
@@ -73,7 +72,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         },
       },
     });
-    postSum += fbPosts;
+    totalPosts += fbPosts;
   }
 
   if (!postId) {
@@ -85,7 +84,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         },
       },
     });
-    postSum += igPosts;
+    totalPosts += igPosts;
   }
 
   if (!postId) {
@@ -97,7 +96,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         },
       },
     });
-    postSum += redditListings;
+    totalPosts += redditListings;
   }
   if (!postId) {
     const tweets = await TwitterTweet.count({
@@ -108,7 +107,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         },
       },
     });
-    postSum += tweets;
+    totalPosts += tweets;
   }
   if (!postId) {
     const totalVideos = await YouTubeVideo.count({
@@ -119,13 +118,13 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         },
       },
     });
-    postSum += totalVideos;
+    totalPosts += totalVideos;
   }
 
   //   totalPosts = { postSum };
 
   //total likes
-  let allLikes = 0;
+  let totalLikes = 0;
   let postFilter = {};
   //facebook
   if (postId) postFilter = { id: postId };
@@ -211,10 +210,10 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
 
   const ytLikes = parseInt(queryResult.totalLikes || '0');
 
-  allLikes = totalReactions + igLikes + twtLikes + ytLikes;
+  totalLikes = totalReactions + igLikes + twtLikes + ytLikes;
 
   //total mentions
-  let totalTags = 0;
+  let totalMentions = 0;
   if (!postId) {
     const igTags = await InstagramTag.count({
       where: {
@@ -224,9 +223,9 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         apiId: igUser!.instagramApi.id,
       },
     });
-    totalTags += igTags;
+    totalMentions += igTags;
   }
-  totalTags += retweets;
+  totalMentions += retweets;
 
   //average rating
   let avgReview = 0;
@@ -271,9 +270,9 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
   avgReview = grAvg + yelpAvg;
 
   return res.send({
-    postSum,
-    allLikes,
-    totalTags,
+    totalPosts,
+    totalLikes,
+    totalMentions,
     avgReview,
   });
 };
