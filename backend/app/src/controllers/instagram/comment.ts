@@ -51,13 +51,14 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
 
     if (!user?.instagramApi) return res.send({ count: 0, data: [] });
 
-    const media = postId
-      ? await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id, id: postId },
-        })
-      : await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
+    const media =
+      postId != null
+        ? await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id, id: postId },
+          })
+        : await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id },
+          });
     const mediaIds: number[] = media.map((m) => m.id);
 
     let filter: TableFilter | null = res.locals.tableFilter;
@@ -97,9 +98,10 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
 
     // Query if no filter is added for type or is specific to tag type
     if (
-      !filter ||
-      filter.columnField !== 'type' ||
-      filter.value?.toLowerCase() === 'tag'
+      postId == null &&
+      (!filter ||
+        filter.columnField !== 'type' ||
+        filter.value?.toLowerCase() === 'tag')
     ) {
       const RENAMED_FIELDS: any = [
         ['username', 'userName'],
@@ -172,13 +174,14 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
 
     if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
 
-    const media = postId
-      ? await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id, id: postId },
-        })
-      : await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
+    const media =
+      postId != null
+        ? await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id, id: postId },
+          })
+        : await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id },
+          });
     const mediaIds: number[] = media.map((m) => m.id);
 
     const subjective = await InstagramComment.count({
@@ -235,13 +238,14 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
 
     if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
 
-    const media = postId
-      ? await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id, id: postId },
-        })
-      : await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
+    const media =
+      postId != null
+        ? await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id, id: postId },
+          })
+        : await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id },
+          });
     const mediaIds: number[] = media.map((m) => m.id);
 
     const positive = await InstagramComment.count({

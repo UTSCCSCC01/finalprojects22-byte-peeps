@@ -11,7 +11,7 @@ import HTTP from '../../utils/http';
 import { extractBackendError } from '../../utils/httpHelpers';
 import { platformPostsUrls } from './PostAnalysisConst';
 
-type PostsResponse = { id: number; label: string; date: string; pid: string }[];
+export type Post = { id: number; label: string; date: string; pid: string };
 
 function usePlatformPosts(appName: AppNames) {
   const startDate = useAppSelector(selectStartDate);
@@ -21,16 +21,15 @@ function usePlatformPosts(appName: AppNames) {
   const getPosts = async (
     startDate: String,
     endDate: String
-  ): Promise<PostsResponse> => {
+  ): Promise<Post[]> => {
     const params = { startDate, endDate };
     return await HTTP.get(appDataUrl, { params }).then((res) => res.data);
   };
 
-  const query = useQuery<
-    PostsResponse,
-    AxiosError<ErrorResponse>,
-    PostsResponse | null
-  >(['posts', startDate, endDate], () => getPosts(startDate, endDate));
+  const query = useQuery<Post[], AxiosError<ErrorResponse>, Post[] | null>(
+    ['posts', startDate, endDate],
+    () => getPosts(startDate, endDate)
+  );
 
   return {
     data: query.data,
