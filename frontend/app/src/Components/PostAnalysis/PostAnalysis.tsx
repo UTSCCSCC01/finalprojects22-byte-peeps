@@ -83,7 +83,7 @@ const PostAnalysis: React.FC<Props> = (props) => {
           <Grid item xs={2} sm={4} md={4}>
             <CardCharts name={'Sentiment Analysis'} variant="outlined">
               <SentimentPieChartWrapper
-                appName={AppNames.Instagram}
+                appName={props.appName}
                 postId={typeof post.id === 'number' ? post.id : undefined}
               />
             </CardCharts>
@@ -92,7 +92,7 @@ const PostAnalysis: React.FC<Props> = (props) => {
           <Grid item xs={2} sm={4} md={4}>
             <CardCharts name={'Subjectivity Analysis'} variant="outlined">
               <SubjectivityPieChartWrapper
-                appName={AppNames.Instagram}
+                appName={props.appName}
                 postId={typeof post.id === 'number' ? post.id : undefined}
               />
             </CardCharts>
@@ -109,7 +109,7 @@ const PostAnalysis: React.FC<Props> = (props) => {
           <Grid item xs={12}>
             <CardCharts name={'Comments'} variant="outlined">
               <CommentsTable
-                appName={AppNames.Instagram}
+                appName={props.appName}
                 postId={typeof post.id === 'number' ? post.id : undefined}
               />
             </CardCharts>

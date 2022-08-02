@@ -19,45 +19,7 @@ const Dashboard: React.FunctionComponent<Props> = () => {
     dispatch(setPageName(RouteNames.Dashboard));
   }, [dispatch]);
 
-  return (
-    <div className="page">
-      <Grid
-        container
-        sx={{ padding: 0 }}
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        <Grid item xs={12}>
-          <CardsHeader appName={AppNames.Overview} />
-        </Grid>
-
-        <Grid item xs={2} sm={4} md={4}>
-          <CardCharts name={'Word Cloud'}>
-            {/* <CommentsWordCloud /> */}
-          </CardCharts>
-        </Grid>
-
-        <Grid item xs={2} sm={4} md={4}>
-          <CardCharts name={'Sentiment Analysis'}>
-            <SentimentPieChartDashboard />
-          </CardCharts>
-        </Grid>
-
-        <Grid item xs={2} sm={4} md={4}>
-          <CardCharts name={'Subjectivity Analysis'}>
-            <SubjectivityPieChartDashboard />
-          </CardCharts>
-        </Grid>
-
-        <Grid item xs={12}>
-          <CardCharts name={'Sentiment Performance by Platform'}>
-            <SentimentPerformanceChart />
-            {/* <CommentsTable appName={AppNames.Facebook} /> */}
-          </CardCharts>
-        </Grid>
-      </Grid>
-    </div>
-  );
+  return <div className="page"></div>;
 };
 
 export default Dashboard;
