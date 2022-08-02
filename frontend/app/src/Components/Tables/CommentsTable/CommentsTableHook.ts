@@ -85,6 +85,7 @@ function useCommentsTable(
 
   const appData = commentsTables[appName];
   const getCommentsData = async (
+    url: string,
     startDate: String,
     endDate: String,
     page: number,
@@ -92,12 +93,10 @@ function useCommentsTable(
     filter: MetricsFilter,
     postId?: number
   ): Promise<CommentsTableResponse> => {
-    const params =
-      postId !== undefined
-        ? { startDate, endDate, page, pageSize, filter, postId }
-        : { startDate, endDate, page, pageSize, filter };
-    let hola = await HTTP.get(appData.url, { params }).then((res) => res.data);
-    return hola;
+    const params = postId
+      ? { startDate, endDate, page, pageSize, filter, postId }
+      : { startDate, endDate, page, pageSize, filter };
+    return await HTTP.get(url, { params }).then((res) => res.data);
   };
 
   const query = useQuery<
@@ -105,8 +104,26 @@ function useCommentsTable(
     AxiosError<ErrorResponse>,
     CommentsTableResponse | null
   >(
-    ['commentsTableData', startDate, endDate, page, pageSize, filter, postId],
-    () => getCommentsData(startDate, endDate, page, pageSize, filter, postId)
+    [
+      'commentsTableData',
+      appData.url,
+      startDate,
+      endDate,
+      page,
+      pageSize,
+      filter,
+      postId,
+    ],
+    () =>
+      getCommentsData(
+        appData.url,
+        startDate,
+        endDate,
+        page,
+        pageSize,
+        filter,
+        postId
+      )
   );
 
   return {

@@ -80,6 +80,7 @@ function usePostsTable(appName: AppNames): UsePostsTable {
   const appData = postsTables[appName];
 
   const getPostsData = async (
+    url: string,
     startDate: String,
     endDate: String,
     page: number,
@@ -87,15 +88,16 @@ function usePostsTable(appName: AppNames): UsePostsTable {
     filter: MetricsFilter
   ): Promise<PostsTableResponse> => {
     const params = { startDate, endDate, page, pageSize, filter };
-    return await HTTP.get(appData.url, { params }).then((res: any) => res.data);
+    return await HTTP.get(url, { params }).then((res: any) => res.data);
   };
 
   const query = useQuery<
     PostsTableResponse,
     AxiosError<ErrorResponse>,
     PostsTableResponse | null
-  >(['postsTableData', startDate, endDate, page, pageSize, filter], () =>
-    getPostsData(startDate, endDate, page, pageSize, filter)
+  >(
+    ['postsTableData', appData.url, startDate, endDate, page, pageSize, filter],
+    () => getPostsData(appData.url, startDate, endDate, page, pageSize, filter)
   );
 
   return {
