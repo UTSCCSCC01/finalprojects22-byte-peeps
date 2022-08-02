@@ -98,9 +98,10 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
 
     // Query if no filter is added for type or is specific to tag type
     if (
-      !filter ||
-      filter.columnField !== 'type' ||
-      filter.value?.toLowerCase() === 'tag'
+      postId == null &&
+      (!filter ||
+        filter.columnField !== 'type' ||
+        filter.value?.toLowerCase() === 'tag')
     ) {
       const RENAMED_FIELDS: any = [
         ['username', 'userName'],
