@@ -39,7 +39,11 @@ Using CLI:
 
 ### Downloading Node and NPM
 
-Instructions are available [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+Instructions are available [here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+
+### Downloading Python
+
+Instructions are available [here](https://www.python.org/downloads/).
 
 ### Database setup - need to set up a local DB as well
 
@@ -115,7 +119,40 @@ YOUTUBE_API_KEY=<YOUTUBE-API-KEY>
 YELP_API_KEY=<YELP-API-KEY>
 ```
 
-3. To run the dev server:
+Python setup:
+
+3. Create a Python env:
+
+```
+python3 -m venv ./env
+```
+
+4. Open Python env:
+
+- Windows: Typing this in the PowerShell and press Enter
+  ```
+  env\Scripts\activate
+  ```
+- MacOS/Linux: Run this command
+  ```
+  source env/bin/activate
+  ```
+
+**Note:** The above command must be done before running the dev server.
+
+5. Upgrade setuptools
+
+```
+pip install --no-cache --upgrade pip setuptools
+```
+
+6. Install Python Requirements
+
+```
+pip install -r requirements.txt
+```
+
+7. To run the dev server:
 
 ```
 npm run dev
@@ -199,6 +236,14 @@ Currently, the website is deployed at: https://www.datalytic.ml/
     1. `ssh-key.txt`
     2. `my.secrets`
 
+  - The `env` files for the frontend, backend and database containers are:
+
+    1. `fe.env`
+    2. `be.env`
+    3. `db.env`
+
+  - These files are stored on the server and are transferred there using the `scp` command.
+
 - Run the following commands at the root directory:
 
   1. Backend Deployment:
@@ -212,8 +257,6 @@ Currently, the website is deployed at: https://www.datalytic.ml/
   ```
   act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
   ```
-
-- **Note:** the last command will say failure but it did actually work.
 
 ## Authors
 
