@@ -58,7 +58,7 @@ const TwitterTab: React.FC<Props> = () => {
 
       <Grid item xs={12}>
         <CardCharts name={'Comments Subjectivity Analysis By Post'}>
-          <SubjectivityTimeSeries appName={AppNames.Facebook} />
+          <SubjectivityTimeSeries appName={AppNames.Twitter} />
         </CardCharts>
       </Grid>
 
