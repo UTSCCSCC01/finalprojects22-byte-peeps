@@ -1,5 +1,10 @@
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
+import {
+  randomIndex,
+  randomSubjectivity,
+  randomTopicClassification,
+} from '../../middlewares/datumBox/datumBox';
 import FacebookApi from '../../models/facebook/api';
 import FacebookComment from '../../models/facebook/comment';
 import FacebookPost from '../../models/facebook/post';
@@ -36,67 +41,17 @@ type RegisteredUser = {
   googleReviewsAccountId: number;
 };
 
-const startDate: string = '2022-06-15T00:00:00.000Z';
-const endDate: string = '2022-07-15T23:59:59.999Z';
+const startDate: string = '2022-07-15T00:00:00.000Z';
+const endDate: string = '2022-08-15T23:59:59.999Z';
 const numberOfPosts = 30;
 const numberOfComments = 50;
 const numberOfLocations = 10;
 const numberOfReviews = 30;
 
-/**
- * Random index between 0 to number
- * @param {number} number - Maximum index; deafults to length of fakeData
- */
-function randomIndex(number: number = fakeData.length): number {
-  return Math.floor(Math.random() * number);
-}
-
 function randomRating(): number | null {
   const i = randomIndex(6);
   if (i == 0) return null;
   return i;
-}
-
-/**
- * Returns a random subjectivity analysis
- * @return {string} subjective or objective
- */
-function randomSubjectivity(): string {
-  let i = randomIndex(2);
-  if (i === 0) return 'subjective';
-  else return 'objective';
-}
-
-/**
- * Returns a random topic classification in correspondence with the topics available in datumbox
- * @return {string}
- */
-function randomTopicClassification(): string {
-  let i = randomIndex(11);
-  switch (i) {
-    case 0:
-      return 'Arts';
-    case 1:
-      return 'Business & Economy';
-    case 2:
-      return 'Computers &Technology';
-    case 3:
-      return 'Home & Domestic Life';
-    case 4:
-      return 'Recreation & Activities';
-    case 5:
-      return 'News';
-    case 6:
-      return 'Reference & Education';
-    case 7:
-      return 'Society';
-    case 8:
-      return 'Shopping';
-    case 9:
-      return 'Science';
-    default:
-      return 'Sports';
-  }
 }
 
 /**
@@ -267,7 +222,7 @@ async function addYouTubeData(registeredUser: RegisteredUser): Promise<void> {
 
     // create comments for each video
     Array.from({ length: numberOfComments }).forEach(async () => {
-      let randomSentimentData = fakeData[randomIndex()];
+      let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
       YouTubeComment.create({
         resourceId: faker.datatype.uuid(),
@@ -312,7 +267,7 @@ async function addFacebookData(registeredUser: RegisteredUser): Promise<void> {
 
     // create comments for each post
     Array.from({ length: numberOfComments }).forEach(async () => {
-      let randomSentimentData = fakeData[randomIndex()];
+      let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
       FacebookComment.create({
         dataId: faker.datatype.uuid(),
@@ -351,7 +306,7 @@ async function addInstagramData(registeredUser: RegisteredUser): Promise<void> {
 
     // create comments for each post
     Array.from({ length: numberOfComments }).forEach(async () => {
-      let randomSentimentData = fakeData[randomIndex()];
+      let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
       InstagramComment.create({
         dataId: faker.datatype.uuid(),
@@ -369,7 +324,7 @@ async function addInstagramData(registeredUser: RegisteredUser): Promise<void> {
 
   Array.from({ length: numberOfPosts }).forEach(async () => {
     let date = faker.date.betweens(startDate, endDate, 1)[0];
-    let randomSentimentData = fakeData[randomIndex()];
+    let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
     // add data for instagram tags
     InstagramTag.create({
@@ -411,7 +366,7 @@ async function addTwitterData(registeredUser: RegisteredUser): Promise<void> {
 
     // create comments for each post
     Array.from({ length: numberOfComments }).forEach(async () => {
-      let randomSentimentData = fakeData[randomIndex()];
+      let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
       TwitterConversation.create({
         twitterId: faker.datatype.uuid(),
@@ -437,7 +392,7 @@ async function addTwitterData(registeredUser: RegisteredUser): Promise<void> {
 async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
   Array.from({ length: numberOfPosts }).forEach(async () => {
     let date = faker.date.betweens(startDate, endDate, 1)[0];
-    const randomSentimentData = fakeData[randomIndex()];
+    const randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
     // Create a listing
     let redditListingId = await RedditListing.create({
@@ -458,7 +413,7 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
 
     // create comments on the listing
     Array.from({ length: numberOfComments }).forEach(async () => {
-      let randomSentimentData = fakeData[randomIndex()];
+      let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
       RedditComment.create({
         dataId: faker.datatype.uuid(),
@@ -484,7 +439,7 @@ async function addRedditData(registeredUser: RegisteredUser): Promise<void> {
 async function addYelpData(registeredUser: RegisteredUser): Promise<void> {
   Array.from({ length: numberOfPosts }).forEach(async () => {
     let date = faker.date.betweens(startDate, endDate, 1)[0];
-    let randomSentimentData = fakeData[randomIndex()];
+    let randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
     // Create a yelp review
     YelpReview.create({
@@ -523,7 +478,7 @@ async function addGoogleReviewsData(
     // create comments on the listing
     Array.from({ length: numberOfReviews }).forEach(async () => {
       const date = faker.date.betweens(startDate, endDate, 1)[0];
-      const randomSentimentData = fakeData[randomIndex()];
+      const randomSentimentData = fakeData[randomIndex(fakeData.length)];
 
       GoogleReviewsReview.create({
         title: faker.lorem.sentence(),
