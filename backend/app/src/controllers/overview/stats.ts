@@ -23,20 +23,19 @@ import YouTubeVideo from '../../models/youtube/video';
 export const getOverviewStats: RequestHandler = async (req, res, next) => {
   const startDateParam = req.query.startDate?.toString();
   const endDateParam = req.query.endDate?.toString();
-  const postId = req.query.postId;
 
   const { startDate, endDate } = getDates(startDateParam, endDateParam);
 
   if (!startDate || !endDate)
     return res.status(400).send(invalidDateRangeResponse);
 
-  const igUser = await User.findOne({
-    where: { username: req.session.username },
-    include: InstagramApi,
-  });
   const fbUser = await User.findOne({
     where: { username: req.session.username },
     include: FacebookApi,
+  });
+  const igUser = await User.findOne({
+    where: { username: req.session.username },
+    include: InstagramApi,
   });
   const redditUser = await User.findOne({
     where: { username: req.session.username },
@@ -61,7 +60,12 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
 
   //total posts
   let totalPosts = 0;
-  if (!postId) {
+  let totalLikes = 0;
+  let totalMentions = 0;
+  let avgReviewSum = 0;
+  let avgReviewCount = 0;
+
+  if (!fbUser) {
     const fbPosts = await FacebookPost.count({
       where: {
         apiId: fbUser!.facebookApi.id,
@@ -71,9 +75,36 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
       },
     });
     totalPosts += fbPosts;
+
+    let totalReactions = 0;
+
+    let fbQueryResult = await FacebookPost.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        apiId: fbUser!.facebookApi.id,
+      },
+      attributes: [
+        [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
+        [Sequelize.fn('sum', Sequelize.col('loves')), 'totalLoves'],
+        [Sequelize.fn('sum', Sequelize.col('cares')), 'totalCares'],
+        [Sequelize.fn('sum', Sequelize.col('hahas')), 'totalHahas'],
+        [Sequelize.fn('sum', Sequelize.col('wows')), 'totalWows'],
+        [Sequelize.fn('sum', Sequelize.col('sads')), 'totalSads'],
+        [Sequelize.fn('sum', Sequelize.col('angrys')), 'totalAngrys'],
+      ],
+      raw: true,
+    }).then((data) => data[0]);
+
+    Object.values(fbQueryResult).forEach((value) => {
+      totalReactions += parseInt(value || '0');
+    });
+
+    totalLikes += totalReactions;
   }
 
-  if (!postId) {
+  if (!igUser) {
     const igPosts = await InstagramMedia.count({
       where: {
         apiId: igUser!.instagramApi.id,
@@ -83,9 +114,33 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
       },
     });
     totalPosts += igPosts;
+
+    const igQueryResult = (await InstagramMedia.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        apiId: igUser!.instagramApi.id,
+      },
+      attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
+      raw: true,
+    }).then((data) => data[0])) as unknown as { totalLikes: string };
+
+    totalLikes += parseInt(igQueryResult.totalLikes || '0');
+
+    const igTags = await InstagramTag.count({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        apiId: igUser!.instagramApi.id,
+      },
+    });
+
+    totalMentions += igTags;
   }
 
-  if (!postId) {
+  if (!redditUser) {
     const redditListings = await RedditListing.count({
       where: {
         subredditId: redditUser!.subreddit.id,
@@ -96,7 +151,8 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
     });
     totalPosts += redditListings;
   }
-  if (!postId) {
+
+  if (!twtUser) {
     const tweets = await TwitterTweet.count({
       where: {
         twitterUserId: twtUser!.twitterUser.id,
@@ -106,8 +162,29 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
       },
     });
     totalPosts += tweets;
+
+    const twtQueryResult = (await TwitterTweet.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        twitterUserId: twtUser!.twitterUser.id,
+      },
+      attributes: [
+        [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
+        [Sequelize.fn('sum', Sequelize.col('retweets')), 'totalRetweets'],
+      ],
+      raw: true,
+    }).then((data) => data[0])) as unknown as {
+      totalLikes: string;
+      totalRetweets: string;
+    };
+
+    totalLikes += parseInt(twtQueryResult.totalLikes || '0');
+    totalMentions += parseInt(twtQueryResult.totalRetweets || '0');
   }
-  if (!postId) {
+
+  if (!ytUser) {
     const totalVideos = await YouTubeVideo.count({
       where: {
         channelId: ytUser!.youtubeChannel.id,
@@ -117,155 +194,70 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
       },
     });
     totalPosts += totalVideos;
-  }
 
-  //   totalPosts = { postSum };
-
-  //total likes
-  let totalLikes = 0;
-  let postFilter = {};
-  //facebook
-  if (postId) postFilter = { id: postId };
-  let fbQueryResult = await FacebookPost.findAll({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-      apiId: fbUser!.facebookApi.id,
-      ...postFilter,
-    },
-    attributes: [
-      [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
-      [Sequelize.fn('sum', Sequelize.col('loves')), 'totalLoves'],
-      [Sequelize.fn('sum', Sequelize.col('cares')), 'totalCares'],
-      [Sequelize.fn('sum', Sequelize.col('hahas')), 'totalHahas'],
-      [Sequelize.fn('sum', Sequelize.col('wows')), 'totalWows'],
-      [Sequelize.fn('sum', Sequelize.col('sads')), 'totalSads'],
-      [Sequelize.fn('sum', Sequelize.col('angrys')), 'totalAngrys'],
-    ],
-    raw: true,
-  }).then((data) => data[0]);
-
-  let totalReactions = 0;
-
-  Object.values(fbQueryResult).forEach((value) => {
-    totalReactions += parseInt(value || '0');
-  });
-  //instagram
-  if (postId) postFilter = { id: postId };
-  const igQueryResult = (await InstagramMedia.findAll({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-      apiId: igUser!.instagramApi.id,
-      ...postFilter,
-    },
-    attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
-    raw: true,
-  }).then((data) => data[0])) as unknown as { totalLikes: string };
-
-  const igLikes = parseInt(igQueryResult.totalLikes || '0');
-  //twitter
-  if (postId) postFilter = { id: postId };
-  const twtQueryResult = (await TwitterTweet.findAll({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-      twitterUserId: twtUser!.twitterUser.id,
-      ...postFilter,
-    },
-    attributes: [
-      [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
-      [Sequelize.fn('sum', Sequelize.col('retweets')), 'totalRetweets'],
-    ],
-    raw: true,
-  }).then((data) => data[0])) as unknown as {
-    totalLikes: string;
-    totalRetweets: string;
-  };
-
-  const twtLikes = parseInt(twtQueryResult.totalLikes || '0');
-  const retweets = parseInt(twtQueryResult.totalRetweets || '0'); //used later in mentions
-
-  //youtube
-
-  if (postId) postFilter = { id: postId };
-  const queryResult = (await YouTubeVideo.findAll({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-      channelId: ytUser!.youtubeChannel.id,
-      ...postFilter,
-    },
-    attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
-    raw: true,
-  }).then((data) => data[0])) as unknown as {
-    totalLikes: string;
-  };
-
-  const ytLikes = parseInt(queryResult.totalLikes || '0');
-
-  totalLikes = totalReactions + igLikes + twtLikes + ytLikes;
-
-  //total mentions
-  let totalMentions = 0;
-  if (!postId) {
-    const igTags = await InstagramTag.count({
+    const queryResult = (await YouTubeVideo.findAll({
       where: {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        apiId: igUser!.instagramApi.id,
+        channelId: ytUser!.youtubeChannel.id,
       },
-    });
-    totalMentions += igTags;
+      attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
+      raw: true,
+    }).then((data) => data[0])) as unknown as {
+      totalLikes: string;
+    };
+
+    totalLikes += parseInt(queryResult.totalLikes || '0');
   }
-  totalMentions += retweets;
 
   //average rating
-  let avgReview = 0;
-  //google
 
-  const grQueryResult = (await GoogleReviewsReview.findAll({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-    },
-    include: [
-      {
-        model: GoogleReviewsLocation,
-        attributes: [],
-        where: {
-          accountId: grUser!.googleReviewAccount.id,
+  if (!grUser) {
+    const grQueryResult = (await GoogleReviewsReview.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
         },
       },
-    ],
-    attributes: [[Sequelize.fn('avg', Sequelize.col('rating')), 'avgReview']],
-    raw: true,
-  }).then((data) => data[0])) as unknown as {
-    avgReview: string;
-  };
-  const grAvg = parseInt(grQueryResult.avgReview || '0');
-  //yelp
-  const yelpQueryResult = (await YelpReview.findAll({
-    where: {
-      date: {
-        [Op.between]: [startDate, endDate],
-      },
-      businessId: yelpUser!.yelpBusiness.id,
-    },
-    attributes: [[Sequelize.fn('AVG', Sequelize.col('rating')), 'avgReview']],
-    raw: true,
-  }).then((data) => data[0])) as unknown as {
-    avgReview: string;
-  };
-  const yelpAvg = parseInt(yelpQueryResult.avgReview || '0');
+      include: [
+        {
+          model: GoogleReviewsLocation,
+          attributes: [],
+          where: {
+            accountId: grUser!.googleReviewAccount.id,
+          },
+        },
+      ],
+      attributes: [[Sequelize.fn('avg', Sequelize.col('rating')), 'avgReview']],
+      raw: true,
+    }).then((data) => data[0])) as unknown as {
+      avgReview: string;
+    };
 
-  avgReview = (grAvg + yelpAvg) / 2;
+    avgReviewSum += parseInt(grQueryResult.avgReview || '0');
+    avgReviewCount += 1;
+  }
+
+  if (!yelpUser) {
+    const yelpQueryResult = (await YelpReview.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+        businessId: yelpUser!.yelpBusiness.id,
+      },
+      attributes: [[Sequelize.fn('AVG', Sequelize.col('rating')), 'avgReview']],
+      raw: true,
+    }).then((data) => data[0])) as unknown as {
+      avgReview: string;
+    };
+
+    avgReviewSum += parseInt(yelpQueryResult.avgReview || '0');
+    avgReviewCount += 1;
+  }
+
+  const avgReview = avgReviewSum / avgReviewCount;
 
   return res.send({
     totalPosts,
