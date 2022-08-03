@@ -12,7 +12,7 @@ import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 const { Op } = require('sequelize');
 
 /**
@@ -267,7 +267,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     }
 
     const getKeywords = comments.reduce(getText, ' ');
-    return res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

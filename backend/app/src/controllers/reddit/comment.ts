@@ -14,7 +14,7 @@ import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
@@ -278,8 +278,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       return acc.concat(' ', comment.text);
     }
     const getKeywords = comments.reduce(getText, ' ');
-
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

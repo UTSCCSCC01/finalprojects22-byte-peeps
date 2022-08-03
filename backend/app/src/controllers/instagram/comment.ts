@@ -14,7 +14,7 @@ import {
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 import InstagramTag from '../../models/instagram/tag';
 import { Sequelize } from 'sequelize-typescript';
 import {
@@ -320,7 +320,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       return acc.concat(' ', comment.message);
     }
     const getKeywords = comments.reduce(getText, ' ');
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }
