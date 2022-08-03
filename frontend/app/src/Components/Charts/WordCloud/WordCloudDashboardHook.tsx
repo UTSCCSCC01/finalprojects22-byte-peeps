@@ -1,30 +1,13 @@
-import { queries } from '@testing-library/react';
-import { AxiosError } from 'axios';
-import { useQueries, useQuery } from 'react-query';
+import { useQueries } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
-// import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../../utils/enums';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import HTTP from '../../../utils/http';
-import { extractBackendError } from '../../../utils/httpHelpers';
 import { UseWordCloudrQuery, WordCloudData } from './WordCloudQueryTypes';
-import {
-  CommentsWordCloudResponse,
-  CommentsWordCloudUrlRequest,
-} from './WordCloudURLConst';
-
-export enum AppNames {
-  Facebook = 'Facebook',
-  Instagram = 'Instagram',
-  Twitter = 'Twitter',
-  YouTube = 'YouTube',
-  Reddit = 'Reddit',
-  GoogleReviews = 'Google Reviews',
-  Yelp = 'Yelp',
-}
+import { CommentsWordCloudUrlRequest } from './WordCloudURLConst';
 
 type WordCloudQueryType = {
   cloudQuery: string;
@@ -32,7 +15,7 @@ type WordCloudQueryType = {
 };
 
 type DictWordCloudQuery = {
-  [key in AppNames]: WordCloudQueryType;
+  [key in AppNames]?: WordCloudQueryType;
 };
 
 const wordCloudQuery: DictWordCloudQuery = {
@@ -90,7 +73,6 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   const query = useQueries(
     queries.map((app) => {
-      console.log('app:' + JSON.stringify(app));
       return {
         queryKey: [
           'WordCloudData',
@@ -107,7 +89,6 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
   query.forEach((item) => {
     if (item.data) {
       result.push(item.data[0]);
-      console.log('result length:' + JSON.stringify(result.length));
     } else {
       isLoading = item.isLoading;
       if (item.error) {
