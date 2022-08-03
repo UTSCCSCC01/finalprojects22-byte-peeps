@@ -5,7 +5,7 @@ import {
   unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 import InstagramComment from '../../models/instagram/comment';
 const { Op } = require('sequelize');
 import TwitterConversation from '../../models/twitter/conversation';
@@ -276,8 +276,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     }
 
     const getKeywords = comments.reduce(getText, ' ');
-
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }
