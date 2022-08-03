@@ -4,20 +4,10 @@ import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
-// import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
+import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import HTTP from '../../../utils/http';
 import { UseWordCloudrQuery, WordCloudData } from './WordCloudQueryTypes';
 import { CommentsWordCloudUrlRequest } from './WordCloudURLConst';
-
-export enum AppNames {
-  Facebook = 'Facebook',
-  Instagram = 'Instagram',
-  Twitter = 'Twitter',
-  YouTube = 'YouTube',
-  Reddit = 'Reddit',
-  GoogleReviews = 'Google Reviews',
-  Yelp = 'Yelp',
-}
 
 type WordCloudQueryType = {
   cloudQuery: string;
@@ -25,7 +15,7 @@ type WordCloudQueryType = {
 };
 
 type DictWordCloudQuery = {
-  [key in AppNames]: WordCloudQueryType;
+  [key in AppNames]?: WordCloudQueryType;
 };
 
 const wordCloudQuery: DictWordCloudQuery = {
@@ -83,7 +73,6 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   const query = useQueries(
     queries.map((app) => {
-      console.log('app:' + JSON.stringify(app));
       return {
         queryKey: [
           'WordCloudData',
