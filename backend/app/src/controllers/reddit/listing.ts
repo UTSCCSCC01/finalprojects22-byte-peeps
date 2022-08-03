@@ -171,13 +171,24 @@ export const getSentimentAnalysisForTimeSeries: RequestHandler = async (
           });
 
           const total = positive + negative + neutral;
-          data.push({
-            date: listing.date.toLocaleDateString(),
-            time: listing.date.toLocaleTimeString('it-IT'),
-            positive: (positive / total) * 100,
-            negative: (negative / total) * 100,
-            neutral: (neutral / total) * 100,
-          });
+          if (total === 0) {
+            data.push({
+              date: listing.date.toLocaleDateString(),
+              time: listing.date.toLocaleTimeString('it-IT'),
+              positive: 0,
+              negative: 0,
+              neutral: 0,
+            });
+          } else {
+            data.push({
+              date: listing.date.toLocaleDateString(),
+              time: listing.date.toLocaleTimeString('it-IT'),
+              positive: (positive / total) * 100,
+              negative: (negative / total) * 100,
+              neutral: (neutral / total) * 100,
+            });
+          }
+
         }
 
         res.send({ data: data });
@@ -246,12 +257,22 @@ export const getSubjectivityAnalysisForTimeSeries: RequestHandler = async (
             },
           });
           const total = subjective + objective;
-          data.push({
-            date: listing.date.toLocaleDateString(),
-            time: listing.date.toLocaleTimeString('it-IT'),
-            subjective: (subjective / total) * 100,
-            objective: (objective / total) * 100,
-          });
+          if (total === 0) {
+            data.push({
+              date: listing.date.toLocaleDateString(),
+              time: listing.date.toLocaleTimeString('it-IT'),
+              subjective: 0,
+              objective: 0,
+            });
+          } else {
+            data.push({
+              date: listing.date.toLocaleDateString(),
+              time: listing.date.toLocaleTimeString('it-IT'),
+              subjective: (subjective / total) * 100,
+              objective: (objective / total) * 100,
+            });
+          }
+
         }
 
         res.send({ data: data });
