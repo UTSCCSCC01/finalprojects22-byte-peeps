@@ -267,7 +267,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
   };
   const yelpAvg = parseInt(yelpQueryResult.avgReview || '0');
 
-  avgReview = grAvg + yelpAvg;
+  avgReview = (grAvg + yelpAvg) / 2;
 
   return res.send({
     totalPosts,
