@@ -88,7 +88,13 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
 
   query.forEach((item) => {
     if (item.data) {
-      result.push(item.data[0]);
+      result = result.concat(item.data);
+      result = result.filter(
+        (phrase, index, self) =>
+          index === self.findIndex((t) => t.value === phrase.value)
+      ); //removes duplicates
+      result = result.sort((a, b) => (a.count > b.count ? -1 : 1));
+      result = result.slice(0, 9);
     } else {
       isLoading = item.isLoading;
       if (item.error) {
