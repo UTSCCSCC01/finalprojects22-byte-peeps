@@ -1,20 +1,13 @@
-import { queries } from '@testing-library/react';
-import { AxiosError } from 'axios';
-import { useQueries, useQuery } from 'react-query';
+import { useQueries } from 'react-query';
 import { useAppSelector } from '../../../Redux/hooks';
 import {
   selectEndDate,
   selectStartDate,
 } from '../../../Redux/Slices/dateSelector/dateSelectorSlice';
 // import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
-import { ErrorResponse } from '../../../utils/enums';
 import HTTP from '../../../utils/http';
-import { extractBackendError } from '../../../utils/httpHelpers';
 import { UseWordCloudrQuery, WordCloudData } from './WordCloudQueryTypes';
-import {
-  CommentsWordCloudResponse,
-  CommentsWordCloudUrlRequest,
-} from './WordCloudURLConst';
+import { CommentsWordCloudUrlRequest } from './WordCloudURLConst';
 
 export enum AppNames {
   Facebook = 'Facebook',
@@ -112,7 +105,6 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
           index === self.findIndex((t) => t.value === phrase.value)
       ); //removes duplicates
       result = result.sort((a, b) => (a.count > b.count ? -1 : 1));
-      console.log('result: ' + JSON.stringify(result));
       result = result.slice(0, 9);
     } else {
       isLoading = item.isLoading;

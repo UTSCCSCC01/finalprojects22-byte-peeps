@@ -1,4 +1,3 @@
-import React from 'react';
 import ErrorMessage from '../../ErrorMessage/ErrorMessage';
 import Loader from '../../Loader/Loader';
 import NoData from '../../NoData/NoData';
