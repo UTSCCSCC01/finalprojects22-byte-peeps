@@ -39,55 +39,57 @@ const SignUp: React.FunctionComponent<Props> = () => {
   }, [isSignedUp]);
 
   return (
-    <Stack
-      spacing={2}
-      className="center formContainer"
-      sx={{
-        boxShadow: 1,
-      }}
-    >
-      <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-        <LockOutlined />
-      </Avatar>
-      <Typography component="h1" align="center">
-        Sign Up{' '}
-      </Typography>
-      <TextField
-        id="outlined-user-input"
-        label="Username"
-        type="username"
-        required={true}
-        autoComplete="current-password"
-        onChange={(event) => {
-          setUser(event.target.value);
+    <div className="center fullDimension">
+      <Stack
+        spacing={2}
+        className="center formContainer"
+        sx={{
+          boxShadow: 1,
         }}
-      />
-      <TextField
-        id="outlined-password-input"
-        label="Password"
-        type="password"
-        required={true}
-        autoComplete="current-password"
-        onChange={(event) => {
-          setPwd(event.target.value);
-        }}
-      />
-      <Button
-        fullWidth
-        variant="contained"
-        onClick={handleRegister}
-        className="authButton"
       >
-        Sign Up
-      </Button>
+        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+          <LockOutlined />
+        </Avatar>
+        <Typography component="h1" align="center">
+          Sign Up{' '}
+        </Typography>
+        <TextField
+          id="outlined-user-input"
+          label="Username"
+          type="username"
+          required={true}
+          autoComplete="current-password"
+          onChange={(event) => {
+            setUser(event.target.value);
+          }}
+        />
+        <TextField
+          id="outlined-password-input"
+          label="Password"
+          type="password"
+          required={true}
+          autoComplete="current-password"
+          onChange={(event) => {
+            setPwd(event.target.value);
+          }}
+        />
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={handleRegister}
+          className="authButton"
+        >
+          Sign Up
+        </Button>
 
-      <div className="rowCenter footer">
-        Ready to login? &nbsp;
-        <Link to={RoutePaths.SignIn}> Sign in here</Link>
-      </div>
+        <div className="rowCenter footer">
+          Ready to login? &nbsp;
+          <Link to={RoutePaths.SignIn}> Sign in here</Link>
+        </div>
 
-      <Notification state={notification} />
-    </Stack>
+        <Notification state={notification} />
+      </Stack>
+    </div>
   );
 };
 

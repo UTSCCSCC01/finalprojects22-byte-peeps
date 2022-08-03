@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 import AuthStorage from '../../../Components/AuthStorage/AuthStorage';
 import { history } from '../../../Components/Router/RouterComponent';
@@ -78,6 +78,8 @@ export const signOut = createAsyncThunk<
     return response.data;
   } catch (error: any) {
     AuthStorage.removeSession();
+    thunkAPI.dispatch(setUsername(''));
+    history.push(RoutePaths.SignIn);
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
