@@ -4,7 +4,9 @@ import YouTubeChannel from '../models/youtube/channel';
 import YouTubeVideo from '../models/youtube/video';
 import YouTubeComment from '../models/youtube/comment';
 import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
-import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
+import User from '../models/user/user';
+import { fakeUsername } from './fakeData/fakeData';
+import { Op } from 'sequelize';
 
 const YouTubeApiEndPoint = google.youtube({
   version: 'v3',
@@ -21,7 +23,19 @@ const YouTubeApiEndPoint = google.youtube({
  */
 export async function startPipeline(firstTime = false): Promise<void> {
   try {
-    let youtubeChannels = await YouTubeChannel.findAll();
+    let youtubeChannels = await YouTubeChannel.findAll({
+      include: [
+        {
+          model: User,
+          where: {
+            username: {
+              [Op.ne]: fakeUsername, // make an import
+            },
+          },
+        },
+      ],
+    });
+
     if (youtubeChannels.length == 0) return;
 
     /* Get the last day that a You dates */
@@ -70,7 +84,7 @@ export async function startPipeline(firstTime = false): Promise<void> {
 
     await Promise.all(updateVideoStatisticsWorkFlow);
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 }
 
@@ -172,6 +186,9 @@ async function updateVideoStatistics(
 
           videoStatisticsDbWorkFlow.push(dbVideoUpdateQuery);
         });
+      })
+      .catch((err) => {
+        console.log('Error updating video statistics:', err);
       });
 
     videoStatisticsWorkFlow.push(videoStatistics);
@@ -190,9 +207,9 @@ async function updateVideoStatistics(
   await Promise.all(videoCommentsDbWorkFlow);
   return;
 }
+
 /**
- * Brief description of the function here.
- * @summary If the description is long, write your summary here. Otherwise, feel free to remove this.
+ * Updates comments for a video
  * @param {string} videoId - Current videoId (resourceId) of the YouTube video
  * @param {number} videoIdKey - Current videoId primary key in our db
  * @param {string} oauth - string oauth token for the YouTube API for the current channel
