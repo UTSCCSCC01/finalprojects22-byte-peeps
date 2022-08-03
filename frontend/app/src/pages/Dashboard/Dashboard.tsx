@@ -5,6 +5,7 @@ import CardsHeader from '../../Components/CardsHeader/CardsHeader';
 import SentimentPerformanceChart from '../../Components/Charts/DonutChart/SentimentPerformanceChart';
 import SentimentPieChartDashboard from '../../Components/Charts/PieChart/SentimentPieChartDashboard';
 import SubjectivityPieChartDashboard from '../../Components/Charts/PieChart/SubjectivityPieChartDashboard';
+import CommentsWordCloud from '../../Components/Charts/WordCloud/WordCloudDashboard';
 import { RouteNames } from '../../Components/Router/RoutesConstants';
 import { useAppDispatch } from '../../Redux/hooks';
 import { AppNames } from '../../Redux/Slices/webApp/webAppConstants';
@@ -33,7 +34,7 @@ const Dashboard: React.FunctionComponent<Props> = () => {
 
         <Grid item xs={2} sm={4} md={4}>
           <CardCharts name={'Word Cloud'}>
-            {/* <CommentsWordCloud /> */}
+            <CommentsWordCloud />
           </CardCharts>
         </Grid>
 
