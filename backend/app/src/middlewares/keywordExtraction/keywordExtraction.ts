@@ -49,7 +49,7 @@ export async function keywordExtraction(
 
   let result: { value: string; count: number }[] = [];
 
-  keywords.slice(0, 30).forEach((keyword: [string, number], index: number) => {
+  keywords.slice(0, 40).forEach((keyword: [string, number], index: number) => {
     result.push({ value: keyword[0], count: 30 - index });
   });
 
