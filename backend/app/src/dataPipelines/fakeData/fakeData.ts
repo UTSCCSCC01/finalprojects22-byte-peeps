@@ -27,6 +27,7 @@ import YelpReview from '../../models/yelp/review';
 import YouTubeChannel from '../../models/youtube/channel';
 import YouTubeComment from '../../models/youtube/comment';
 import YouTubeVideo from '../../models/youtube/video';
+import { fakeUsername } from '../fakeDataConst';
 
 const fakeData = require('./fakeDataJSON.json');
 
@@ -47,7 +48,6 @@ const numberOfPosts = 30;
 const numberOfComments = 50;
 const numberOfLocations = 10;
 const numberOfReviews = 30;
-export const fakeUsername = 'data';
 const password = 'data';
 
 function randomRating(): number | null {

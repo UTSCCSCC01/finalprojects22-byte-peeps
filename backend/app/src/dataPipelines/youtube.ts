@@ -7,7 +7,7 @@ import DatumBoxAPICall from '../middlewares/datumBox/datumBox';
 import { DatumAPICallResult } from '../middlewares/datumBox/datumBoxTypes';
 import User from '../models/user/user';
 import { Op } from 'sequelize';
-import { fakeUsername } from './fakeData/fakeData';
+import { fakeUsername } from './fakeDataConst';
 
 const YouTubeApiEndPoint = google.youtube({
   version: 'v3',
