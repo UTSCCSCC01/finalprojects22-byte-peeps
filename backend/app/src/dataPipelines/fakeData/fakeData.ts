@@ -47,6 +47,8 @@ const numberOfPosts = 30;
 const numberOfComments = 50;
 const numberOfLocations = 10;
 const numberOfReviews = 30;
+export const fakeUsername = 'data';
+const password = 'data';
 
 function randomRating(): number | null {
   const i = randomIndex(6);
@@ -96,15 +98,13 @@ async function deleteAllData(): Promise<void> {
  */
 async function userAndAPIs(): Promise<RegisteredUser> {
   const saltRounds = 10;
-  let username = 'data';
-  let password = 'data';
 
   let hash = await bcrypt.hash(password, saltRounds).then((hash) => {
     return hash;
   });
 
   let userId: number = await User.create({
-    username: username,
+    username: fakeUsername,
     password: hash,
   }).then((user) => {
     return user.id;
