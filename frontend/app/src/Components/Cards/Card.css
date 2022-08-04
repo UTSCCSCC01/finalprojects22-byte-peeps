@@ -30,3 +30,7 @@
   margin: 0;
   margin-left: 10px;
 }
+
+.card {
+  height: 100%;
+}
