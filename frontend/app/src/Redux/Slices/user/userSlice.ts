@@ -69,17 +69,14 @@ export const signOut = createAsyncThunk<
     dispatch: AppDispatch;
   }
 >('user/signOut', async (user, thunkAPI) => {
+  AuthStorage.removeSession();
+  thunkAPI.dispatch(setUsername(''));
+  history.push(RoutePaths.SignIn);
+
   try {
     const response = await signOutAPI();
-    AuthStorage.removeSession();
-    thunkAPI.dispatch(setUsername(''));
-    history.push(RoutePaths.SignIn);
-
     return response.data;
   } catch (error: any) {
-    AuthStorage.removeSession();
-    thunkAPI.dispatch(setUsername(''));
-    history.push(RoutePaths.SignIn);
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });

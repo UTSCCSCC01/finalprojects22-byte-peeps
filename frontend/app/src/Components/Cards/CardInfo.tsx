@@ -37,7 +37,7 @@ const CardInfo: React.FC<CardInfoProps> = (props) => {
   }
 
   return (
-    <Card variant={props.variant}>
+    <Card className="card" variant={props.variant}>
       <CardContent className="cardContent">{content}</CardContent>
     </Card>
   );
