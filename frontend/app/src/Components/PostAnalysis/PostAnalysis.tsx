@@ -37,6 +37,7 @@ const PostAnalysis: React.FC<Props> = (props) => {
         post && (
           <Autocomplete
             disableClearable
+            className="postDropdown"
             blurOnSelect
             options={query.data ?? []}
             value={
@@ -68,13 +69,19 @@ const PostAnalysis: React.FC<Props> = (props) => {
                 title={<div className="cardTitle">General Information</div>}
               />
               <CardContent className="cardChartContent">
-                <div style={{ minHeight: '325px' }}>
-                  <h3 className="post-info">Title:</h3>
-                  <p className="post-info">{post.label}</p>
-                  <h3 className="post-info">Date published:</h3>
-                  <p className="post-info">{post.date}</p>
-                  <h3 className="post-info">Unique identifier:</h3>
-                  <p className="post-info">{post.pid}</p>
+                <div className="infoContainer">
+                  <div className="infoRow">
+                    <h3 className="rowCenter">Title:</h3>
+                    <p className="rowCenter">{post.label}</p>
+                  </div>
+                  <div className="infoRow">
+                    <h3 className="rowCenter">Date published:</h3>
+                    <p className="rowCenter">{post.date}</p>
+                  </div>
+                  <div className="infoRow">
+                    <h3 className="rowCenter">Unique identifier:</h3>
+                    <p className="rowCenter">{post.pid}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

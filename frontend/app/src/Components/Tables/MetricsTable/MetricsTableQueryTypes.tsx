@@ -11,13 +11,18 @@ export type DefaultColumnStyleType = {
   filterable: boolean;
   headerAlign: GridAlignment;
   align: GridAlignment;
+  showHover: boolean;
 };
 
 export type DefaultColumnFilterStyleType = {
   filterOperators: GridFilterOperator<any, string | number | null, any>[];
 };
 
-export type MetricsTableColDef = GridColDef[];
+interface MetricsTableCol extends GridColDef {
+  showHover: boolean;
+}
+
+export type MetricsTableColDef = MetricsTableCol[];
 
 type MetricsTableQueryType = {
   url: string;

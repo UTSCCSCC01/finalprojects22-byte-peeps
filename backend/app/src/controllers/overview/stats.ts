@@ -29,33 +29,17 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
   if (!startDate || !endDate)
     return res.status(400).send(invalidDateRangeResponse);
 
-  const fbUser = await User.findOne({
+  const user = await User.findOne({
     where: { username: req.session.username },
-    include: FacebookApi,
-  });
-  const igUser = await User.findOne({
-    where: { username: req.session.username },
-    include: InstagramApi,
-  });
-  const redditUser = await User.findOne({
-    where: { username: req.session.username },
-    include: RedditSubreddit,
-  });
-  const twtUser = await User.findOne({
-    where: { username: req.session.username },
-    include: TwitterUser,
-  });
-  const ytUser = await User.findOne({
-    where: { username: req.session.username },
-    include: YouTubeChannel,
-  });
-  const grUser = await User.findOne({
-    where: { username: req.session.username },
-    include: GoogleReviewsAccount,
-  });
-  const yelpUser = await User.findOne({
-    where: { username: req.session.username },
-    include: YelpBusiness,
+    include: [
+      FacebookApi,
+      InstagramApi,
+      RedditSubreddit,
+      TwitterUser,
+      YouTubeChannel,
+      GoogleReviewsAccount,
+      YelpBusiness,
+    ],
   });
 
   //total posts
@@ -65,15 +49,16 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
   let avgReviewSum = 0;
   let avgReviewCount = 0;
 
-  if (!fbUser) {
+  if (user?.facebookApi) {
     const fbPosts = await FacebookPost.count({
       where: {
-        apiId: fbUser!.facebookApi.id,
+        apiId: user!.facebookApi.id,
         date: {
           [Op.between]: [startDate, endDate],
         },
       },
     });
+
     totalPosts += fbPosts;
 
     let totalReactions = 0;
@@ -83,7 +68,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        apiId: fbUser!.facebookApi.id,
+        apiId: user!.facebookApi.id,
       },
       attributes: [
         [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
@@ -104,10 +89,10 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
     totalLikes += totalReactions;
   }
 
-  if (!igUser) {
+  if (user?.instagramApi) {
     const igPosts = await InstagramMedia.count({
       where: {
-        apiId: igUser!.instagramApi.id,
+        apiId: user!.instagramApi.id,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -120,7 +105,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        apiId: igUser!.instagramApi.id,
+        apiId: user!.instagramApi.id,
       },
       attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
       raw: true,
@@ -133,17 +118,17 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        apiId: igUser!.instagramApi.id,
+        apiId: user!.instagramApi.id,
       },
     });
 
     totalMentions += igTags;
   }
 
-  if (!redditUser) {
+  if (user?.subreddit) {
     const redditListings = await RedditListing.count({
       where: {
-        subredditId: redditUser!.subreddit.id,
+        subredditId: user!.subreddit.id,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -152,10 +137,10 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
     totalPosts += redditListings;
   }
 
-  if (!twtUser) {
+  if (user?.twitterUser) {
     const tweets = await TwitterTweet.count({
       where: {
-        twitterUserId: twtUser!.twitterUser.id,
+        twitterUserId: user!.twitterUser.id,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -168,7 +153,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        twitterUserId: twtUser!.twitterUser.id,
+        twitterUserId: user!.twitterUser.id,
       },
       attributes: [
         [Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes'],
@@ -184,10 +169,10 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
     totalMentions += parseInt(twtQueryResult.totalRetweets || '0');
   }
 
-  if (!ytUser) {
+  if (user?.youtubeChannel) {
     const totalVideos = await YouTubeVideo.count({
       where: {
-        channelId: ytUser!.youtubeChannel.id,
+        channelId: user!.youtubeChannel.id,
         date: {
           [Op.between]: [startDate, endDate],
         },
@@ -200,7 +185,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        channelId: ytUser!.youtubeChannel.id,
+        channelId: user!.youtubeChannel.id,
       },
       attributes: [[Sequelize.fn('sum', Sequelize.col('likes')), 'totalLikes']],
       raw: true,
@@ -213,7 +198,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
 
   //average rating
 
-  if (!grUser) {
+  if (user?.googleReviewAccount) {
     const grQueryResult = (await GoogleReviewsReview.findAll({
       where: {
         date: {
@@ -225,7 +210,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
           model: GoogleReviewsLocation,
           attributes: [],
           where: {
-            accountId: grUser!.googleReviewAccount.id,
+            accountId: user!.googleReviewAccount.id,
           },
         },
       ],
@@ -239,13 +224,13 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
     avgReviewCount += 1;
   }
 
-  if (!yelpUser) {
+  if (user?.yelpBusiness) {
     const yelpQueryResult = (await YelpReview.findAll({
       where: {
         date: {
           [Op.between]: [startDate, endDate],
         },
-        businessId: yelpUser!.yelpBusiness.id,
+        businessId: user!.yelpBusiness.id,
       },
       attributes: [[Sequelize.fn('AVG', Sequelize.col('rating')), 'avgReview']],
       raw: true,
@@ -257,7 +242,7 @@ export const getOverviewStats: RequestHandler = async (req, res, next) => {
     avgReviewCount += 1;
   }
 
-  const avgReview = avgReviewSum / avgReviewCount;
+  const avgReview = avgReviewSum ? avgReviewSum / avgReviewCount : 0;
 
   return res.send({
     totalPosts,

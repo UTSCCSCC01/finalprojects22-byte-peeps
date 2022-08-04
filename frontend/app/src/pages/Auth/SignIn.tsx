@@ -37,55 +37,57 @@ const SignIn: React.FC<Props> = () => {
   };
 
   return (
-    <Stack
-      spacing={2}
-      component="form"
-      className="formContainer center"
-      sx={{
-        boxShadow: 1,
-      }}
-    >
-      <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-        <LockOutlined />
-      </Avatar>
-      <Typography component="h1" align="center">
-        Sign In{' '}
-      </Typography>
-      <TextField
-        id="outlined-user-input"
-        label="Username"
-        type="username"
-        required={true}
-        inputProps={{ maxLength: 20 }}
-        autoComplete="current-password"
-        onChange={(event: any) => {
-          setUser(event.target.value);
+    <div className="center fullDimension">
+      <Stack
+        spacing={2}
+        component="form"
+        className="formContainer center"
+        sx={{
+          boxShadow: 1,
         }}
-      />
-      <TextField
-        id="outlined-password-input"
-        label="Password"
-        type="password"
-        required={true}
-        autoComplete="current-password"
-        onChange={(event: any) => {
-          setPwd(event.target.value);
-        }}
-      />
-      <Button
-        fullWidth
-        variant="contained"
-        onClick={handleLogin}
-        className="authButton"
       >
-        Sign In
-      </Button>
-      <div className="rowCenter footer">
-        Do not have an account? &nbsp;
-        <Link to={RoutePaths.SignUp}> Sign up here</Link>
-      </div>
-      <Notification state={notification} />
-    </Stack>
+        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+          <LockOutlined />
+        </Avatar>
+        <Typography component="h1" align="center">
+          Sign In{' '}
+        </Typography>
+        <TextField
+          id="outlined-user-input"
+          label="Username"
+          type="username"
+          required={true}
+          inputProps={{ maxLength: 20 }}
+          autoComplete="current-password"
+          onChange={(event: any) => {
+            setUser(event.target.value);
+          }}
+        />
+        <TextField
+          id="outlined-password-input"
+          label="Password"
+          type="password"
+          required={true}
+          autoComplete="current-password"
+          onChange={(event: any) => {
+            setPwd(event.target.value);
+          }}
+        />
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={handleLogin}
+          className="authButton"
+        >
+          Sign In
+        </Button>
+        <div className="rowCenter footer">
+          Do not have an account? &nbsp;
+          <Link to={RoutePaths.SignUp}> Sign up here</Link>
+        </div>
+        <Notification state={notification} />
+      </Stack>
+    </div>
   );
 };
 

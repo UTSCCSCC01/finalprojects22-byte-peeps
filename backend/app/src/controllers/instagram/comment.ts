@@ -1,28 +1,26 @@
 import { RequestHandler } from 'express';
+import { Sequelize } from 'sequelize-typescript';
 import {
-  invalidInput,
   invalidDateRangeResponse,
-  unknownError,
-} from '../../globalHelpers/globalConstants';
-import InstagramApi from '../../models/instagram/api';
-import InstagramComment from '../../models/instagram/comment';
-import InstagramMedia from '../../models/instagram/media';
-import User from '../../models/user/user';
-const { Op } = require('sequelize');
-import {
+  invalidInput,
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
+  unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
-import InstagramTag from '../../models/instagram/tag';
-import { Sequelize } from 'sequelize-typescript';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 import {
   createFilterCondition,
   removeTableFilterField,
   renameTableFilterField,
   TableFilter,
 } from '../../middlewares/tableFilter';
+import InstagramApi from '../../models/instagram/api';
+import InstagramComment from '../../models/instagram/comment';
+import InstagramMedia from '../../models/instagram/media';
+import InstagramTag from '../../models/instagram/tag';
+import User from '../../models/user/user';
+const { Op } = require('sequelize');
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
@@ -119,6 +117,9 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
         await InstagramTag.findAll({
           where: {
             apiId: user!.instagramApi.id,
+            date: {
+              [Op.between]: [dates.startDate, dates.endDate],
+            },
             ...tagFilterCondition,
           },
           order: [['date', 'DESC']],
@@ -320,7 +321,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       return acc.concat(' ', comment.message);
     }
     const getKeywords = comments.reduce(getText, ' ');
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

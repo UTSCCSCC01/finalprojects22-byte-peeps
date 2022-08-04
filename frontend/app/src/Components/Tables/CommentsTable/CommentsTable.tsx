@@ -14,7 +14,7 @@ export default function CommentsTable(props: {
   };
 
   return (
-    <div style={{ height: 350.5, width: '100%' }}>
+    <div style={{ height: 386.5, width: '100%' }}>
       <MetricsTable
         colDef={query.colDef}
         loading={query.isLoading}

@@ -11,15 +11,6 @@ import PostAnalysis from '../../../Components/PostAnalysis/PostAnalysis';
 import { AppNames } from '../../../Redux/Slices/webApp/webAppConstants';
 import CommentsTable from '../../../Components/Tables/CommentsTable/CommentsTable';
 
-// todo not sure if this is necessary since mui theme takes care of dark mode
-// const Item = styled(Paper)(({ theme }) => ({
-//   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-//   ...theme.typography.body2,
-//   padding: theme.spacing(2),
-//   textAlign: 'center',
-//   color: theme.palette.text.secondary,
-// }));
-
 interface Props {}
 
 const FacebookTab: React.FC<Props> = () => {
