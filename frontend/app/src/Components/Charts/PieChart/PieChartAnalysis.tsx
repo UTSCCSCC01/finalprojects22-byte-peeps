@@ -81,10 +81,8 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
         <Legend
           verticalAlign="bottom"
           align="center"
-          style={{ margin: '20px' }}
           wrapperStyle={{
             position: 'relative',
-            marginTop: '0px',
           }}
         />
       </PieChart>
