@@ -1,4 +1,4 @@
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import ErrorMessage from '../../ErrorMessage/ErrorMessage';
 import Loader from '../../Loader/Loader';
 import NoData from '../../NoData/NoData';
@@ -33,6 +33,7 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
         <Pie
           dataKey="value"
           data={data}
+          labelLine={false}
           isAnimationActive={false}
           label={({
             cx,
@@ -44,20 +45,20 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
             index,
           }) => {
             const RADIAN = Math.PI / 180;
-            const radius = 25 + innerRadius + (outerRadius - innerRadius);
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
             const x = cx + radius * Math.cos(-midAngle * RADIAN);
             const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
             return value !== 0 ? (
               <text
-                style={{ fontSize: '0.6rem' }}
+                style={{ fontSize: '0.8rem' }}
                 x={x}
                 y={y}
-                fill={COLORS[index]}
+                fill={'white'}
                 textAnchor={x > cx ? 'start' : 'end'}
                 dominantBaseline="central"
               >
-                {`${data[index].name} ${((value / total) * 100).toFixed(1)}%`}
+                {`${((value / total) * 100).toFixed(1)}%`}
               </text>
             ) : null;
           }}
@@ -77,6 +78,15 @@ const PieChartComponent = ({ data, COLORS }: PieChartComponentProps) => {
             )
           )}
         </Pie>
+        <Legend
+          verticalAlign="bottom"
+          align="center"
+          style={{ margin: '20px' }}
+          wrapperStyle={{
+            position: 'relative',
+            marginTop: '0px',
+          }}
+        />
       </PieChart>
     </ResponsiveContainer>
   );
