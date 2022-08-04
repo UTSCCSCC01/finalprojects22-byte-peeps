@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import keyword_extractor from 'keyword-extractor';
 
 export type KeywordExtractionResult = {
   value: string;
@@ -15,37 +15,45 @@ export type KeywordExtractionPython = [value: string, count: number][];
 export async function keywordExtraction(
   text: string
 ): Promise<KeywordExtractionResult> {
-  let keywords: KeywordExtractionResult = [];
-  let error: string = '';
-
-  const process = spawn('python3', [
-    `${__dirname}/keywordExtraction.py`,
+  let keywordsExtracted = keyword_extractor.extract(
     removeAllPunctuation(text),
-  ]);
+    {
+      language: 'english',
+      remove_digits: true,
+      return_changed_case: true,
+      remove_duplicates: false,
+    }
+  );
 
-  process.stdout.on('data', (data: JSON) => {
-    let pythonResult: KeywordExtractionPython = JSON.parse(data.toString());
+  let keywordsCount: { [key: string]: number } = {};
 
-    keywords = pythonResult.map((item) => {
-      return {
-        value: item[0],
-        count: item[1],
-      };
-    });
+  for (const keyword of keywordsExtracted) {
+    if (keywordsCount[keyword]) {
+      keywordsCount[keyword]++;
+    } else {
+      keywordsCount[keyword] = 1;
+    }
+  }
+
+  // Create items array
+  let keywords: [string, number][] = Object.keys(keywordsCount).map(function (
+    key
+  ) {
+    return [key, keywordsCount[key]];
   });
 
-  process.stderr.on('data', (data) => {
-    error = data.toString();
+  // Sort the array based on the second element
+  keywords.sort(function (first, second) {
+    return second[1] - first[1];
   });
 
-  const exitCode = await new Promise((resolve, reject) => {
-    process.on('close', resolve);
+  let result: { value: string; count: number }[] = [];
+
+  keywords.slice(0, 30).forEach((keyword: [string, number], index: number) => {
+    result.push({ value: keyword[0], count: 30 - index });
   });
 
-  if (exitCode)
-    throw new Error(`Keyword extraction error exit ${exitCode}, ${error}`);
-
-  return keywords;
+  return result;
 }
 
 /**
@@ -66,28 +74,3 @@ function removeAllPunctuation(text: string): string {
     .replace(/\s+/g, ' ')
     .slice(0, 10000); // ! limit to 10000 characters for now
 }
-
-// let text = `Thanks man, i watched your videos on the subway every day, and it helped me
-// to spend that time studying. I appreciate it and I passed the tests for google, now in team matching!
-// i almost committed a crime trying to solve this problem by myself thanks for helping me not become a felon leftMin and leftMax is our possibility range where leftMin is decrease choice, leftMax is increase choice. Since we only care if our leftMin can reach 0, if leftMin < 0, we reset it to 0 to eliminate other invalid possibilities.
-// I was really conflicted about why we reset leftMin whenever we fall below 0, but then convinced myself with this argument:
-// Hey man, thanks for all your effort and congrats on your recent job! I was wondering if you could make a video for Leetcode problem 2115. Find all Possible Recipes? I'm having a hard time trying to understand it. Thanks
-// Try to understand the greedy idea for hours but it does not work for me intuitively. So I come back to the 2 stacks solution. Thanks for the explanation. I have been using your Neetcode 150 every day since a month ago. Thanks a lot!
-// please make a video on Find the Closest Palindrome
-// An easier solution would be to use two stacks.
-// You have already uploaded a video of this problem (same kind)
-// Pls solve the 3rd problem from today's contest.
-// i fails to understand why one single counter is not enough for this problem,
-// traverse through the string,
-// increment counter for open parenthesis and decrement it for closed parenthesis,
-// if counter goes negative at any time, means invalid, and if counter didn't reach 0 at the end, invalid,
-// isn't this very simple logic enough for this problem?
-// someone please correct me.
-// Some questions are not meant to start your day with
-// i love you daddy neetcode
-// For the first time, i didn't understand your explanation`;
-
-// (async () => {
-//   let result = await keywordExtraction(text);
-//   console.log('finalresult', result);
-// })();
