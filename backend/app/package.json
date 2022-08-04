@@ -26,6 +26,7 @@
     "express-session": "^1.17.3",
     "googleapis": "^104.0.0",
     "helmet": "^5.1.0",
+    "keyword-extractor": "^0.0.23",
     "node-fetch": "^2.6.7",
     "node-rake": "^1.0.1",
     "pg": "^8.7.3",
