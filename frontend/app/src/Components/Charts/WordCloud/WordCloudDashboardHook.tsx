@@ -94,7 +94,7 @@ const useCommentsWordCloud = (): UseWordCloudrQuery => {
           index === self.findIndex((t) => t.value === phrase.value)
       ); //removes duplicates
       result = result.sort((a, b) => (a.count > b.count ? -1 : 1));
-      result = result.slice(0, 9);
+      result = result.slice(0, 29);
     } else {
       isLoading = item.isLoading;
       if (item.error) {
