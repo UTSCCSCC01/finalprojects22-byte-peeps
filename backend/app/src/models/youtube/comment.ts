@@ -8,16 +8,21 @@ import {
   ForeignKey,
   Model,
   Table,
-  Unique,
 } from 'sequelize-typescript';
 import YouTubeVideo from './video';
 
 @Table({
   tableName: 'youtube_comments',
+  indexes: [
+    {
+      name: 'youtube_comments_video_id_index',
+      unique: true,
+      fields: ['resourceId', 'videoId'],
+    },
+  ],
 })
 export default class YouTubeComment extends Model {
   @AllowNull(false)
-  @Unique
   @Column
   resourceId: string;
 
