@@ -18,7 +18,7 @@ export async function keywordExtraction(
   let keywords: KeywordExtractionResult = [];
   let error: string = '';
 
-  const process = spawn('python', [
+  const process = spawn('python3', [
     `${__dirname}/keywordExtraction.py`,
     removeAllPunctuation(text),
   ]);
