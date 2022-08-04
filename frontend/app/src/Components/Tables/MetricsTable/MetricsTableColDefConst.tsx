@@ -12,6 +12,7 @@ export const defaultColumnStyle: DefaultColumnStyleType = {
   filterable: true,
   headerAlign: 'left',
   align: 'left',
+  showHover: false,
 };
 
 // Filter operators for strings

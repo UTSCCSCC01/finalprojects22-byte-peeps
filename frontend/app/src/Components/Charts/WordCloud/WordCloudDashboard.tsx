@@ -6,7 +6,7 @@ import useWordCloudDashboard from './WordCloudDashboardHook';
 
 const CommentsWordCloud = () => {
   const { data, isLoading, error } = useWordCloudDashboard();
-  console.log('data: ' + JSON.stringify(data?.length));
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage error={error} />;
   if (!data || data.length === 0) return <NoData />;

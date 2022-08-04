@@ -1,14 +1,7 @@
-import {
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 
 import CustomizedTooltip from './CustomizedTootip';
+import CustomResponsiveContainer from './CustomResponsiveContainer';
 import CustomizedTick from './CutomizedTick';
 interface ChartData {
   data: {
@@ -22,7 +15,7 @@ interface ChartData {
 }
 export default function Chart(data: ChartData) {
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <CustomResponsiveContainer height="400px">
       <LineChart
         data={data.data ?? []}
         margin={{
@@ -64,6 +57,6 @@ export default function Chart(data: ChartData) {
         <Line type="monotone" dataKey="neutral" stroke="#1876d2" />
         <Line type="monotone" dataKey="negative" stroke="#ff6d6d" />
       </LineChart>
-    </ResponsiveContainer>
+    </CustomResponsiveContainer>
   );
 }

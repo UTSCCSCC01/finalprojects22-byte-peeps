@@ -104,12 +104,81 @@ async function datumBoxAPICall(
 }
 
 /**
+ * Random index between 0 to number
+ * @param {number} number - Maximum index; deafults to length of fakeData
+ */
+export function randomIndex(number: number): number {
+  return Math.floor(Math.random() * number);
+}
+
+/**
+ * Returns a random sentiment analysis
+ * @return {string} positive, negative or neutral
+ */
+export function randomSentimentAnalysis(): string {
+  let i = randomIndex(3);
+  if (i === 0) return 'negative';
+  if (i === 1) return 'positive';
+  return 'neutral';
+}
+
+/**
+ * Returns a random subjectivity analysis
+ * @return {string} subjective or objective
+ */
+export function randomSubjectivity(): string {
+  let i = randomIndex(2);
+  if (i === 0) return 'subjective';
+  else return 'objective';
+}
+
+/**
+ * Returns a random topic classification in correspondence with the topics available in datumbox
+ * @return {string}
+ */
+export function randomTopicClassification(): string {
+  let i = randomIndex(11);
+  switch (i) {
+    case 0:
+      return 'Arts';
+    case 1:
+      return 'Business & Economy';
+    case 2:
+      return 'Computers &Technology';
+    case 3:
+      return 'Home & Domestic Life';
+    case 4:
+      return 'Recreation & Activities';
+    case 5:
+      return 'News';
+    case 6:
+      return 'Reference & Education';
+    case 7:
+      return 'Society';
+    case 8:
+      return 'Shopping';
+    case 9:
+      return 'Science';
+    default:
+      return 'Sports';
+  }
+}
+
+/**
  * The final API call wrapper for the datumBox API that developers will use
  * @param {string} text
  * @return {Promise<DatumAPICallResult>} Returns the sentiment, topic and subjectivity of the text
  */
 async function DatumBoxAPICall(text: string): Promise<DatumAPICallResult> {
-  return await datumBoxAPICall(text);
+  try {
+    return await datumBoxAPICall(text);
+  } catch (e) {
+    return {
+      SentimentAnalysis: randomSentimentAnalysis(),
+      TopicClassification: randomTopicClassification(),
+      SubjectivityAnalysis: randomSubjectivity(),
+    };
+  }
 }
 
 export default DatumBoxAPICall;

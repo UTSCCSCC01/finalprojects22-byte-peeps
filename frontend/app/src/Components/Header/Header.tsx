@@ -12,7 +12,7 @@ interface Props {}
 
 const Header: React.FC<Props> = () => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box className="headerBox" sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar variant="dense" className="toolBar">
           <IsSignedIn>
