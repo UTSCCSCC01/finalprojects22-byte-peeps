@@ -1,6 +1,6 @@
 import { facebookScheduledJob } from './facebook';
 import { instagramScheduledJob } from './instagram';
-import { redditScheduledJob } from './reddit';
+import { redditScheduledJob } from './reddit/reddit';
 import { youtubeScheduledJob } from './youtube';
 import { twitterScheduledJob } from './twitter';
 import { googleReviewsScheduledJob } from './googleReviews';

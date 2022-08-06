@@ -4,7 +4,7 @@ import RedditSubreddit from '../../models/reddit/subreddit';
 import RedditListing from '../../models/reddit/listing';
 import RedditComment from '../../models/reddit/comment';
 import User from '../../models/user/user';
-import { startPipeline } from '../../dataPipelines/reddit';
+import { startPipeline } from '../../dataPipelines/reddit/reddit';
 
 export const getSettings: RequestHandler = async (req, res, next) => {
   try {
