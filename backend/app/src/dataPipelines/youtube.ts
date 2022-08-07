@@ -59,7 +59,9 @@ export async function startPipeline(firstTime = false): Promise<void> {
           order: [['date', 'DESC']],
         }).then((video) => {
           if (video) return video.date;
-          return new Date(0);
+          lastDate = new Date();
+          lastDate.setDate(lastDate.getDate() - 7);
+          return lastDate;
         });
       }
 

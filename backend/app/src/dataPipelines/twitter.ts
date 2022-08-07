@@ -64,7 +64,10 @@ async function updateUserTweets(twitterUser: TwitterUser, dates: string[]) {
   /* Update data in db */
   for (const tweet of data) {
     await TwitterTweet.findOne({
-      where: { twitterId: tweet['id'] },
+      where: {
+        twitterUserId: twitterUser.id,
+        twitterId: tweet['id'],
+      },
     }).then(async function (obj) {
       if (obj) {
         await obj.update({
@@ -101,7 +104,10 @@ async function updateTweetConversation(tweet: TwitterTweet) {
   /* Update data in db */
   for (const comment of data) {
     await TwitterConversation.findOne({
-      where: { twitterId: comment['id'] },
+      where: {
+        tweetId: tweet.id,
+        twitterId: comment['id'],
+      },
     }).then(async function (obj) {
       let text = comment['text'];
 

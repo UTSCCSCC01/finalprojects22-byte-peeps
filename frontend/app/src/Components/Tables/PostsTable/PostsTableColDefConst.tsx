@@ -13,11 +13,12 @@ const defaultColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'message',
     headerName: 'Comment',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'likes',
@@ -39,10 +40,11 @@ const defaultColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
@@ -55,11 +57,12 @@ const redditColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'text',
     headerName: 'Text',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'score',
@@ -88,10 +91,11 @@ const redditColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
