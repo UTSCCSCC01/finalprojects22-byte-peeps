@@ -1,6 +1,16 @@
 body {
   background-color: #fff;
 }
+
+#root {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+
+  height: 100%;
+}
+
 .center {
   display: flex;
   flex-direction: column;
@@ -16,6 +26,9 @@ body {
 
 .page {
   padding: 24px !important;
+  max-width: 1600px;
+  display: flex;
+  flex-direction: column;
 }
 
 .fullDimension {

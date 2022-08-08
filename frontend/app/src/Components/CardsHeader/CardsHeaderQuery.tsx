@@ -93,7 +93,7 @@ const AppCardHeaderQuery: DictCardHeaderQuery = {
     cardIcons: CardHeaderIcons.GoogleReviewsCardIcons,
   },
   [AppNames.Overview]: {
-    cardQuery: CardHeaderURLRequest.OverviewCardHeader, //incomplete path
+    cardQuery: CardHeaderURLRequest.OverviewCardHeader,
     cardNames: CardHeaderNames.OverviewCardNames,
     cardLength: Object.keys(CardHeaderNames.OverviewCardNames).length,
     cardIcons: CardHeaderIcons.OverviewCardIcons,

@@ -12,7 +12,7 @@ import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 const { Op } = require('sequelize');
 
 /**
@@ -42,13 +42,14 @@ export const getComments: RequestHandler = async (req, res, next) => {
 
     if (!user?.facebookApi) return res.send({ count: 0, data: [] });
 
-    const posts = postId
-      ? await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id, id: postId },
-        })
-      : await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id },
-        });
+    const posts =
+      postId != null
+        ? await FacebookPost.findAll({
+            where: { apiId: user!.facebookApi.id, id: postId },
+          })
+        : await FacebookPost.findAll({
+            where: { apiId: user!.facebookApi.id },
+          });
     const postIds: number[] = posts.map((p) => p.id);
     const comments = await FacebookComment.findAll({
       where: {
@@ -104,13 +105,14 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
 
     if (!user?.facebookApi) return res.send({ subjective: 0, objective: 0 });
 
-    const posts = postId
-      ? await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id, id: postId },
-        })
-      : await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id },
-        });
+    const posts =
+      postId != null
+        ? await FacebookPost.findAll({
+            where: { apiId: user!.facebookApi.id, id: postId },
+          })
+        : await FacebookPost.findAll({
+            where: { apiId: user!.facebookApi.id },
+          });
     const postIds: number[] = posts.map((p) => p.id);
 
     const subjective = await FacebookComment.count({
@@ -171,13 +173,14 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const posts = postId
-      ? await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id, id: postId },
-        })
-      : await FacebookPost.findAll({
-          where: { apiId: user!.facebookApi.id },
-        });
+    const posts =
+      postId != null
+        ? await FacebookPost.findAll({
+            where: { apiId: user!.facebookApi.id, id: postId },
+          })
+        : await FacebookPost.findAll({
+            where: { apiId: user!.facebookApi.id },
+          });
     const postIds: number[] = posts.map((p) => p.id);
 
     const positive = await FacebookComment.count({
@@ -264,7 +267,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     }
 
     const getKeywords = comments.reduce(getText, ' ');
-    return res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

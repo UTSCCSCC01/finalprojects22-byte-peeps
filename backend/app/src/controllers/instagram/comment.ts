@@ -1,28 +1,26 @@
 import { RequestHandler } from 'express';
+import { Sequelize } from 'sequelize-typescript';
 import {
-  invalidInput,
   invalidDateRangeResponse,
-  unknownError,
-} from '../../globalHelpers/globalConstants';
-import InstagramApi from '../../models/instagram/api';
-import InstagramComment from '../../models/instagram/comment';
-import InstagramMedia from '../../models/instagram/media';
-import User from '../../models/user/user';
-const { Op } = require('sequelize');
-import {
+  invalidInput,
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
+  unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
-import InstagramTag from '../../models/instagram/tag';
-import { Sequelize } from 'sequelize-typescript';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 import {
   createFilterCondition,
   removeTableFilterField,
   renameTableFilterField,
   TableFilter,
 } from '../../middlewares/tableFilter';
+import InstagramApi from '../../models/instagram/api';
+import InstagramComment from '../../models/instagram/comment';
+import InstagramMedia from '../../models/instagram/media';
+import InstagramTag from '../../models/instagram/tag';
+import User from '../../models/user/user';
+const { Op } = require('sequelize');
 
 /**
  * Provides the page number and size, provides comments of any IG media related to the user API
@@ -51,13 +49,14 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
 
     if (!user?.instagramApi) return res.send({ count: 0, data: [] });
 
-    const media = postId
-      ? await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id, id: postId },
-        })
-      : await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
+    const media =
+      postId != null
+        ? await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id, id: postId },
+          })
+        : await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id },
+          });
     const mediaIds: number[] = media.map((m) => m.id);
 
     let filter: TableFilter | null = res.locals.tableFilter;
@@ -97,9 +96,10 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
 
     // Query if no filter is added for type or is specific to tag type
     if (
-      !filter ||
-      filter.columnField !== 'type' ||
-      filter.value?.toLowerCase() === 'tag'
+      postId == null &&
+      (!filter ||
+        filter.columnField !== 'type' ||
+        filter.value?.toLowerCase() === 'tag')
     ) {
       const RENAMED_FIELDS: any = [
         ['username', 'userName'],
@@ -117,6 +117,9 @@ export const getCommentsAndTags: RequestHandler = async (req, res, next) => {
         await InstagramTag.findAll({
           where: {
             apiId: user!.instagramApi.id,
+            date: {
+              [Op.between]: [dates.startDate, dates.endDate],
+            },
             ...tagFilterCondition,
           },
           order: [['date', 'DESC']],
@@ -172,13 +175,14 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
 
     if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
 
-    const media = postId
-      ? await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id, id: postId },
-        })
-      : await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
+    const media =
+      postId != null
+        ? await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id, id: postId },
+          })
+        : await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id },
+          });
     const mediaIds: number[] = media.map((m) => m.id);
 
     const subjective = await InstagramComment.count({
@@ -233,15 +237,17 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
       include: InstagramApi,
     });
 
-    if (!user?.instagramApi) return res.send({ subjective: 0, objective: 0 });
+    if (!user?.instagramApi)
+      return res.send({ positive: 0, neutral: 0, negative: 0 });
 
-    const media = postId
-      ? await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id, id: postId },
-        })
-      : await InstagramMedia.findAll({
-          where: { apiId: user!.instagramApi.id },
-        });
+    const media =
+      postId != null
+        ? await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id, id: postId },
+          })
+        : await InstagramMedia.findAll({
+            where: { apiId: user!.instagramApi.id },
+          });
     const mediaIds: number[] = media.map((m) => m.id);
 
     const positive = await InstagramComment.count({
@@ -315,7 +321,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       return acc.concat(' ', comment.message);
     }
     const getKeywords = comments.reduce(getText, ' ');
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

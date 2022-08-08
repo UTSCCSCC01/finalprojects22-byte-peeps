@@ -5,7 +5,7 @@ import {
   unknownError,
 } from '../../globalHelpers/globalConstants';
 import { getDates } from '../../globalHelpers/globalHelpers';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 import InstagramComment from '../../models/instagram/comment';
 const { Op } = require('sequelize');
 import TwitterConversation from '../../models/twitter/conversation';
@@ -41,13 +41,14 @@ export const getComments: RequestHandler = async (req, res, next) => {
 
     if (!user?.twitterUser) return res.send({ count: 0, data: [] });
 
-    const tweets = postId
-      ? await TwitterTweet.findAll({
-          where: { twitterUserId: user!.twitterUser.id, id: postId },
-        })
-      : await TwitterTweet.findAll({
-          where: { twitterUserId: user!.twitterUser.id },
-        });
+    const tweets =
+      postId != null
+        ? await TwitterTweet.findAll({
+            where: { twitterUserId: user!.twitterUser.id, id: postId },
+          })
+        : await TwitterTweet.findAll({
+            where: { twitterUserId: user!.twitterUser.id },
+          });
     const tweetIds: number[] = tweets.map((p) => p.id);
     const comments = await TwitterConversation.findAll({
       where: {
@@ -110,13 +111,14 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const tweets = postId
-      ? await TwitterTweet.findAll({
-          where: { twitterUserId: user!.twitterUser.id, id: postId },
-        })
-      : await TwitterTweet.findAll({
-          where: { twitterUserId: user!.twitterUser.id },
-        });
+    const tweets =
+      postId != null
+        ? await TwitterTweet.findAll({
+            where: { twitterUserId: user!.twitterUser.id, id: postId },
+          })
+        : await TwitterTweet.findAll({
+            where: { twitterUserId: user!.twitterUser.id },
+          });
     const tweetIds: number[] = tweets.map((p) => p.id);
 
     const subjective = await TwitterConversation.count({
@@ -175,13 +177,14 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const tweets = postId
-      ? await TwitterTweet.findAll({
-          where: { twitterUserId: user!.twitterUser.id, id: postId },
-        })
-      : await TwitterTweet.findAll({
-          where: { twitterUserId: user!.twitterUser.id },
-        });
+    const tweets =
+      postId != null
+        ? await TwitterTweet.findAll({
+            where: { twitterUserId: user!.twitterUser.id, id: postId },
+          })
+        : await TwitterTweet.findAll({
+            where: { twitterUserId: user!.twitterUser.id },
+          });
     const tweetIds: number[] = tweets.map((p) => p.id);
 
     const positive = await TwitterConversation.count({
@@ -273,8 +276,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
     }
 
     const getKeywords = comments.reduce(getText, ' ');
-
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

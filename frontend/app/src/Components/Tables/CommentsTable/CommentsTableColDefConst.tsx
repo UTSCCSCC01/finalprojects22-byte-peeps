@@ -13,11 +13,12 @@ const defaultColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'message',
     headerName: 'Comment',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'likes',
@@ -39,10 +40,11 @@ const defaultColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
@@ -60,11 +62,12 @@ const instagramColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'message',
     headerName: 'Message',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'likes',
@@ -86,20 +89,22 @@ const instagramColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
 const redditColDef: MetricsTableColDef = [
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'text',
     headerName: 'Comment',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'score',
@@ -128,20 +133,22 @@ const redditColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
 const twitterColDef: MetricsTableColDef = [
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'text',
     headerName: 'Comment',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'retweets',
@@ -177,10 +184,11 @@ const twitterColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
@@ -198,11 +206,12 @@ const googleReviewsColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'review',
     headerName: 'Review',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'rating',
@@ -224,10 +233,11 @@ const googleReviewsColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 
@@ -239,11 +249,12 @@ const yelpColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
+    ...defaultColumnStyle,
+    ...defaultStringFilterStyle,
     field: 'text',
     headerName: 'Review',
     flex: 1,
-    ...defaultColumnStyle,
-    ...defaultStringFilterStyle,
+    showHover: true,
   },
   {
     field: 'rating',
@@ -265,10 +276,11 @@ const yelpColDef: MetricsTableColDef = [
     ...defaultStringFilterStyle,
   },
   {
-    field: 'topicClassification',
-    headerName: 'Topic',
     ...defaultColumnStyle,
     ...defaultStringFilterStyle,
+    field: 'topicClassification',
+    headerName: 'Topic',
+    showHover: true,
   },
 ];
 

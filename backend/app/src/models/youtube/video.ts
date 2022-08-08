@@ -8,17 +8,22 @@ import {
   HasMany,
   Model,
   Table,
-  Unique,
 } from 'sequelize-typescript';
 import YouTubeChannel from './channel';
 import YouTubeComment from './comment';
 
 @Table({
   tableName: 'youtube_videos',
+  indexes: [
+    {
+      name: 'youtube_videos_channel_id_index',
+      unique: true,
+      fields: ['resourceId', 'channelId'],
+    },
+  ],
 })
 export default class YouTubeVideo extends Model {
   @AllowNull(false)
-  @Unique
   @Column
   resourceId: string;
 

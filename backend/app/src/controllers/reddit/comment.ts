@@ -14,7 +14,7 @@ import {
   SentimentAnalysisStatus,
   SubjectivityAnalysis,
 } from '../../globalHelpers/globalConstants';
-import { keywordExtraction } from '../../middlewares/keywordExtraction';
+import { keywordExtraction } from '../../middlewares/keywordExtraction/keywordExtraction';
 
 /**
  * Provides the page number and size, provides comments of any Reddit subreddit related to the user API
@@ -43,13 +43,14 @@ export const getComments: RequestHandler = async (req, res, next) => {
 
     if (!user?.subreddit) return res.send({ count: 0, data: [] });
 
-    const listings = postId
-      ? await RedditListing.findAll({
-          where: { subredditId: user!.subreddit.id, id: postId },
-        })
-      : await RedditListing.findAll({
-          where: { subredditId: user!.subreddit.id },
-        });
+    const listings =
+      postId != null
+        ? await RedditListing.findAll({
+            where: { subredditId: user!.subreddit.id, id: postId },
+          })
+        : await RedditListing.findAll({
+            where: { subredditId: user!.subreddit.id },
+          });
     const listingIds: number[] = listings.map((l) => l.id);
     const comments = await RedditComment.findAll({
       where: {
@@ -111,13 +112,14 @@ export const getCommentsSubjectivityAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const listings = postId
-      ? await RedditListing.findAll({
-          where: { subredditId: user!.subreddit.id, id: postId },
-        })
-      : await RedditListing.findAll({
-          where: { subredditId: user!.subreddit.id },
-        });
+    const listings =
+      postId != null
+        ? await RedditListing.findAll({
+            where: { subredditId: user!.subreddit.id, id: postId },
+          })
+        : await RedditListing.findAll({
+            where: { subredditId: user!.subreddit.id },
+          });
     const listingIds: number[] = listings.map((l) => l.id);
 
     const subjective = await RedditComment.count({
@@ -179,13 +181,14 @@ export const getCommentsSentimentAnalysis: RequestHandler = async (
         negative: 0,
       });
 
-    const listings = postId
-      ? await RedditListing.findAll({
-          where: { subredditId: user!.subreddit.id, id: postId },
-        })
-      : await RedditListing.findAll({
-          where: { subredditId: user!.subreddit.id },
-        });
+    const listings =
+      postId != null
+        ? await RedditListing.findAll({
+            where: { subredditId: user!.subreddit.id, id: postId },
+          })
+        : await RedditListing.findAll({
+            where: { subredditId: user!.subreddit.id },
+          });
     const listingIds: number[] = listings.map((l) => l.id);
 
     const positive = await RedditComment.count({
@@ -275,8 +278,8 @@ export const getWordCloudData: RequestHandler = async (req, res, next) => {
       return acc.concat(' ', comment.text);
     }
     const getKeywords = comments.reduce(getText, ' ');
-
-    res.send(keywordExtraction(getKeywords));
+    let keywords = await keywordExtraction(getKeywords);
+    return res.send(keywords);
   } catch (e) {
     next(e);
   }

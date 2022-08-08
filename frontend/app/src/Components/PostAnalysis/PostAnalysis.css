@@ -2,10 +2,37 @@
   margin-right: 0 !important;
 }
 
-.MuiInputBase-root {
+.postDropdown .MuiInputBase-root {
   padding-right: 30px !important;
 }
 
-.post-info {
+.infoContainer {
+  height: 325px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.infoRow {
+  display: flex;
+}
+
+.infoRow:first-child {
+  flex-direction: column;
+}
+
+.infoRow:first-child h3 {
+  margin-right: auto;
+}
+
+.infoRow:first-child p {
   text-align: center;
+}
+
+.infoRow > h3 {
+  margin: 15px 0;
+}
+
+.infoRow > p {
+  margin-left: auto;
 }
