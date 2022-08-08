@@ -213,8 +213,6 @@ Currently, the website is deployed at: https://www.datalytic.ml/
   act -s KEY="$(< ssh-key.txt)" --secret-file my.secrets -W .github/workflows/local-build-frontend.yml
   ```
 
-- **Note:** the last command will say failure but it did actually work.
-
 ## Authors
 
 - [Mohamed Tayeh](https://github.com/mohamed-tayeh)
