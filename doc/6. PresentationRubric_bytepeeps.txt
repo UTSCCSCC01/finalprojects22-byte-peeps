@@ -64,7 +64,7 @@ Technologies used and technical challenges
   Also a clear description what the team did to overcome those challenges]
   [-2 marks for each missing component, -1 mark is component not presented clearly]
  ==========
- Your mark: 4 Feedback: One to two main difficulties
+ Your mark: 6 
  ==========    
   
 Participation[5 marks]
