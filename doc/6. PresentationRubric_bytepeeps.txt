@@ -2,7 +2,7 @@ Final Project Presentation Marking Rubric
 =========================================
 Team Name: Byte peeps
 
-Part I - Live Presentation - 30 marks
+Live Presentation - 39 marks
 -------------------------------------
 Product Demo[10 marks]:
 -Product introduction: 0-1 marks [1=Product introduced, 0=No introduction]
@@ -42,7 +42,7 @@ Process[14 marks]:
  0-6 marks 
  [Each element 2 marks if presented professionally, 1 mark if presented adequately, 0 otherwise]
  ==========
- Your mark: 6
+ Your mark: 5.5
  ==========
  -Documentation
  0-4 marks 
@@ -75,4 +75,6 @@ Participation[5 marks]
  ==========
  Your mark: 5
  ==========  
+ 
+ Total Marks: 38.5/39
  
